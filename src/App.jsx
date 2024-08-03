@@ -1,35 +1,50 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
-import './App.css'
+import { Login } from "./pages/Login";
+import { Home } from "./pages/Home";
+import { UserProvider, useUser } from "./lib/context/user";
+import { IdeasProvider } from "./lib/context/ideas";
 
 function App() {
-  const [count, setCount] = useState(0)
+  const isLoginPage = window.location.pathname === "/login";
 
   return (
-    <>
-      <div>
-        <a href="https://vitejs.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
-      </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.jsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
-    </>
+    <div>
+      <UserProvider>
+        <IdeasProvider>
+          <Navbar />
+          <main>
+            {isLoginPage 
+            ? <Login />
+            : <Home />}
+          </main>
+        </IdeasProvider>
+      </UserProvider>
+    </div>
   )
 }
 
-export default App
+function Navbar() {
+  const user = useUser()
+  
+  return (
+  <nav>
+    <a href="/">Ideas tracker</a>
+      <div>
+        { user.current ? (
+          <>
+            <span>{user.current.email}</span>
+            <button
+              type="button"
+              onClick={() => user.logout()}
+            >
+              Logout
+            </button>
+          </>
+        ) : (
+          <a href="/login">Login</a>
+        )}
+      </div>
+  </nav>
+
+  )
+}
+export default App;
