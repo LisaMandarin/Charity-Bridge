@@ -34,7 +34,7 @@ export function Home() {
             <button
               type="button"
               onClick={() =>
-                ideas.add({ userId: user.current.$id, title, description })
+                ideas.add({ userID: user.current.$id, title, description })
               }
             >
               Submit
@@ -54,7 +54,7 @@ export function Home() {
               <strong>{idea.title}</strong>
               <p>{idea.description}</p>
               {/* Show the remove button to idea owner. */}
-              {user.current && user.current.$id === idea.userId && (
+              {user.current && user.current.$id === idea.userID && (
                 <button type="button" onClick={() => ideas.remove(idea.$id)}>
                   Remove
                 </button>

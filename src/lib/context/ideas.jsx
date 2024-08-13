@@ -16,8 +16,8 @@ export function IdeasProvider(props) {
 
   async function add(idea) {
     try {
-      if (!idea.userId) {
-        throw new Error("Missing required attribute 'userId'")
+      if (!idea.userID) {
+        throw new Error("Missing required attribute 'userID'")
       }
       
       const response = await databases.createDocument(
