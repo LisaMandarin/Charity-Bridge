@@ -44,9 +44,6 @@ export function UserProvider(props) {
     } catch (error) {
       console.error('Registration failed: ', error);
     }
-
-    // await account.create(ID.unique(), email, password);
-    // await login(email, password);
   }
 
   async function init() {
