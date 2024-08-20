@@ -1,5 +1,5 @@
-import { Login } from "./pages/Login";
-import { Home } from "./pages/Home";
+import { Login } from "./components/Login";
+import { Home } from "./components/Home";
 import { UserProvider, useUser } from "./lib/context/user";
 import { IdeasProvider } from "./lib/context/ideas";
 
@@ -11,7 +11,7 @@ function App() {
       <UserProvider>
         <IdeasProvider>
           <Navbar />
-          <main>
+          <main style={{width: "100vw", margin: "0 auto", boxSizing: "border-box"}}>
             {isLoginPage 
             ? <Login />
             : <Home />}
