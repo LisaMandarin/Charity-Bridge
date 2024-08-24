@@ -1,9 +1,24 @@
-export function HeaderUser() {
+import { useUser } from "../lib/context/user"
 
+export function HeaderUser() {
+    const user = useUser()
     return (
-        <div style={{margin: '16px'}}>
-            <div>dashboard</div>
-            <div>search bar</div>
+        <div>
+            { user.current ? (
+                <>
+                    <span>{user.current.email}</span>
+                    <button
+                        type="button"
+                        onClick={() => user.logout()}
+                    >
+                        Logout
+                    </button>
+                </>
+            ) : (
+                <>
+                <a href = "/login">Login</a>
+                </>
+            )}
         </div>
     )
 }

@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { useUser } from "../lib/context/user";
 import { useIdeas } from "../lib/context/ideas";
-import { Header } from "./Header/Header";
+import { Header } from "./Header";
 
 export function Home() {
   const user = useUser();
@@ -12,7 +12,6 @@ export function Home() {
 
   return (
     <>
-      <Header />
       {/* Show the submit form to logged in users. */}
       {user.current ? (
         <section>
