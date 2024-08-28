@@ -1,7 +1,6 @@
 import { useState } from "react";
 import { useUser } from "../lib/context/user";
 import { useIdeas } from "../lib/context/ideas";
-import { Header } from "./Header";
 
 export function Home() {
   const user = useUser();

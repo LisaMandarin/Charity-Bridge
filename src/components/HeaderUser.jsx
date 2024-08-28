@@ -6,6 +6,7 @@ export function HeaderUser() {
         <div>
             { user.current ? (
                 <>
+                    <span>Hello, </span>
                     <span>{user.current.email}</span>
                     <button
                         type="button"
@@ -17,6 +18,8 @@ export function HeaderUser() {
             ) : (
                 <>
                 <a href = "/login">Login</a>
+                <br />
+                <a href = "/register">Sign up</a>
                 </>
             )}
         </div>
