@@ -21,7 +21,8 @@ export function Register() {
                 backgroundColor: "white"
             }}
             onValuesChange={(values) => console.log(values)}
-            onFinish={(values) => user.register(values.email, values.password)}
+            // onFinish={(values) => console.log(values.username)}
+            onFinish={(values) => user.register(values.email, values.password, values.username)}
             scrollToFirstError
         >
             <Title 
@@ -73,11 +74,11 @@ export function Register() {
                     message: 'Please enter your password'
                 },
                 {
-                    min: 5,
+                    min: 8,
                     max: 20,
                     pattern: /^(?=.*[A-Za-z])(?=.*\d)/,
                     whitespace: true,
-                    message: "Password must be 5-20 characters, with letters and numbers."
+                    message: "Password must be 8-20 characters, with letters and numbers."
                 },
                 ]}
                 hasFeedback

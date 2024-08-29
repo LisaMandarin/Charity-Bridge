@@ -20,9 +20,6 @@ export function UserProvider(props) {
     } catch(error) {
       console.error('Login failed: ', error)
     }
-    // const loggedIn = await account.createEmailPasswordSession(email, password);
-    // setUser(loggedIn);
-    // window.location.replace("http://www.amazon.com"); // you can use different redirect method for your application
   }
 
   async function logout() {
@@ -32,13 +29,11 @@ export function UserProvider(props) {
     } catch (error) {
       console.error('Logout failed: ', error)
     }
-    // await account.deleteSession("current");
-    // setUser(null);
   }
 
-  async function register(email, password) {
+  async function register(email, password, username) {
     try {
-      await account.create(ID.unique(), email, password)
+      await account.create(ID.unique(), email, password, username)
       alert('You have successfully registered with Charity Bridge.\nRedirecting to the homepage.')
       await login(email, password);
     } catch (error) {

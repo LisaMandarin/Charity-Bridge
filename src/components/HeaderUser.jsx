@@ -7,7 +7,7 @@ export function HeaderUser() {
             { user.current ? (
                 <>
                     <span>Hello, </span>
-                    <span>{user.current.email}</span>
+                    <span>{user.current.name}</span>
                     <button
                         type="button"
                         onClick={() => user.logout()}
