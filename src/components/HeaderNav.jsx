@@ -1,39 +1,37 @@
-import { Row, Col } from "antd";
+import { Row, Col, Flex } from "antd";
 import { Icon } from '@iconify/react';
 import '../output.css'
 
 export function HeaderNav() {
-    const navItemStyle = "inline mr-2 text-xl"
     return (
-        <div className="grow w-full mx-4">
-            <Row>
-                <Col span={8} className="p-4">
-                    <Icon icon='fluent:food-16-regular' className={navItemStyle} /> 
+        <Flex vertical justify="center" align="center" className="h-full">
+            <Row gutter={[0, 10]}>
+                <Col span={8}>
+                    <Icon icon='fluent:food-16-regular' /> 
                     Food
                 </Col>
-                <Col span={8} className="p-4">
-                    <Icon icon='hugeicons:clothes' className={navItemStyle} />
+                <Col span={8}>
+                    <Icon icon='hugeicons:clothes' />
                     Clothing
                 </Col>
-                <Col span={8} className="p-4">
-                    <Icon icon="lucide:house-plus" className={navItemStyle} />
+                <Col span={8}>
+                    <Icon icon="lucide:house-plus" />
                     Living
                 </Col>
-            </Row>
-            <Row>
-                <Col span={8} className="p-4">
-                    <Icon icon="hugeicons:car-01" className={navItemStyle} />
+            
+                <Col span={8}>
+                    <Icon icon="hugeicons:car-01" />
                     Transportation
                 </Col>
-                <Col span={8} className="p-4">
-                    <Icon icon="streamline:quality-education" className={navItemStyle} />
+                <Col span={8}>
+                    <Icon icon="streamline:quality-education" />
                     Education
                 </Col>
-                <Col span={8} className="p-4">
-                    <Icon icon="iconoir:gift" className={navItemStyle} />
+                <Col span={8}>
+                    <Icon icon="iconoir:gift"/>
                     Entertainment
                 </Col>
             </Row>
-        </div>
+        </Flex>
     )
 }

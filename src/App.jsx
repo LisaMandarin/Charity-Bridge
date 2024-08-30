@@ -5,6 +5,7 @@ import { IdeasProvider } from "./lib/context/ideas";
 import { Header } from "./components/Header";
 import { Register } from "./components/Register";
 import './output.css'
+import { UserInfosProvider } from "./lib/context/userInfo";
 
 function App() {
   const isLoginPage = window.location.pathname === "/login";
@@ -13,7 +14,7 @@ function App() {
   return (
     <div>
       <UserProvider>
-        <IdeasProvider>
+        <UserInfosProvider>
           <Header />
           <main 
             style={{
@@ -27,7 +28,7 @@ function App() {
               <Home />
             )}
           </main>
-        </IdeasProvider>
+        </UserInfosProvider>
       </UserProvider>
     </div>
   )

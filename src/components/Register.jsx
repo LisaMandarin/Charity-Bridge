@@ -20,8 +20,6 @@ export function Register() {
                 margin: '0 auto',
                 backgroundColor: "white"
             }}
-            onValuesChange={(values) => console.log(values)}
-            // onFinish={(values) => console.log(values.username)}
             onFinish={(values) => user.register(values.email, values.password, values.username)}
             scrollToFirstError
         >
