@@ -49,12 +49,13 @@ export function UserInfosProvider(props) {
                 IDEAS_DATABASE_ID,
                 USERS_COLLECTION_ID,
                 [
-                    Query.orderDesc('$createAt'), Query.limit(10)
+                    Query.orderDesc('$createdAt'),
+                    Query.limit(10)
                 ]
             )
             setInfos(response.documents)
         } catch (error) {
-            console.error('Failed to : ', error)
+            console.error('Failed to fetch user information: ', error)
         }
     }
 

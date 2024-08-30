@@ -1,7 +1,6 @@
 import { Login } from "./components/Login";
 import { Home } from "./components/Home";
 import { UserProvider } from "./lib/context/user";
-import { IdeasProvider } from "./lib/context/ideas";
 import { Header } from "./components/Header";
 import { Register } from "./components/Register";
 import './output.css'

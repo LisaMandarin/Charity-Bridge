@@ -3,6 +3,8 @@ import dayjs from 'dayjs';
 import customParseFormat from 'dayjs/plugin/customParseFormat';
 import { useUser } from "../lib/context/user";
 import { useUserInfos } from "../lib/context/userInfo";
+import { UserList } from "./UserList";
+
 dayjs.extend(customParseFormat);
 const { Title } = Typography
 
@@ -118,6 +120,7 @@ export function UserForm() {
                 <Button onClick={onReset}>Reset</Button>
             </Form.Item>
         </Form>
+        <UserList />
         </>
     )
 }
