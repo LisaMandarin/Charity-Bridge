@@ -1,7 +1,7 @@
 import { Button, Table } from "antd";
-import { useEffect } from "react";
 import { useUserInfos } from "../lib/context/userInfo";
 import dayjs from 'dayjs';
+import '../output.css'
 
 export function UserList() {
     const infos = useUserInfos()
@@ -43,6 +43,7 @@ export function UserList() {
         <Table 
             dataSource={dataSource}
             columns={columns}
+            className="w-fit mx-auto my-5"
         />
         </>
     )
