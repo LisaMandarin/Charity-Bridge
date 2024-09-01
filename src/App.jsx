@@ -30,7 +30,7 @@ function App() {
                   </Routes>
                 </main> 
               </Content>
-              <Footer className="bg-pink-200 h-24"/>
+              <FooterContent />
             </Layout>
             
           </Router>
