@@ -1,5 +1,8 @@
+import { Flex } from "antd"
 import { useUser } from "../lib/context/user"
 import { UserForm } from "./UserForm"
+import { Link } from "react-router-dom"
+import "../output.css"
 
 export function Home() {
     const user = useUser()
@@ -8,11 +11,11 @@ export function Home() {
         <>
         { user.current ? (
             <>
-                <UserForm></UserForm>
+                <UserForm />
             </>
         ) : (
             <>
-            <span>You have logged out</span>
+                <div className="text-3xl text-center p-4">Please <Link to="/login">log in</Link> to see more information</div>
             </>
         )
         }

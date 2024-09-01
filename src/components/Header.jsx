@@ -3,9 +3,10 @@ import { HeaderUser } from "./HeaderUser";
 import smallLogo from "../assets/images/small-logo.webp"
 import '../output.css'
 import { Col, Row } from "antd";
+import { Link } from "react-router-dom";
 
 
-export function Header() {
+export function HeaderContent() {
   const headerLogo = (
     <div>
       <img
@@ -18,14 +19,11 @@ export function Header() {
 
   return (
     <>
-      <Row className="bg-pink-200 h-24">
-        <Col flex={1} className="h-24">{headerLogo}</Col>
-        <Col flex={3} className="h-24"><HeaderNav /></Col>
-        <Col flex={1} className="h-24 bg-pink-50"><HeaderUser /></Col>
+      <Row className="h-full leading-10">
+        <Col flex={1} className="h-full"><Link to='/'>{headerLogo}</Link></Col>
+        <Col flex={3} className="h-full"><HeaderNav /></Col>
+        <Col flex={1} className="h-full bg-pink-50"><HeaderUser /></Col>
       </Row>
-      
-      
-      
     </>
     
   );

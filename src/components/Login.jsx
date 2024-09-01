@@ -1,6 +1,9 @@
 import { Button, Flex, Form, Input, Typography } from "antd"
 import { useUser } from "../lib/context/user"
+import '../output.css'
 const { Title, Link } = Typography
+
+
 export function Login() {
     const [ form ] = Form.useForm()
     const user = useUser()
@@ -10,20 +13,15 @@ export function Login() {
                 form={form}
                 name="userLogin"
                 layout="vertical"
-                style={{
-                    maxWidth: 400,  
-                    margin: "0 auto", 
-                    padding: '24px', 
-                    backgroundColor: "white"
-                }}
+                className="max-w-96 my-0 mx-auto p-6 bg-white"
                 onFinish={(values) => user.login(values.email, values.password)}
             >
-                <Title underline style={{textAlign: "center"}}>Login</Title>
+                <Title underline className="text-center">Login</Title>
                 <Form.Item
                     label="Email"
                     name="email"
                 >
-                    <Input style={{width: "100%"}} placeholder="Please enter email" allowClear/>
+                    <Input className="w-full" placeholder="Please enter email" allowClear/>
                 </Form.Item>
                 <Form.Item
                     label="Password"
@@ -37,7 +35,9 @@ export function Login() {
                     </Flex>
                 </Form.Item>
             </Form>
-            <div style={{maxWidth: 400, margin: "0 auto", textAlign: "center"}}>
+            <div 
+                className="max-w-96 my-0 mx-auto text-center"
+            >
                 Create an account?  <Link href="/register">Sign up</Link> now
             </div>
         </>
