@@ -652,6 +652,14 @@ video {
   justify-content: center;
 }
 
+.overflow-auto {
+  overflow: auto;
+}
+
+.overflow-y-scroll {
+  overflow-y: scroll;
+}
+
 .border-4 {
   border-width: 4px;
 }
