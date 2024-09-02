@@ -55,16 +55,16 @@ export function HeaderNavV () {
             />
         </div>
         <ul
-            className='bg-white flex flex-col fixed top-24 left-0 w-full overflow-hidden'
+            className='bg-white flex flex-col fixed top-24 left-0 w-60 overflow-hidden'
             style={{
-                maxHeight: show ? '500px' : '0px',
-                transition: 'max-height .5s ease-in-out',
+                transform: show ? 'translateX(0)' : 'translateX(-100%)',
+                transition: 'transform .5s ease-in-out',
                 
             }}
         >
             {items.map(item => (
                 <li key={item.key} className='w-full px-8 py-3'>
-                        <Link to={item.path}>
+                        <Link to={item.path} onClick={toggleShow}>
                             <Icon icon={item.icon} className='inline'/>
                             <span> {item.text}</span>
                         </Link>
