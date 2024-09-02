@@ -2,7 +2,7 @@ import { Icon } from '@iconify/react';
 import { Link } from 'react-router-dom';
 import { Space } from 'antd';
 
-export function HeaderNav() {
+export function HeaderNavH() {
         
     return (
         <div className="flex flex-col w-full h-full justify-end">
