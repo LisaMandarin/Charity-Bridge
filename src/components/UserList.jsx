@@ -40,10 +40,10 @@ export function UserList() {
 
     return (
         <>
-        <Table 
+        <Table
             dataSource={dataSource}
             columns={columns}
-            className="w-fit mx-auto my-5"
+            className="w-fit mx-auto"
         />
         </>
     )

@@ -6,7 +6,7 @@ import { Col, Row } from "antd";
 import { Link } from "react-router-dom";
 
 
-export function HeaderContent() {
+export function Header() {
   const headerLogo = (
     <div>
       <img

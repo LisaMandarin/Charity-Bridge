@@ -1,5 +1,6 @@
-import { Button, Flex, Form, Input, Space, Typography } from "antd"
+import { message, Button, Flex, Form, Input, Space, Typography } from "antd"
 import { useUser } from "../lib/context/user"
+import { useEffect } from "react"
 const { Title, Link } = Typography
 
 export function Register() {
@@ -8,6 +9,19 @@ export function Register() {
     const onReset = () => {
         form.resetFields();
     }
+
+    useEffect(() => {
+        if (user.error && user.error.message) {
+            message.error(user.error.message, 3)
+            onReset()
+            user.setError(null)
+        }
+        if (user.success) {
+            message.success(user.success, 3)
+            user.setSuccess(null)
+        }
+    }, [user.error, user.success, user.setError, user.setSuccess])
+
     return (
         <>
         <Form
@@ -38,6 +52,11 @@ export function Register() {
                 {
                     whitespace: true,
                     message: 'No empty username allowed'
+                },
+                {
+                    min: 1,
+                    max: 50,
+                    message: 'The username is limited to 50 characters'
                 }
                 ]}
                 hasFeedback    

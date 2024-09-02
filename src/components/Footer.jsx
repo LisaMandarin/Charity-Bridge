@@ -1,8 +1,8 @@
-export function FooterContent() {
-
+export function Footer() {
+    const year = new Date().getFullYear()
 return (
-    <div className="bg-pink-200 h-24">
-        <p className="text-center p-4">&#169; 2024 Min-ting Chuang</p>
-    </div>
+    <>
+        <p className="text-center my-4">&#169; {year} Min-ting Chuang</p>
+    </>
 )
 }
