@@ -46,15 +46,14 @@ export function UserList() {
             }))
             setDataSource(data)
             setOriginalData(data)
-            console.log('dataSouce: ', dataSource)
         }
     }, [infos])
 
     const onSearch = (value) => {
-        const filtedData = originalData.filter(user => 
+        const filteredData = originalData.filter(user => 
             user.name.toLowerCase().includes(value.toLowerCase())
         )
-        setDataSource(filtedData)
+        setDataSource(filteredData)
     }
     return ( 
     <div 
@@ -72,6 +71,10 @@ export function UserList() {
         <Table
         dataSource={dataSource}
         columns={columns}
+        pagination={{
+            position: ['bottomCenter'],
+            pageSize: 5
+        }}
         className="border border-gray-300"
     />
     </div>

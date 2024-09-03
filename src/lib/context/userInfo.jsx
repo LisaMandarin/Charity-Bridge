@@ -50,7 +50,6 @@ export function UserInfosProvider(props) {
                 USERS_COLLECTION_ID,
                 [
                     Query.orderDesc('$createdAt'),
-                    Query.limit(10)
                 ]
             )
             setInfos(response.documents)
