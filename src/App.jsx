@@ -7,11 +7,12 @@ import { Login } from "./components/Login";
 import { Home } from "./components/Home";
 import { Footer } from "./components/Footer";
 import { Food } from "./components/Food";
-import { Clothing } from "./components/clothing";
+import { Clothing } from "./components/Clothing";
 import { Housing } from "./components/Housing";
 import { Transportation } from "./components/Transportation";
 import { Education } from "./components/Education";
 import { Entertainment } from "./components/Entertainment";
+
 
 function App() {
   
@@ -31,9 +32,9 @@ function App() {
                 <Route path="/food" element={<Food />} />
                 <Route path="/clothing" element={<Clothing />} />
                 <Route path="/housing" element={<Housing />} />
-                <Route path="transportation" element={<Transportation />} />
-                <Route path="education" element={<Education />} />
-                <Route path="entertainment" element={<Entertainment />} />
+                <Route path="/transportation" element={<Transportation />} />
+                <Route path="/education" element={<Education />} />
+                <Route path="/entertainment" element={<Entertainment />} />
               </Routes>
             </main>
             <footer className="bg-pink-200 h-14">
