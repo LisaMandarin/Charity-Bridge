@@ -14,6 +14,25 @@ export function useUserInfos() {
 export function UserInfosProvider(props) {
     const [ infos, setInfos ] = useState([]);
 
+    async function fetchData() {
+        try {
+            const response = await databases.listDocuments(
+                IDEAS_DATABASE_ID,
+                USERS_COLLECTION_ID,
+                [
+                    Query.orderDesc('$createdAt'),
+                ]
+            )
+            setInfos(response.documents)
+        } catch (error) {
+            console.error('Failed to fetch user information: ', error)
+        }
+    }
+
+    useEffect(() => {
+        fetchData();
+    }, [])
+
     async function add(info) {
         try {
             if (!info.userID) {
@@ -31,39 +50,33 @@ export function UserInfosProvider(props) {
         }
     }
 
-    async function remove(id) {
+    async function remove(documentId) {
         try {
             await databases.deleteDocument(
                 IDEAS_DATABASE_ID,
                 USERS_COLLECTION_ID,
-                id)
+                documentId)
                 setInfos(infos => infos.filter(info => info.$id !==id))    
         } catch (error) {
             console.error('Failed to remove info: ', error)
         }
     }
 
-    async function init() {
+    async function update(documentId, info) {
         try {
-            const response = await databases.listDocuments(
+            await databases.updateDocument(
                 IDEAS_DATABASE_ID,
                 USERS_COLLECTION_ID,
-                [
-                    Query.orderDesc('$createdAt'),
-                ]
+                documentId,
+                info,
             )
-            setInfos(response.documents)
         } catch (error) {
-            console.error('Failed to fetch user information: ', error)
+            console.error('Failed to update info: ', error)
         }
     }
 
-    useEffect(() => {
-        init();
-    }, [])
-
     return (
-        <UserInfoContext.Provider value={{ current: infos, add, remove}}>
+        <UserInfoContext.Provider value={{ current: infos, add, remove, update}}>
             {props.children}
         </UserInfoContext.Provider>
     )
