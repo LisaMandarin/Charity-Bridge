@@ -1,7 +1,7 @@
 import { Button, Table, Input, Space } from "antd";
 import { useUserInfos } from "../lib/context/userInfo";
 import { useEffect, useState } from "react";
-import { nativeYN, bDayFormat, fetchInfos } from "./userListUtil";
+import { nativeYN, bDayFormat, fetchInfos, onSearch } from "./userListUtil";
 const { Search } = Input
 
 export function UserList() {
@@ -32,12 +32,7 @@ export function UserList() {
         }
     }, [infos])
 
-    const onSearch = (value) => {
-        const filteredData = originalData.filter(user => 
-            user.name.toLowerCase().includes(value.toLowerCase())
-        )
-        setDataSource(filteredData)
-    }
+
     return ( 
     <div 
         className="flex flex-col gap-3 mx-auto"
@@ -49,7 +44,7 @@ export function UserList() {
             placeholder="Input search text"
             className="w-56 ml-auto"
             onSearch={onSearch}
-            onChange={e => onSearch(e.target.value)}
+            onChange={e => onSearch(e.target.value, originalData, setDataSource)}
         />
         <Table
         dataSource={dataSource}

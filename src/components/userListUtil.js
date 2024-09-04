@@ -19,3 +19,10 @@ export function bDayFormat(bDay) {
         documentId: user.$id
     }))
  }
+
+ export function onSearch(value, originalData, setDataSource) {
+    const filteredData = originalData.filter(user => 
+        user.name.toLowerCase().includes(value.toLowerCase())
+    )
+    setDataSource(filteredData)
+}
