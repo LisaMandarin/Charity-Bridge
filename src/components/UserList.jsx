@@ -1,7 +1,7 @@
 import { Button, Table, Input, Space } from "antd";
 import { useUserInfos } from "../lib/context/userInfo";
-import dayjs from 'dayjs';
 import { useEffect, useState } from "react";
+import { nativeYN, bDayFormat, fetchInfos } from "./userListUtil";
 const { Search } = Input
 
 export function UserList() {
@@ -9,15 +9,6 @@ export function UserList() {
     const [ dataSource, setDataSource ] = useState([])
     const [ originalData, setOriginalData ] = useState([])
         
-    
-
-    const nativeYN = (boolean) => {
-       return boolean ? 'True' : 'False'
-    }
-    const bDayFormat = (bDay) => {
-        return dayjs(bDay).format('YYYY-MM-DD') 
-    }
-
     const columns = [
         {title: 'Name', dataIndex: 'name', key: 'name'},
         {title: 'Birthday', dataIndex: 'birthday', key: 'birthday', render: (_, record) => (
@@ -35,15 +26,7 @@ export function UserList() {
 
     useEffect(() => {
         if (infos.current) {
-            const data = infos.current.map(user => ({
-                key: user.$id,
-                name: user.name,
-                birthday: user.birthday,
-                age: user.age,
-                native: user.native,
-                address: user.address,
-                documentId: user.$id
-            }))
+            const data = fetchInfos(infos)
             setDataSource(data)
             setOriginalData(data)
         }
