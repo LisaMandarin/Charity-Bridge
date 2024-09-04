@@ -13,7 +13,7 @@ export function UserProvider(props) {
   const [ error, setError ] = useState(null);
   const [ success, setSuccess ] = useState(null);
 
-  async function fetchUser(email, password) {
+  async function fetchUser() {
     try {
       const currentUser = await account.get();
       setError(null)
