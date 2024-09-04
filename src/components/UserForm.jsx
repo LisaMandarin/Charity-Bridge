@@ -1,10 +1,9 @@
-import { Button, DatePicker, Form, Input, InputNumber, Radio, Typography } from "antd"
+import { Button, DatePicker, Form, Input, InputNumber, Radio, Space, Typography } from "antd"
 import dayjs from 'dayjs';
 import customParseFormat from 'dayjs/plugin/customParseFormat';
 import { useUser } from "../lib/context/user";
 import { useUserInfos } from "../lib/context/userInfo";
 import { getToday, dateFormat, onBirthdayChange } from "./userFormUtil";
-
 dayjs.extend(customParseFormat);
 const { Title } = Typography
 
@@ -77,8 +76,10 @@ export function UserForm() {
                 <Form.Item
                     wrapperCol={{offset: 6}}
                 >
-                    <Button type="primary" htmlType="submit">Submit</Button>
-                    <Button onClick={onReset}>Reset</Button>
+                    <Space>
+                        <Button type="primary" htmlType="submit">Submit</Button>
+                        <Button onClick={onReset}>Reset</Button>
+                    </Space>
                 </Form.Item>
             </Form>
         </div>
