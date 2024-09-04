@@ -2,7 +2,7 @@ import { Modal, Form, Input, DatePicker, InputNumber, Radio, Button, Space } fro
 import { useUserInfos } from "../lib/context/userInfo"
 import dayjs from 'dayjs';
 import customParseFormat from 'dayjs/plugin/customParseFormat';
-import { getToday, dateFormat, onBirthdayChange } from "./userFormUtil";
+import { getToday, dateFormat, onBirthdayChange, onReset } from "./userFormUtil";
 dayjs.extend(customParseFormat);
 
 
@@ -30,6 +30,7 @@ export function UserModal({isModalOpen, setIsModalOpen}) {
                 form={form}
                 name="modified-user"
                 onFinish={form.submit}
+                className="w-96 mx-auto"
                 
             >
                 <Form.Item
@@ -82,7 +83,7 @@ export function UserModal({isModalOpen, setIsModalOpen}) {
                 >
                     <Space>
                         <Button type="primary" htmlType="submit">Submit</Button>
-                        <Button onClick={onReset}>Reset</Button>
+                        <Button onClick={() => onReset(form)}>Reset</Button>
                     </Space>
                 </Form.Item>
             </Form>
