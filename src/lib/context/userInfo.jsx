@@ -56,7 +56,7 @@ export function UserInfosProvider(props) {
                 IDEAS_DATABASE_ID,
                 USERS_COLLECTION_ID,
                 documentId)
-                setInfos(infos => infos.filter(info => info.$id !==id))    
+                setInfos(infos => infos.filter(info => info.$id !==documentId))    
         } catch (error) {
             console.error('Failed to remove info: ', error)
         }
@@ -75,8 +75,20 @@ export function UserInfosProvider(props) {
         }
     }
 
+    async function get(documentId) {
+        try {
+            await databases.getDocument(
+                IDEAS_DATABASE_ID,
+                USERS_COLLECTION_ID,
+                documentId,
+            )
+        } catch (error) {
+            console.error('Failed to get info: ', error)
+        }
+    }
+
     return (
-        <UserInfoContext.Provider value={{ current: infos, add, remove, update}}>
+        <UserInfoContext.Provider value={{ current: infos, add, remove, update, get}}>
             {props.children}
         </UserInfoContext.Provider>
     )

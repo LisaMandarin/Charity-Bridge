@@ -36,3 +36,7 @@ export function getToday() {
     const formattedToday = `${year}-${month}-${date}`
     return formattedToday
 }
+
+export function onReset (form) {
+  form.resetFields()
+}

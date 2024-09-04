@@ -66,10 +66,10 @@ export function UserList() {
                 pageSize: 5
             }}
         />
-        <UserModal 
+        {/* <UserModal 
             isModalOpen={isModalOpen}
             setIsModalOpen={setIsModalOpen}
-        />
+        /> */}
     </div>
     )
 }

@@ -3,7 +3,7 @@ import dayjs from 'dayjs';
 import customParseFormat from 'dayjs/plugin/customParseFormat';
 import { useUser } from "../lib/context/user";
 import { useUserInfos } from "../lib/context/userInfo";
-import { getToday, dateFormat, onBirthdayChange } from "./userFormUtil";
+import { getToday, dateFormat, onBirthdayChange, onReset } from "./userFormUtil";
 dayjs.extend(customParseFormat);
 const { Title } = Typography
 
@@ -12,7 +12,7 @@ export function UserForm() {
     const user = useUser();
     const userInfo = useUserInfos()
     const [form] = Form.useForm()
-    const onReset = () => form.resetFields()
+    
     
     return (
         <div>
@@ -22,9 +22,12 @@ export function UserForm() {
                 className="w-96 bg-white m-auto p-4"
                 form={form}
                 name="user-form"
-                onFinish={(values) => userInfo.add({
-                    userID: user.current.$id, ...values
-                })}
+                onFinish={(values) => {
+                    userInfo.add({
+                        userID: user.current.$id, ...values
+                    })
+                    onReset(form)
+                }}
                 onFinishFailed={(errorInfo) => console.log('Failed: ', errorInfo)}
             >
                 <Title underline className="text-center">User Form</Title>
@@ -78,7 +81,7 @@ export function UserForm() {
                 >
                     <Space>
                         <Button type="primary" htmlType="submit">Submit</Button>
-                        <Button onClick={onReset}>Reset</Button>
+                        <Button onClick={() => onReset(form)}>Reset</Button>
                     </Space>
                 </Form.Item>
             </Form>
