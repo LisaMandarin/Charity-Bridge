@@ -62,14 +62,19 @@ export function UserInfosProvider(props) {
         }
     }
 
-    async function update(documentId, info) {
+    async function update(documentId, updatedInfo) {
         try {
-            await databases.updateDocument(
+            const response = await databases.updateDocument(
                 IDEAS_DATABASE_ID,
                 USERS_COLLECTION_ID,
                 documentId,
-                info,
+                updatedInfo,
             )
+            setInfos(current => current.map(info => {
+                info.$id === documentId ? {
+                    ...info, ...updatedInfo
+                } : info
+            }))
         } catch (error) {
             console.error('Failed to update info: ', error)
         }

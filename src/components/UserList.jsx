@@ -10,10 +10,8 @@ export function UserList() {
     const [ dataSource, setDataSource ] = useState([])
     const [ originalData, setOriginalData ] = useState([])
     const [ isModalOpen, setIsModalOpen ] = useState(false)
+    const [ modifiedUser, setModifiedUser ] = useState(null)
     
-    useEffect(() => {
-        console.log('isModalOpen: ', isModalOpen)
-    })
     const columns = [
         {title: 'Name', dataIndex: 'name', key: 'name'},
         {title: 'Birthday', dataIndex: 'birthday', key: 'birthday', render: (_, record) => (
@@ -27,13 +25,14 @@ export function UserList() {
         {title: 'Action', key: 'action', render: (_, record) => (
             <Space>
                 <Button onClick={() => infos.remove(record.documentId)}>Delete</Button>
-                <Button onClick={showModal}>Modify</Button>
+                <Button onClick={() => showModal(record)}>Modify</Button>
             </Space>
         )}
     ]
 
-    const showModal = () => {
+    const showModal = (record) => {
         setIsModalOpen(true)
+        setModifiedUser(record)
     }
 
     useEffect(() => {
@@ -69,6 +68,7 @@ export function UserList() {
         <UserModal 
             isModalOpen={isModalOpen}
             setIsModalOpen={setIsModalOpen}
+            modifiedUser={modifiedUser}
         />
     </div>
     )

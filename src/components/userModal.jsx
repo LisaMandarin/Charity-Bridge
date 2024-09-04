@@ -3,15 +3,34 @@ import { useUserInfos } from "../lib/context/userInfo"
 import dayjs from 'dayjs';
 import customParseFormat from 'dayjs/plugin/customParseFormat';
 import { getToday, dateFormat, onBirthdayChange, onReset } from "./userFormUtil";
+import { useEffect } from "react";
 dayjs.extend(customParseFormat);
 
 
-export function UserModal({isModalOpen, setIsModalOpen}) {
+export function UserModal({isModalOpen, setIsModalOpen, modifiedUser}) {
     const [ form ] = Form.useForm()
-    const userInfo = useUserInfos()
+    const userInfos = useUserInfos()
 
+    useEffect(() => {
+        if (modifiedUser) {
+            form.setFieldsValue({
+                documentId: modifiedUser.documentId,
+                name: modifiedUser.name,
+                birthday: dayjs(modifiedUser.birthday, dateFormat),
+                age: modifiedUser.age,
+                native: modifiedUser.native,
+                address: modifiedUser.address
+            })
+        }
+    }, [modifiedUser, form])
     const onOK = () => {
+        form.submit()
         setIsModalOpen(false)
+        form.validateFields()
+        const values = form.getFieldsValue()
+        const { documentId, ...updatedValues } = values
+        userInfos.update(documentId, updatedValues)
+        
     }
     const onCancel = () => {
         setIsModalOpen(false)
@@ -23,16 +42,23 @@ export function UserModal({isModalOpen, setIsModalOpen}) {
                 title="Modify User"
                 open={isModalOpen}
                 onOk={onOK}
+                okText='Update'
                 onCancel={onCancel}
             >
                 <Form
                 labelCol={{span: 6}}
                 form={form}
                 name="modified-user"
-                onFinish={form.submit}
                 className="w-96 mx-auto"
                 
             >
+                <Form.Item
+                    name='documentId'
+                    hidden
+                >
+                    <Input />
+                </Form.Item>
+
                 <Form.Item
                     label="name"
                     name="name"
@@ -77,14 +103,6 @@ export function UserModal({isModalOpen, setIsModalOpen}) {
                     name="address"
                 >
                     <Input />
-                </Form.Item>
-                <Form.Item
-                    wrapperCol={{offset: 6}}
-                >
-                    <Space>
-                        <Button type="primary" htmlType="submit">Submit</Button>
-                        <Button onClick={() => onReset(form)}>Reset</Button>
-                    </Space>
                 </Form.Item>
             </Form>
             </Modal>
