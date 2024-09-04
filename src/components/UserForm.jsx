@@ -3,7 +3,7 @@ import dayjs from 'dayjs';
 import customParseFormat from 'dayjs/plugin/customParseFormat';
 import { useUser } from "../lib/context/user";
 import { useUserInfos } from "../lib/context/userInfo";
-import '../output.css'
+import { getToday, dateFormat, onBirthdayChange } from "./userFormUtil";
 
 dayjs.extend(customParseFormat);
 const { Title } = Typography
@@ -14,46 +14,7 @@ export function UserForm() {
     const userInfo = useUserInfos()
     const [form] = Form.useForm()
     const onReset = () => form.resetFields()
-    const getToday = () => {
-        const today = new Date();
-        const year = today.getFullYear();
-        const month = String(today.getMonth()+1).padStart(2, '0');
-        const date = String(today.getDate()).padStart(2, '0');
-        const formattedToday = `${year}-${month}-${date}`
-        return formattedToday
-    }
     
-    const getAge = (birthday) => {
-        const newBirthday = new Date(birthday)
-        const today = new Date()
-      
-        const yearDiff = today.getFullYear() - newBirthday.getFullYear()
-        const notYetBday = () => {
-          if (today.getMonth() < newBirthday.getMonth()) {
-            return 1
-          } else if (today.getMonth() === newBirthday.getMonth() && today.getDate() < newBirthday.getDate()) {
-            return 1
-          } else {
-            return 0
-          } 
-        }
-      
-        const age = yearDiff - notYetBday()
-        return age
-      }
-      
-
-    const dateFormat = 'YYYY-MM-DD'
-
-    const onBirthdayChange = (date) => {
-        if (date) {
-            const age = getAge(date.format(dateFormat))
-            form.setFieldsValue({age})
-        } else {
-            form.setFieldsValue({age: 0})
-        }
-    }
-
     return (
         <div>
             <Form
@@ -86,7 +47,7 @@ export function UserForm() {
                 >
                     <DatePicker
                         maxDate={dayjs(getToday(), dateFormat)}
-                        onChange={onBirthdayChange}
+                        onChange={(date) => onBirthdayChange(date, form)}
                     />
                 </Form.Item>
                 <Form.Item
