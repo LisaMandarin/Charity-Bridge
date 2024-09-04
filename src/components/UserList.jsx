@@ -1,4 +1,4 @@
-import { Button, Table, Input, Space } from "antd";
+import { Button, Table, Input, Space, Modal } from "antd";
 import { useUserInfos } from "../lib/context/userInfo";
 import { useEffect, useState } from "react";
 import { nativeYN, bDayFormat, fetchInfos, onSearch } from "./userListUtil";
@@ -8,7 +8,8 @@ export function UserList() {
     const infos = useUserInfos()
     const [ dataSource, setDataSource ] = useState([])
     const [ originalData, setOriginalData ] = useState([])
-        
+    const [ isModalOpen, setIsModalOpen ] = useState(false)
+    
     const columns = [
         {title: 'Name', dataIndex: 'name', key: 'name'},
         {title: 'Birthday', dataIndex: 'birthday', key: 'birthday', render: (_, record) => (
@@ -20,9 +21,22 @@ export function UserList() {
         )},
         {title: 'Address', dataIndex: 'address', key: 'address'},
         {title: 'Action', key: 'action', render: (_, record) => (
-            <Button onClick={() => infos.remove(record.documentId)}>Delete</Button>
+            <Space>
+                <Button onClick={() => infos.remove(record.documentId)}>Delete</Button>
+                <Button onClick={showModal}>Modify</Button>
+            </Space>
         )}
     ]
+
+    const showModal = () => {
+        setIsModalOpen(true)
+    }
+    const onOK = () => {
+        setIsModalOpen(false)
+    }
+    const onCancel = () => {
+        setIsModalOpen(false)
+    }
 
     useEffect(() => {
         if (infos.current) {
@@ -47,14 +61,21 @@ export function UserList() {
             onChange={e => onSearch(e.target.value, originalData, setDataSource)}
         />
         <Table
-        dataSource={dataSource}
-        columns={columns}
-        pagination={{
-            position: ['bottomCenter'],
-            pageSize: 5
-        }}
-        className="border border-gray-300"
-    />
+            dataSource={dataSource}
+            columns={columns}
+            pagination={{
+                position: ['bottomCenter'],
+                pageSize: 5
+            }}
+        />
+        <Modal
+            title="Modify User"
+            open={isModalOpen}
+            onOk={onOK}
+            onCancel={onCancel}
+        >
+            blah...blah...blah
+        </Modal>
     </div>
     )
 }
