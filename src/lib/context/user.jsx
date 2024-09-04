@@ -1,6 +1,7 @@
 import { ID } from "appwrite";
 import { createContext, useContext, useEffect, useState } from "react";
 import { account } from "../appwrite";
+import { Navigate } from "react-router-dom";
 
 const UserContext = createContext();
 
@@ -17,10 +18,11 @@ export function UserProvider(props) {
     try {
       const currentUser = await account.get();
       setError(null)
-      setSuccess(`You have logged in(f)`)
+      setSuccess('You have logged in')
       setUser(currentUser)
     } catch (error) {
-      setError(error.message)
+      // setError(error)
+      console.error('Fetch error: ', error.message)
       setSuccess(null)
     }
   }
@@ -30,42 +32,43 @@ export function UserProvider(props) {
   }, [])
 
   async function login(email, password) {
+    setError(null)
     try {
       await account.createEmailPasswordSession(email, password);
       const loggedInUser = await account.get();
-      setSuccess('You have logged in(l)')
-      setError(null)
+      setSuccess('You have logged in')
       setUser(loggedInUser);
-      window.location.replace('/')
+      Navigate('/')
     } catch(error) {
-      console.error('Login failed: ', error)
       setError(error)
+      console.error('Login error: ', error.message)
     }
   }
 
   async function logout() {
+    setError(null)
+    setSuccess(null)
     try {
       await account.deleteSession('current')
       setSuccess('You have logged out.')
       setUser(null)
     } catch (error) {
-      console.error('Logout failed: ', error)
       setError(error)
+      console.error('Logout error: ', error.message)
     }
   }
 
   async function register(email, password, username) {
+    setError(null)
     try {
       await account.create(ID.unique(), email, password, username)
-      // alert()
-      setError(null)
-      setSuccess('You have successfully registered with Charity Bridge.\nRedirecting to the homepage.')
+      setSuccess('You have successfully registered with Charity Bridge.\nLogging in...')
       setTimeout(async() => {
         await login(email, password)
       }, 3000)
     } catch (error) {
-      console.error('Registration failed: ', error);
       setError(error)
+      console.error('Register error: ', error.message)
     }
   }
 

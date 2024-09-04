@@ -1,7 +1,6 @@
 import { message, Button, Flex, Form, Input, Typography, Space } from "antd";
 import { useUser } from "../lib/context/user";
 import "../output.css";
-import { useEffect } from "react";
 const { Title, Link } = Typography;
 
 export function Login() {
@@ -11,18 +10,21 @@ export function Login() {
   const onReset = () => {
     form.resetFields();
   };
-
-  useEffect(() => {
+  
+  const onFinish = async (values) => {
+    await user.login(values.email, values.password)
     if (user.error && user.error.message) {
       message.error(user.error.message, 3);
       onReset();
       user.setError(null)
     }
     if (user.success) {
-      message.success(user.success, 3);
+      message.success(user.success, 3)
       user.setSuccess(null)
     }
-  }, [user.error, user.success, user.setError, user.setSuccess]);
+    
+  }
+
   return (
     <>
       <Form
@@ -30,7 +32,7 @@ export function Login() {
         name="userLogin"
         layout="vertical"
         className="max-w-96 my-0 mx-auto p-6 bg-white"
-        onFinish={(values) => user.login(values.email, values.password)}
+        onFinish={onFinish}
       >
         <Title underline className="text-center">
           Login
