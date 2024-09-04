@@ -2,6 +2,7 @@ import { Button, Table, Input, Space, Modal } from "antd";
 import { useUserInfos } from "../lib/context/userInfo";
 import { useEffect, useState } from "react";
 import { nativeYN, bDayFormat, fetchInfos, onSearch } from "./userListUtil";
+import { UserModal } from "./UserModal";
 const { Search } = Input
 
 export function UserList() {
@@ -10,6 +11,9 @@ export function UserList() {
     const [ originalData, setOriginalData ] = useState([])
     const [ isModalOpen, setIsModalOpen ] = useState(false)
     
+    useEffect(() => {
+        console.log('isModalOpen: ', isModalOpen)
+    })
     const columns = [
         {title: 'Name', dataIndex: 'name', key: 'name'},
         {title: 'Birthday', dataIndex: 'birthday', key: 'birthday', render: (_, record) => (
@@ -30,12 +34,6 @@ export function UserList() {
 
     const showModal = () => {
         setIsModalOpen(true)
-    }
-    const onOK = () => {
-        setIsModalOpen(false)
-    }
-    const onCancel = () => {
-        setIsModalOpen(false)
     }
 
     useEffect(() => {
@@ -68,14 +66,10 @@ export function UserList() {
                 pageSize: 5
             }}
         />
-        <Modal
-            title="Modify User"
-            open={isModalOpen}
-            onOk={onOK}
-            onCancel={onCancel}
-        >
-            blah...blah...blah
-        </Modal>
+        <UserModal 
+            isModalOpen={isModalOpen}
+            setIsModalOpen={setIsModalOpen}
+        />
     </div>
     )
 }
