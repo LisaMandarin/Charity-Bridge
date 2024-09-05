@@ -17,13 +17,15 @@ export function UserProvider(props) {
 
   async function fetchUser() {
     try {
-      const currentUser = await account.get();
-      setError(null)
-      setSuccess('You have logged in')
-      setUser(currentUser)
+      const session = account.getSession('current')
+      if (session) {
+        const currentUser = await account.get();
+        setError(null)
+        setSuccess('You have logged in')
+        setUser(currentUser)
+      }
     } catch (error) {
-      // setError(error)
-      console.error('Fetch error: ', error.message)
+      setUser(null)
       setSuccess(null)
     }
   }
@@ -81,8 +83,7 @@ export function UserProvider(props) {
       account.createOAuth2Session(
         OAuthProvider.Google,
         'http://localhost:5173/',
-        'http://amazon.com'
-        
+        'http://localhost:5173/failure',        
       )
       setSuccess('Google Login successful')
     } catch (err) {
