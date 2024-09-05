@@ -13,6 +13,7 @@ import { Transportation } from "./components/Transportation";
 import { Education } from "./components/Education";
 import { Entertainment } from "./components/Entertainment";
 import { Failure } from "./components/Failure";
+import { FBdelete } from "./components/FBdelete";
 
 
 function App() {
@@ -36,6 +37,7 @@ function App() {
               <Route path="/education" element={<Education />} />
               <Route path="/entertainment" element={<Entertainment />} />
               <Route path="/failure" element={<Failure />} />
+              <Route path="/fbdelete" element={<FBdelete />}></Route>
             </Routes>
           </main>
           <footer className="bg-pink-200 h-14">

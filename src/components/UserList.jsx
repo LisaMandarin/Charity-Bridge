@@ -2,7 +2,7 @@ import { Button, Table, Input, Space } from "antd";
 import { useUserInfos } from "../lib/context/userInfo";
 import { useEffect, useState } from "react";
 import { nativeYN, bDayFormat, fetchInfos, onSearch } from "./userListUtil";
-import { UserModal } from "./userModal";
+import { UserModal } from "./UserModal";
 const { Search } = Input
 
 export function UserList() {
