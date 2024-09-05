@@ -12,7 +12,7 @@ import { Housing } from "./components/Housing";
 import { Transportation } from "./components/Transportation";
 import { Education } from "./components/Education";
 import { Entertainment } from "./components/Entertainment";
-import { Failure } from "./components/failure";
+import { Failure } from "./components/Failure";
 
 
 function App() {

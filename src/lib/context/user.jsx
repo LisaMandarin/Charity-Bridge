@@ -83,7 +83,7 @@ export function UserProvider(props) {
       account.createOAuth2Session(
         OAuthProvider.Google,
         'http://localhost:5173/',
-        'http://localhost:5173/failure',        
+        'http://localhost:5173/failure',
       )
       setSuccess('Google Login successful')
     } catch (err) {

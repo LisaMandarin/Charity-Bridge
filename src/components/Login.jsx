@@ -1,5 +1,7 @@
 import { message, Button, Flex, Form, Input, Typography, Space } from "antd";
 import { useUser } from "../lib/context/user";
+import { FaGoogle, FaFacebook } from "react-icons/fa6";
+
 const { Title, Link } = Typography;
 
 export function Login() {
@@ -56,13 +58,25 @@ export function Login() {
             </Space>
           </Flex>
         </Form.Item>
+        <div className="flex flex-col justify-center items-center">
+          <span>Log in via</span>
+          <div>
+            <Space
+              size='large'
+            >
+              <FaGoogle 
+                size='1.5em'
+                className="cursor-pointer"
+                onClick={() => user.googleLogin()}
+              />
+              <FaFacebook 
+                size='1.5em'
+              />
+            </Space>
+          </div>
+        </div>        
       </Form>
-      <div className="text-center">
-        <span
-          onClick={() => user.googleLogin()}
-          className="cursor-pointer"
-        >Google Login</span>
-      </div>
+
       <div className="max-w-96 my-0 mx-auto text-center">
         Create an account? <Link href="/register">Sign up</Link> now
       </div>
