@@ -1,8 +1,8 @@
-import { Button, Table, Input, Space, Modal } from "antd";
+import { Button, Table, Input, Space } from "antd";
 import { useUserInfos } from "../lib/context/userInfo";
 import { useEffect, useState } from "react";
 import { nativeYN, bDayFormat, fetchInfos, onSearch } from "./userListUtil";
-import { UserModal } from "./UserModal";
+import { UserModal } from "./userModal";
 const { Search } = Input
 
 export function UserList() {
