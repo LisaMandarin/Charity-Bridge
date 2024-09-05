@@ -1,7 +1,7 @@
-import { ID } from "appwrite";
+import { ID, OAuthProvider } from "appwrite";
 import { createContext, useContext, useEffect, useState } from "react";
 import { account } from "../appwrite";
-import { Navigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 
 const UserContext = createContext();
 
@@ -13,6 +13,7 @@ export function UserProvider(props) {
   const [ user, setUser ] = useState(null);
   const [ error, setError ] = useState(null);
   const [ success, setSuccess ] = useState(null);
+  const navigate = useNavigate()
 
   async function fetchUser() {
     try {
@@ -33,12 +34,13 @@ export function UserProvider(props) {
 
   async function login(email, password) {
     setError(null)
+    setSuccess(null)
     try {
       await account.createEmailPasswordSession(email, password);
       const loggedInUser = await account.get();
       setSuccess('You have logged in')
       setUser(loggedInUser);
-      Navigate('/')
+      navigate('/')
     } catch(error) {
       setError(error)
       console.error('Login error: ', error.message)
@@ -60,6 +62,7 @@ export function UserProvider(props) {
 
   async function register(email, password, username) {
     setError(null)
+    setSuccess(null)
     try {
       await account.create(ID.unique(), email, password, username)
       setSuccess('You have successfully registered with Charity Bridge.\nLogging in...')
@@ -72,8 +75,24 @@ export function UserProvider(props) {
     }
   }
 
+  async function googleLogin () {
+    setError(null)
+    try {
+      account.createOAuth2Session(
+        OAuthProvider.Google,
+        'http://localhost:5173/',
+        'http://amazon.com'
+        
+      )
+      setSuccess('Google Login successful')
+    } catch (err) {
+      setError(err)
+      console.error('Fail to use Google login', err.message)
+    }
+  }
+
   return (
-    <UserContext.Provider value={{ current: user, error, setError, success, setSuccess, login, logout, register }}>
+    <UserContext.Provider value={{ current: user, error, setError, success, setSuccess, login, logout, register, googleLogin }}>
       {props.children}
     </UserContext.Provider>
   );

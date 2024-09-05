@@ -1,6 +1,5 @@
 import { message, Button, Flex, Form, Input, Typography, Space } from "antd";
 import { useUser } from "../lib/context/user";
-import "../output.css";
 const { Title, Link } = Typography;
 
 export function Login() {
@@ -58,6 +57,12 @@ export function Login() {
           </Flex>
         </Form.Item>
       </Form>
+      <div className="text-center">
+        <span
+          onClick={() => user.googleLogin()}
+          className="cursor-pointer"
+        >Google Login</span>
+      </div>
       <div className="max-w-96 my-0 mx-auto text-center">
         Create an account? <Link href="/register">Sign up</Link> now
       </div>
