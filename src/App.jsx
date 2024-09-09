@@ -14,7 +14,7 @@ import { Education } from "./components/Education";
 import { Entertainment } from "./components/Entertainment";
 import { Failure } from "./components/Failure";
 import { FBdelete } from "./components/FBdelete";
-
+import { Dashboard } from "./components/Dashboard";
 
 function App() {
   
@@ -37,7 +37,8 @@ function App() {
               <Route path="/education" element={<Education />} />
               <Route path="/entertainment" element={<Entertainment />} />
               <Route path="/failure" element={<Failure />} />
-              <Route path="/fbdelete" element={<FBdelete />}></Route>
+              <Route path="/fbdelete" element={<FBdelete />} />
+              <Route path="/dashboard" element={<Dashboard />} />
             </Routes>
           </main>
           <footer className="bg-pink-200 h-14">

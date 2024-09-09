@@ -1,5 +1,6 @@
-import { Flex, Button } from "antd"
+import { Flex, Button, Typography } from "antd"
 import { useUser } from "../lib/context/user"
+const { Link } = Typography
 
 export function HeaderUser() {
     const user = useUser()
@@ -13,7 +14,7 @@ export function HeaderUser() {
                     className="p-1 h-full leading-6 border-solid border-4 border-pink-200" 
                 >
                     <p >Hello, {user.current.name}</p>
-                    <p >Dashboard</p>
+                    <Link href="/dashboard">Dashboard</Link>
                     <Button
                         type="link"
                         onClick={() => user.logout()}
