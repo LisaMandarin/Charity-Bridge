@@ -1,6 +1,7 @@
 import { message, Button, Flex, Form, Input, Typography, Space } from "antd";
 import { useUser } from "../lib/context/user";
 import { FaGoogle, FaFacebook } from "react-icons/fa6";
+import { useCallback, useEffect } from "react";
 
 const { Title, Link } = Typography;
 
@@ -8,24 +9,28 @@ export function Login() {
   const [form] = Form.useForm();
   const user = useUser();
 
-  const onReset = () => {
+  const onReset = useCallback(() => {
     form.resetFields();
-  };
+  }, [form]);
   
   const onFinish = async (values) => {
     await user.login(values.email, values.password)
+  }
+
+  useEffect(() => {
     if (user.error && user.error.message) {
       message.error(user.error.message, 3);
       onReset();
       user.setError(null)
+      console.log('user.error: ', user.error.message)
     }
     if (user.success) {
       message.success(user.success, 3)
       user.setSuccess(null)
+      console.log('user.success: ', user.success)
     }
-    
-  }
-
+  }, [user, onReset])
+  
   return (
     <>
       <Form

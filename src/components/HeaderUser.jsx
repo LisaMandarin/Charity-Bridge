@@ -12,7 +12,8 @@ export function HeaderUser() {
                     justify="center" 
                     className="p-1 h-full border-solid border-4 border-pink-200" 
                     gap={16}>
-                    <div>Hello, {user.current.name}</div>
+                    <p>Hello, {user.current.name}</p>
+                    <p>Dashboard</p>
                     <Button
                         type="link"
                         onClick={() => user.logout()}
