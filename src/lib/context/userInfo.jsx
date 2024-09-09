@@ -64,14 +64,14 @@ export function UserInfosProvider(props) {
 
     async function update(documentId, updatedInfo) {
         try {
-            const response = await databases.updateDocument(
+            await databases.updateDocument(
                 IDEAS_DATABASE_ID,
                 USERS_COLLECTION_ID,
                 documentId,
                 updatedInfo,
             )
             setInfos(current => current.map(info => {
-                info.$id === documentId ? {
+                return info.$id === documentId ? {
                     ...info, ...updatedInfo
                 } : info
             }))
