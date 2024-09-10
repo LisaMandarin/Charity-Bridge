@@ -3,6 +3,7 @@ import { useUser } from "../lib/context/user"
 import { Divider, message, Typography } from "antd"
 import { DashboardName } from "./DashboardName"
 import { DashboardPassword } from "./DashboardPassword"
+import { DashboardAvatar } from "./DashboardAvatar"
 const { Title } = Typography
 
 export function Dashboard() {
@@ -31,6 +32,7 @@ export function Dashboard() {
             >
                 {email}
             </Title>
+            <DashboardAvatar />
             <Divider orientation="left" orientationMargin="0">
                 <span className="text-gray-300">Update Name</span>
             </Divider>
