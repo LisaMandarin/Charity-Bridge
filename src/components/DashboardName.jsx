@@ -5,7 +5,6 @@ export function DashboardName({user}) {
     const [ form ] = Form.useForm()
     const onFinish = async(values) => {
         await user.updateName(values.name)
-        
     }
 
     useEffect(() => {

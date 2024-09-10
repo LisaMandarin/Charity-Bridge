@@ -100,9 +100,20 @@ export function UserProvider(props) {
       setSuccess('Password updated successfully')
     } catch (err) {
       setError('Failed to update password')
-      console.error('Failed to update password: ', err)
+      console.error('Failed to update password: ', err.message)
     }
   }
+
+  // async function deleteAccount() {
+  //   setError(null)
+  //   setSuccess(null)
+  //   try (
+  //     await account.deleteIdentity()
+  //   ) catch (err) {
+  //     console.error('Failed to delete account: ', err.message)
+  //     setError('Failed to delete account')
+  //   }
+  // }
 
   async function googleLogin () {
     setError(null)

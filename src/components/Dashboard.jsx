@@ -1,11 +1,19 @@
-import { useEffect } from "react"
+import { useEffect, useState } from "react"
 import { useUser } from "../lib/context/user"
-import { message } from "antd"
+import { Divider, message, Typography } from "antd"
 import { DashboardName } from "./DashboardName"
 import { DashboardPassword } from "./DashboardPassword"
+const { Title } = Typography
 
 export function Dashboard() {
     const user = useUser()
+    const [ email, setEmail ] = useState()
+
+    useEffect(() => {
+        if (user.current) {
+            setEmail(user.current.email)
+        }
+    }, [])
 
     useEffect(() => {
         if (user.success) {
@@ -17,13 +25,24 @@ export function Dashboard() {
     })
 
     return (
-        <>
-        <DashboardName 
-            user={user}
-        />
-        <DashboardPassword 
-            user={user}
-        />
-        </>
+        <div className="p-4 bg-white w-fit mx-auto">
+            <Title
+                className="text-center"
+            >
+                {email}
+            </Title>
+            <Divider orientation="left" orientationMargin="0">
+                <span className="text-gray-300">Update Name</span>
+            </Divider>
+            <DashboardName 
+                user={user}
+            />
+            <Divider orientation="left" orientationMargin="0">
+                <span className="text-gray-300">Update Password</span>
+            </Divider>
+            <DashboardPassword 
+                user={user}
+            />
+        </div>
     )
 }

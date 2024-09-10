@@ -7,6 +7,7 @@ export function DashboardPassword({user}) {
             values.newPassword,
             values.oldPassword
         )
+        form.resetFields()
     }
 
     return (
