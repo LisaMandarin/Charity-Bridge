@@ -1,6 +1,5 @@
 import { Flex, Button, Typography } from "antd"
 import { useUser } from "../lib/context/user"
-import { useEffect } from "react"
 const { Link } = Typography
 
 export function HeaderUser() {
@@ -15,8 +14,7 @@ export function HeaderUser() {
                     justify="center" 
                     className="p-1 h-full leading-6 border-solid border-4 border-pink-200" 
                 >
-                    <p >Hello, {user.current.name}</p>
-                    <Link href="/dashboard">Dashboard</Link>
+                    <p ><Link href="/dashboard">Hello, {user.current.name}</Link></p>
                     <Button
                         type="link"
                         onClick={() => user.logout()}
