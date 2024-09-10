@@ -31,7 +31,7 @@ export function Header() {
             <HeaderNavV />
           </div>
         </Col>
-        <Col flex={1} className="h-full mr-4 bg-pink-50">
+        <Col flex={1} className="h-full mr-4 bg-pink-50 max-w-fit">
           <HeaderUser />
         </Col>
       </Row>
