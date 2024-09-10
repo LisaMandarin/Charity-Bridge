@@ -28,7 +28,26 @@ export function Dashboard() {
     return (
         <>
         { user.current ? (
-            <>yes</>
+            <div className="p-4 bg-white w-fit mx-auto">
+                <Title
+                    className="text-center"
+                >
+                    {email}
+                </Title>
+                <DashboardAvatar />
+                <Divider orientation="left" orientationMargin="0">
+                    <span className="text-gray-300">Update Name</span>
+                </Divider>
+                <DashboardName 
+                    user={user}
+                />
+                <Divider orientation="left" orientationMargin="0">
+                    <span className="text-gray-300">Update Password</span>
+                </Divider>
+                <DashboardPassword 
+                    user={user}
+                />
+            </div>
         ) : (
             <div className="text-3xl text-center p-4">
                 Please <Link className="text-3xl" href="/login">log in</Link> to see more information
