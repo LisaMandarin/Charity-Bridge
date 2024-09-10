@@ -1,7 +1,6 @@
 import { useEffect } from "react"
 import { useUser } from "../lib/context/user"
-import { Button, Form, Input, message, Space,Typography } from "antd"
-const { Link } = Typography
+import { Button, Form, Input, message } from "antd"
 
 export function Dashboard() {
     const user = useUser()
@@ -9,6 +8,7 @@ export function Dashboard() {
 
     const onFinish = (values) => {
         user.updateName(values.name)
+        user.setSuccess('Name updated successfully')
     }
     const onFinishFailed = (error) => console.log('info: ', error)
     
@@ -19,25 +19,22 @@ export function Dashboard() {
                 name: user.current.name,
                 email: user.current.email
             })
-        console.log('user.current: ', user.current)
         }
-    }, [user, form])
+    }, [user])
+    
+    useEffect(() => {
+        if (user.success) {
+            message.success(user.success)
+        }
+    })
 
     useEffect(() => {
-        if (user.error) {
-            message.error(user.error, 3)
-            user.setError(null)
-        }
-        if (user.success) {
-            message.success(user.success, 3)
-            user.setSuccess(null)
-        }
+        console.log('user: ', user.current)
     }, [user])
 
     return (
         <div>
-            { user.current ? (
-                <Form
+            <Form
                 name="dashboard-form"
                 labelCol={{
                     span: 8
@@ -70,7 +67,7 @@ export function Dashboard() {
                     ]}
                     hasFeedback
                 >
-                    <Input allowClear />
+                    <Input allowClear/>
                 </Form.Item>
                 <Form.Item
                     label='Email'
@@ -91,11 +88,6 @@ export function Dashboard() {
                     </Button>
                 </Form.Item>
             </Form>
-            ) : (
-                <div className="text-3xl text-center p-4">
-                    Please <Link className="text-3xl" href="/login">log in</Link> to see more information
-                </div>
-            )}
         </div>
     )
 }
