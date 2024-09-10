@@ -22,12 +22,10 @@ export function Login() {
       message.error(user.error, 3);
       onReset();
       user.setError(null)
-      console.log('user.error: ', user.error)
     }
     if (user.success) {
       message.success(user.success, 3)
       user.setSuccess(null)
-      console.log('user.success: ', user.success)
     }
   }, [user, onReset])
   

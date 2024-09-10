@@ -40,10 +40,10 @@ export function UserProvider(props) {
     try {
       await account.createEmailPasswordSession(email, password);
       await fetchUser()
-      setSuccess('You have logged in(login)')
+      setSuccess('You have logged in')
       setTimeout(() => navigate('/'), 3000)
     } catch(error) {
-      setError('Failed to login.  See console')
+      setError('Failed to login')
       console.error('Login error: ', error.message)
     }
   }
@@ -56,7 +56,7 @@ export function UserProvider(props) {
       setSuccess('You have logged out.')
       setUser(null)
     } catch (error) {
-      setError('Failed to logout.  See console')
+      setError('Failed to logout')
       console.error('Logout error: ', error.message)
     }
   }
@@ -71,7 +71,7 @@ export function UserProvider(props) {
         await login(email, password)
       }, 3000)
     } catch (error) {
-      setError('Failed to register.  See console')
+      setError('Failed to register')
       console.error('Register error: ', error.message)
     }
   }
@@ -85,7 +85,7 @@ export function UserProvider(props) {
       fetchUser()
     } catch (err) {
       console.error("Failed to update user's name: ", err.message)
-      setError("Failed to update user's name.  See console")
+      setError("Failed to update user's name")
     }
   }
 
@@ -93,12 +93,13 @@ export function UserProvider(props) {
     setError(null)
     setSuccess(null)
     try {
-      const result = await account.updatePassword(
+      await account.updatePassword(
         newPassword,
         oldPassword
       )
-      console.log('update password result: ', result)
+      setSuccess('Password updated successfully')
     } catch (err) {
+      setError('Failed to update password')
       console.error('Failed to update password: ', err)
     }
   }
@@ -114,7 +115,7 @@ export function UserProvider(props) {
       )
       setSuccess('Google Login successful')
     } catch (err) {
-      setError('Failed to use Google login.  See console')
+      setError('Failed to use Google login')
       console.error('Fail to use Google login', err.message)
     }
   }
