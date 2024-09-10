@@ -89,6 +89,20 @@ export function UserProvider(props) {
     }
   }
 
+  async function updatePassword(newPassword, oldPassword) {
+    setError(null)
+    setSuccess(null)
+    try {
+      const result = await account.updatePassword(
+        newPassword,
+        oldPassword
+      )
+      console.log('update password result: ', result)
+    } catch (err) {
+      console.error('Failed to update password: ', err)
+    }
+  }
+
   async function googleLogin () {
     setError(null)
     setSuccess(null)
@@ -106,7 +120,7 @@ export function UserProvider(props) {
   }
 
   return (
-    <UserContext.Provider value={{ current: user, error, setError, success, setSuccess, login, logout, register, updateName, googleLogin }}>
+    <UserContext.Provider value={{ current: user, error, setError, success, setSuccess, login, logout, register, updateName, updatePassword, googleLogin }}>
       {props.children}
     </UserContext.Provider>
   );

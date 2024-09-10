@@ -1,16 +1,18 @@
-import { useEffect } from "react"
+import { useEffect, useState } from "react"
 import { useUser } from "../lib/context/user"
 import { Button, Form, Input, message, Space } from "antd"
 
 export function Dashboard() {
     const user = useUser()
     const [ form ] = Form.useForm()
+    const [ oldPassword, setOldPassword ] = useState()
+    const [ newPassword, setNewPassword ] = useState()
 
     const onFinish = (values) => {
         user.updateName(values.name)
     }
     const onFinishFailed = (error) => console.log('info: ', error)
-    
+
     useEffect(() => {
         if (user.current) {
             form.setFieldsValue({
@@ -24,6 +26,9 @@ export function Dashboard() {
     useEffect(() => {
         if (user.success) {
             message.success(user.success)
+        }
+        if (user.error) {
+            message.error(user.error)
         }
     })
 
@@ -69,26 +74,43 @@ export function Dashboard() {
                     <Input allowClear/>
                 </Form.Item>
                 <Form.Item
-                    wrapperCol={{offset: 20}}
+                    className="flex justify-end"
                 >
                     <Button 
                         type="primary"
                         htmlType="submit"
                     >
-                        Update
+                        Update Name
                     </Button>
+                </Form.Item>
+                <Form.Item
+                    label="Old Password"
+                    name="oldPassword"
+                >
+                    <Input type="password" allowClear/>
+                </Form.Item>
+                <Form.Item
+                    label="New Password"
+                    name='newPassword'
+                >
+                    <Input type="password" allowClear/>
+                </Form.Item>
+                <Form.Item
+                    label="Confirm Password"
+                    name="confirmPassword"
+                >
+                    <Input type="password" allowClear/>
+                </Form.Item>
+                <Form.Item
+                    className="flex justify-end"
+                >
+                    <Button type="primary">Update Password</Button>
                 </Form.Item>
                 <Form.Item
                     label='Email'
                     name='email'
                 >
                     <Input disabled/>
-                </Form.Item>
-                <Form.Item
-                    wrapperCol={{
-                        offset: 8
-                    }}
-                >
                 </Form.Item>
             </Form>
         </div>
