@@ -21,7 +21,7 @@ export function UserProvider(props) {
       if (session) {
         const currentUser = await account.get();
         setError(null)
-        setSuccess('You have logged in')
+        setSuccess(null)
         setUser(currentUser)
       }
     } catch (error) {
@@ -40,7 +40,7 @@ export function UserProvider(props) {
     try {
       await account.createEmailPasswordSession(email, password);
       await fetchUser()
-      setSuccess('You have logged in')
+      setSuccess('You have logged in(login)')
       setTimeout(() => navigate('/'), 3000)
     } catch(error) {
       setError('Failed to login.  See console')

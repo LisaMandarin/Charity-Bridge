@@ -1,6 +1,7 @@
 import { useEffect } from "react"
 import { useUser } from "../lib/context/user"
-import { Button, Form, Input, message } from "antd"
+import { Button, Form, Input, message, Space,Typography } from "antd"
+const { Link } = Typography
 
 export function Dashboard() {
     const user = useUser()
@@ -18,8 +19,9 @@ export function Dashboard() {
                 name: user.current.name,
                 email: user.current.email
             })
+        console.log('user.current: ', user.current)
         }
-    }, [user])
+    }, [user, form])
 
     useEffect(() => {
         if (user.error) {
@@ -30,11 +32,12 @@ export function Dashboard() {
             message.success(user.success, 3)
             user.setSuccess(null)
         }
-    })
+    }, [user])
 
     return (
         <div>
-            <Form
+            { user.current ? (
+                <Form
                 name="dashboard-form"
                 labelCol={{
                     span: 8
@@ -67,7 +70,7 @@ export function Dashboard() {
                     ]}
                     hasFeedback
                 >
-                    <Input allowClear/>
+                    <Input allowClear />
                 </Form.Item>
                 <Form.Item
                     label='Email'
@@ -88,6 +91,11 @@ export function Dashboard() {
                     </Button>
                 </Form.Item>
             </Form>
+            ) : (
+                <div className="text-3xl text-center p-4">
+                    Please <Link className="text-3xl" href="/login">log in</Link> to see more information
+                </div>
+            )}
         </div>
     )
 }
