@@ -1,6 +1,6 @@
 import { useEffect } from "react"
 import { useUser } from "../lib/context/user"
-import { Button, Form, Input, message } from "antd"
+import { Button, Form, Input, message, Space } from "antd"
 
 export function Dashboard() {
     const user = useUser()
@@ -8,7 +8,6 @@ export function Dashboard() {
 
     const onFinish = (values) => {
         user.updateName(values.name)
-        user.setSuccess('Name updated successfully')
     }
     const onFinishFailed = (error) => console.log('info: ', error)
     
@@ -70,6 +69,16 @@ export function Dashboard() {
                     <Input allowClear/>
                 </Form.Item>
                 <Form.Item
+                    wrapperCol={{offset: 20}}
+                >
+                    <Button 
+                        type="primary"
+                        htmlType="submit"
+                    >
+                        Update
+                    </Button>
+                </Form.Item>
+                <Form.Item
                     label='Email'
                     name='email'
                 >
@@ -80,12 +89,6 @@ export function Dashboard() {
                         offset: 8
                     }}
                 >
-                    <Button 
-                        type="primary"
-                        htmlType="submit"
-                    >
-                        Update
-                    </Button>
                 </Form.Item>
             </Form>
         </div>
