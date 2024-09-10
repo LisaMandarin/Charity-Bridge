@@ -35,14 +35,13 @@ export function DashboardName({user}) {
                     rules={[
                     {
                         required: true,
-                        message: "Please create a username"
+                        message: "Please enter a username"
                     },
                     {
                         whitespace: true,
                         message: "No empty username allowed"
                     },
                     {
-                        min: 1,
                         max: 50,
                         message: "The username is limited to 50 characters"
                     }
