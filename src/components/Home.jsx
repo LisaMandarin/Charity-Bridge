@@ -2,7 +2,6 @@ import { useUser } from "../lib/context/user"
 import { UserForm } from "./UserForm"
 import { UserList } from "./UserList"
 import { Link } from "react-router-dom"
-import "../output.css"
 
 export function Home() {
     const user = useUser()
