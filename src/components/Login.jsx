@@ -18,11 +18,11 @@ export function Login() {
   }
 
   useEffect(() => {
-    if (user.error && user.error.message) {
-      message.error(user.error.message, 3);
+    if (user.error) {
+      message.error(user.error, 3);
       onReset();
       user.setError(null)
-      console.log('user.error: ', user.error.message)
+      console.log('user.error: ', user.error)
     }
     if (user.success) {
       message.success(user.success, 3)

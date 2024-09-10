@@ -1,12 +1,14 @@
 import { useEffect } from "react"
 import { useUser } from "../lib/context/user"
-import { Button, Form, Input } from "antd"
+import { Button, Form, Input, message } from "antd"
 
 export function Dashboard() {
     const user = useUser()
     const [ form ] = Form.useForm()
 
-    const onFinish = (values) => console.log('values: ', values)
+    const onFinish = (values) => {
+        user.updateName(values.name)
+    }
     const onFinishFailed = (error) => console.log('info: ', error)
     
     useEffect(() => {
@@ -18,10 +20,17 @@ export function Dashboard() {
             })
         }
     }, [user])
-    
+
     useEffect(() => {
-        console.log('user: ', user.current)
-    }, [user])
+        if (user.error) {
+            message.error(user.error, 3)
+            user.setError(null)
+        }
+        if (user.success) {
+            message.success(user.success, 3)
+            user.setSuccess(null)
+        }
+    })
 
     return (
         <div>

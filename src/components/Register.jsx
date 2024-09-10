@@ -11,8 +11,8 @@ export function Register() {
     }
 
     useEffect(() => {
-        if (user.error && user.error.message) {
-            message.error(user.error.message, 3)
+        if (user.error) {
+            message.error(user.error, 3)
             onReset()
             user.setError(null)
         }

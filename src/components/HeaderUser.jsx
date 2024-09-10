@@ -1,9 +1,11 @@
 import { Flex, Button, Typography } from "antd"
 import { useUser } from "../lib/context/user"
+import { useEffect } from "react"
 const { Link } = Typography
 
 export function HeaderUser() {
     const user = useUser()
+
     return (
         <>
             { user.current ? (

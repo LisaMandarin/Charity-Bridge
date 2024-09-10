@@ -43,7 +43,7 @@ export function UserProvider(props) {
       setSuccess('You have logged in')
       setTimeout(() => navigate('/'), 3000)
     } catch(error) {
-      setError(error)
+      setError('Failed to login.  See console')
       console.error('Login error: ', error.message)
     }
   }
@@ -56,7 +56,7 @@ export function UserProvider(props) {
       setSuccess('You have logged out.')
       setUser(null)
     } catch (error) {
-      setError(error)
+      setError('Failed to logout.  See console')
       console.error('Logout error: ', error.message)
     }
   }
@@ -71,13 +71,27 @@ export function UserProvider(props) {
         await login(email, password)
       }, 3000)
     } catch (error) {
-      setError(error)
+      setError('Failed to register.  See console')
       console.error('Register error: ', error.message)
+    }
+  }
+
+  async function updateName(name) {
+    setError(null)
+    setSuccess(null)
+    try {
+      await account.updateName(name)
+      setSuccess("User's name updated successfully")
+      fetchUser()
+    } catch (err) {
+      console.error("Failed to update user's name: ", err.message)
+      setError("Failed to update user's name.  See console")
     }
   }
 
   async function googleLogin () {
     setError(null)
+    setSuccess(null)
     try {
       account.createOAuth2Session(
         OAuthProvider.Google,
@@ -86,13 +100,13 @@ export function UserProvider(props) {
       )
       setSuccess('Google Login successful')
     } catch (err) {
-      setError(err)
+      setError('Failed to use Google login.  See console')
       console.error('Fail to use Google login', err.message)
     }
   }
 
   return (
-    <UserContext.Provider value={{ current: user, error, setError, success, setSuccess, login, logout, register, googleLogin }}>
+    <UserContext.Provider value={{ current: user, error, setError, success, setSuccess, login, logout, register, updateName, googleLogin }}>
       {props.children}
     </UserContext.Provider>
   );
