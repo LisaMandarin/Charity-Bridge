@@ -7,13 +7,7 @@ import { useEffect } from "react";
 export function DashboardAvatar() {
     const storage = useStorage()
     const customRequest = async(options) => {
-        try {
-            await storage.uploadAvatar(options.file)
-            options.onSuccess('Done')
-        } catch (err) {
-            options.onError('Failed')
-        }
-        console.log('options: ', options)
+        await storage.uploadAvatar(options.file)
     }
 
     useEffect(() => {
@@ -35,6 +29,7 @@ export function DashboardAvatar() {
                     customRequest={customRequest}
                     name="avatar"
                     listType="picture"
+                    maxCount={1}
                 >
                     <Button icon={<UploadOutlined/>}>Upload File</Button>
                 </Upload>
