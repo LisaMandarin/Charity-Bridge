@@ -8,13 +8,13 @@ const { Title, Link } = Typography
 
 export function Dashboard() {
     const user = useUser()
-    const [ email, setEmail ] = useState()
+    const [ email, setEmail ] = useState('')
 
     useEffect(() => {
         if (user.current) {
             setEmail(user.current.email)
         }
-    }, [])
+    }, [user.current])
 
     useEffect(() => {
         if (user.success) {
@@ -23,7 +23,7 @@ export function Dashboard() {
         if (user.error) {
             message.error(user.error)
         }
-    })
+    }, [user.success, user.error])
 
     return (
         <>

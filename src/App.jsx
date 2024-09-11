@@ -1,6 +1,7 @@
 import { Route, Routes } from "react-router-dom";
 import { UserProvider } from "./lib/context/user";
 import { UserInfosProvider } from "./lib/context/userInfo";
+import { StorageProvider } from "./lib/context/storage";
 import { Header } from "./components/Header";
 import { Register } from "./components/Register";
 import { Login } from "./components/Login";
@@ -21,30 +22,32 @@ function App() {
   return (
     <div className="min-h-screen bg-slate-100 flex flex-col">
       <UserProvider>
-        <UserInfosProvider>
-          <header className="bg-pink-200 h-24">
-            <Header />
-          </header>
-          <main className="flex-grow">
-            <Routes>
-              <Route path="/" element={<Home />}/>
-              <Route path="/login" element={<Login />} />
-              <Route path="/register" element={<Register />}/>
-              <Route path="/food" element={<Food />} />
-              <Route path="/clothing" element={<Clothing />} />
-              <Route path="/housing" element={<Housing />} />
-              <Route path="/transportation" element={<Transportation />} />
-              <Route path="/education" element={<Education />} />
-              <Route path="/entertainment" element={<Entertainment />} />
-              <Route path="/failure" element={<Failure />} />
-              <Route path="/fbdelete" element={<FBdelete />} />
-              <Route path="/dashboard" element={<Dashboard />} />
-            </Routes>
-          </main>
-          <footer className="bg-pink-200 h-14">
-            <Footer />
-          </footer>
-        </UserInfosProvider>
+        <StorageProvider>
+          <UserInfosProvider>
+            <header className="bg-pink-200 h-24">
+              <Header />
+            </header>
+            <main className="flex-grow">
+              <Routes>
+                <Route path="/" element={<Home />}/>
+                <Route path="/login" element={<Login />} />
+                <Route path="/register" element={<Register />}/>
+                <Route path="/food" element={<Food />} />
+                <Route path="/clothing" element={<Clothing />} />
+                <Route path="/housing" element={<Housing />} />
+                <Route path="/transportation" element={<Transportation />} />
+                <Route path="/education" element={<Education />} />
+                <Route path="/entertainment" element={<Entertainment />} />
+                <Route path="/failure" element={<Failure />} />
+                <Route path="/fbdelete" element={<FBdelete />} />
+                <Route path="/dashboard" element={<Dashboard />} />
+              </Routes>
+            </main>
+            <footer className="bg-pink-200 h-14">
+              <Footer />
+            </footer>
+          </UserInfosProvider>
+        </StorageProvider>
       </UserProvider>
     </div>
   )
