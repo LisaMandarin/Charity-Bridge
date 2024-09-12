@@ -16,7 +16,7 @@ export function DashboardAvatar() {
             await storage.createAvatar(options.file)
             console.log('update avatar done...')
         }
-        if (user.current && user.current.prefs.avatarId === null) {
+        if (user.current && !user.current.prefs.avatarId) {
             await storage.createAvatar(options.file)
         }
         console.log('options.file: ', options.file)
@@ -58,6 +58,10 @@ export function DashboardAvatar() {
         console.log('getPreview')
         }
     }, [storage.fileId])
+
+    useEffect(() => {
+        console.log('user.current.prefs.avatarId: ', user.current.prefs.avatarId)
+    })
 
     return (
         <div className="text-center">
