@@ -129,8 +129,6 @@ export function UserProvider(props) {
           [key]: value
         }
       )
-      console.log('result after updating prefs: ', result)
-      // setSuccess(`${key} is updated successfully`)
     } catch (err) {
       console.error('Failed to update preferences: ', err.message)
       setError('Failed to update preferences')
