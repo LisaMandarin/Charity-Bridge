@@ -120,8 +120,25 @@ export function UserProvider(props) {
     }
   }
 
+  async function updatePrefs(key, value) {
+    setError(null)
+    setSuccess(null)
+    try {
+      const result = await account.updatePrefs(
+        {
+          [key]: value
+        }
+      )
+      console.log('result after updating prefs: ', result)
+      // setSuccess(`${key} is updated successfully`)
+    } catch (err) {
+      console.error('Failed to update preferences: ', err.message)
+      setError('Failed to update preferences')
+    }
+  }
+
   return (
-    <UserContext.Provider value={{ current: user, error, setError, success, setSuccess, login, logout, register, updateName, updatePassword, googleLogin }}>
+    <UserContext.Provider value={{ current: user, error, setError, success, setSuccess, login, logout, register, updateName, updatePassword, googleLogin, updatePrefs }}>
       {props.children}
     </UserContext.Provider>
   );

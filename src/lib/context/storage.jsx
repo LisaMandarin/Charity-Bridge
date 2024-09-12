@@ -11,33 +11,23 @@ export function useStorage() {
 }
 
 export function StorageProvider(props) {
-    const [ avatar, setAvatar ] = useState(null)
     const [ error, setError ] = useState(null)
     const [ success, setSuccess ] = useState(null)
-
-    async function fetchAvatar() {
-        setError(null)
-        setSuccess(null)
-        const response = await storage.listFiles(
-            BUCKET_AVATAR_ID,
-        )
-        setAvatar(response.files[0])
-    }
-
-    useEffect(() => {
-        fetchAvatar()
-    }, [])
+    const [ fileId, setFileId ] = useState(null) 
 
     async function uploadAvatar(file) {
         setError(null)
         setSuccess(null)
+        setFileId(null)
         try {
-            await storage.createFile(
+            const result = await storage.createFile(
                 BUCKET_AVATAR_ID,
                 ID.unique(),
                 file
             )
             setSuccess('Avatar uploaded successfully')
+            setFileId(result.$id)
+            // console.log('result of createFile: ', result)
         } catch (err) {
             console.error('Failed to upload avatar image: ', err.message)
             setError('Failed to upload avatar image')
@@ -52,7 +42,6 @@ export function StorageProvider(props) {
                 BUCKET_AVATAR_ID,
                 id
             )
-            setSuccess('Get image preview successfully')
             return response.href
         } catch (err) {
             console.error('Failed to getPreview: ', err.message)
@@ -61,7 +50,7 @@ export function StorageProvider(props) {
     }
 
     return (
-        <StorageContext.Provider value={{current: avatar, error, success, uploadAvatar, getPreviewURL}}>
+        <StorageContext.Provider value={{error, success, fileId, uploadAvatar, getPreviewURL}}>
             {props.children}
         </StorageContext.Provider>
     )

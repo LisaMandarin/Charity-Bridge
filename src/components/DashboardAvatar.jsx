@@ -3,13 +3,28 @@ import { UserOutlined } from "@ant-design/icons";
 import { UploadOutlined } from "@ant-design/icons";
 import { useStorage } from "../lib/context/storage";
 import { useEffect, useState } from "react";
+import { useUser } from "../lib/context/user";
 
 export function DashboardAvatar() {
+    const user = useUser()
     const [ avatarURL, setAvatarURL ] = useState('')
     const storage = useStorage()
     const customRequest = async(options) => {
         await storage.uploadAvatar(options.file)
+        console.log('options.file: ', options.file)
     }
+
+    useEffect(() => {
+        if (user.current && user.current.prefs.avatarId) {
+            const avatarId = user.current.prefs.avatarId
+            storage.getPreviewURL(avatarId)
+                .then((url) => {
+                    setAvatarURL(url)
+                })
+        } else {
+            console.error('no avatar file ID')
+        }
+    },[])
 
     useEffect(() => {
         if (storage.error) {
@@ -21,18 +36,19 @@ export function DashboardAvatar() {
     }, [storage.success, storage.error])
 
     useEffect(() => {
-        if (storage.current) {
-            storage.getPreviewURL(storage.current.$id)
-                .then((url) => {
-                    setAvatarURL(url)
-                })
+        if (storage.fileId) {
+            storage.getPreviewURL(storage.fileId)
+            .then((url) => {
+                setAvatarURL(url)
+            })
+            .then(() => {
+                if (user.current) {
+                    user.updatePrefs('avatarId', storage.fileId)
+                }
+            })
+        console.log('getPreview')
         }
-    }, [storage.current, setAvatarURL])
-
-
-    useEffect(() => {
-        console.log('avatarURL', avatarURL)
-    }, [avatarURL])
+    }, [storage.fileId])
 
     return (
         <div className="text-center">
