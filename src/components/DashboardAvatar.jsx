@@ -37,11 +37,7 @@ export function DashboardAvatar() {
     return (
         <div className="text-center">
             <div>
-                <Avatar size={64} icon={<UserOutlined />} />
-                    <img 
-                        src={avatarURL}
-                        alt="avatar"
-                    />
+                <Avatar size={64} src={avatarURL} icon={<UserOutlined />} />
             </div>
             <div>
                 <Upload
