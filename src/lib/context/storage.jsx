@@ -15,7 +15,7 @@ export function StorageProvider(props) {
     const [ success, setSuccess ] = useState(null)
     const [ fileId, setFileId ] = useState(null) 
 
-    async function uploadAvatar(file) {
+    async function createAvatar(file) {
         setError(null)
         setSuccess(null)
         setFileId(null)
@@ -27,10 +27,24 @@ export function StorageProvider(props) {
             )
             setSuccess('Avatar uploaded successfully')
             setFileId(result.$id)
-            // console.log('result of createFile: ', result)
         } catch (err) {
-            console.error('Failed to upload avatar image: ', err.message)
+            console.error('Failed to create avatar image: ', err.message)
             setError('Failed to upload avatar image')
+        }
+    }
+
+    async function deleteAvatar(id) {
+        setError(null)
+        setSuccess(null)
+        setFileId(null)
+        try {
+            const result = await storage.deleteFile(
+                BUCKET_AVATAR_ID,
+                id
+            )
+        } catch (err) {
+            console.error('Failed to delete avatar image: ', err.message)
+            setError('Failed to delete avatar image')
         }
     }
 
@@ -50,7 +64,7 @@ export function StorageProvider(props) {
     }
 
     return (
-        <StorageContext.Provider value={{error, success, fileId, uploadAvatar, getPreviewURL}}>
+        <StorageContext.Provider value={{error, success, fileId, createAvatar, deleteAvatar, getPreviewURL}}>
             {props.children}
         </StorageContext.Provider>
     )

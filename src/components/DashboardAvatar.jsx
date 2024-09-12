@@ -10,7 +10,15 @@ export function DashboardAvatar() {
     const [ avatarURL, setAvatarURL ] = useState('')
     const storage = useStorage()
     const customRequest = async(options) => {
-        await storage.uploadAvatar(options.file)
+        if (user.current && user.current.prefs.avatarId) {
+            console.log('update avatar....')
+            await storage.deleteAvatar(user.current.prefs.avatarId)
+            await storage.createAvatar(options.file)
+            console.log('update avatar done...')
+        }
+        if (user.current && user.current.prefs.avatarId === null) {
+            await storage.createAvatar(options.file)
+        }
         console.log('options.file: ', options.file)
     }
 
@@ -63,7 +71,9 @@ export function DashboardAvatar() {
                     listType="picture"
                     maxCount={1}
                 >
-                    <Button icon={<UploadOutlined/>}>Upload File</Button>
+                    <Button icon={<UploadOutlined/>}>
+                    { user.current.prefs.avatarId ? `Update avatar` : `Create avatar`}
+                    </Button>
                 </Upload>
             </div>
         </div>
