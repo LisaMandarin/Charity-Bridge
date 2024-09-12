@@ -23,6 +23,7 @@ export function DashboardAvatar() {
                 })
         } else {
             console.error('no avatar file ID')
+            setAvatarURL('')
         }
     },[])
 
