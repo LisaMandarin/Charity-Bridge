@@ -16,6 +16,7 @@ import { Entertainment } from "./components/Entertainment";
 import { Failure } from "./components/Failure";
 import { FBdelete } from "./components/FBdelete";
 import { Dashboard } from "./components/Dashboard";
+import { Verification } from "./components/Verification";
 
 function App() {
   
@@ -41,6 +42,7 @@ function App() {
                 <Route path="/failure" element={<Failure />} />
                 <Route path="/fbdelete" element={<FBdelete />} />
                 <Route path="/dashboard" element={<Dashboard />} />
+                <Route path="/verification" element={<Verification />} />
               </Routes>
             </main>
             <footer className="bg-pink-200 h-14">
