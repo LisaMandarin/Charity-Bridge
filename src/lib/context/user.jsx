@@ -135,8 +135,19 @@ export function UserProvider(props) {
     }
   }
 
+  async function emailVerification() {
+    setError(null)
+    setSuccess(null)
+    try {
+      await account.createVerification()
+    } catch (err) {
+      console.error('Failed to send email verification: ', err.message)
+      setError('Failed to send email verification')
+    }
+  }
+
   return (
-    <UserContext.Provider value={{ current: user, error, setError, success, setSuccess, login, logout, register, updateName, updatePassword, googleLogin, updatePrefs }}>
+    <UserContext.Provider value={{ current: user, error, setError, success, setSuccess, login, logout, register, updateName, updatePassword, googleLogin, updatePrefs, emailVerification }}>
       {props.children}
     </UserContext.Provider>
   );
