@@ -54,13 +54,6 @@ export function DashboardPassword({user}) {
                             pattern: /^(?=.*[A-Za-z])(?=.*\d)/,
                             message: 'Password must contain both letters and numbers'
                         }
-                        // {
-                        //     min: 8,
-                        //     max: 20,
-                        //     
-                        //     whitespace: true,
-                        //     message: "Password must be 8-20 characters, with letters and numbers."
-                        // },
                     ]}
                     hasFeedback
                 >
@@ -94,10 +87,9 @@ export function DashboardPassword({user}) {
                         type="primary"
                         htmlType="submit"
                     >
-                        Update Password
+                        Update
                     </Button>
                 </Form.Item>
-
             </Form>
         </>
     )

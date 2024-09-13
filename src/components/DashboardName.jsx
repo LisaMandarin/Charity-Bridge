@@ -31,39 +31,32 @@ export function DashboardName({user}) {
             >
                 <Form.Item
                     label="Name"
+                    name="name"
+                    rules={[
+                    {
+                        required: true,
+                        message: "Please enter a username"
+                    },
+                    {
+                        whitespace: true,
+                        message: "No empty username allowed"
+                    },
+                    {
+                        max: 50,
+                        message: "The username is limited to 50 characters"
+                    }
+                    ]}
+                    hasFeedback
                 >
-                    <div className="flex">
-                        <Form.Item
-                            className="flex-grow"
-                            name="name"
-                            rules={[
-                            {
-                                required: true,
-                                message: "Please enter a username"
-                            },
-                            {
-                                whitespace: true,
-                                message: "No empty username allowed"
-                            },
-                            {
-                                max: 50,
-                                message: "The username is limited to 50 characters"
-                            }
-                            ]}
-                            hasFeedback
-                        >
-                            <Input allowClear/>
-                        </Form.Item>
-                        
-                        <Form.Item className="ml-2">
-                            <Button 
-                                type="primary"
-                                htmlType="submit"
-                            >
-                                Update
-                            </Button>
-                        </Form.Item>
-                    </div>
+                    <Input allowClear/>
+                </Form.Item>
+                <Form.Item className="flex justify-end">
+                    <Button 
+                        type="primary"
+                        htmlType="submit"
+                    >
+                        Update
+                    </Button>
                 </Form.Item>
             </Form>
         </div>
