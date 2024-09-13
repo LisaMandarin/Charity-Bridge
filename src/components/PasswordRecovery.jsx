@@ -1,7 +1,8 @@
-import { Button, Form, Input, message } from "antd"
+import { Button, Form, Input, message, Typography } from "antd"
 import { useParams } from "react-router-dom"
 import { account } from "../lib/appwrite"
 import { useEffect, useState } from "react"
+const { Title } = Typography
 
 export function PasswordRecovery() {
     const { userId, secret } = useParams()
@@ -47,6 +48,7 @@ export function PasswordRecovery() {
                 className="w-full md:w-[600px] mx-auto"
                 onFinish={onFinish}
             >
+                <Title className="text-center">Password Recovery</Title>
                 <Form.Item
                     label="New Password"
                     name="newPassword"
