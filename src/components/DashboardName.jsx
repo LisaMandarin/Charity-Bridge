@@ -25,7 +25,7 @@ export function DashboardName({user}) {
                 wrapperCol={{
                     span: 16
                 }}
-                className="w-[600px] mx-auto"
+                className="w-full md:w-[600px] mx-auto"
                 onFinish={onFinish}
                 form={form}
             >

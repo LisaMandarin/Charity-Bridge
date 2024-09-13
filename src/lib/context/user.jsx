@@ -139,7 +139,11 @@ export function UserProvider(props) {
     setError(null)
     setSuccess(null)
     try {
-      await account.createVerification()
+      const result = await account.createVerification(
+        'https://main--charitybridge.netlify.app/verification'
+      )
+      console.log('result of createVerification: ', result)
+      setSuccess('Verification email sent!')
     } catch (err) {
       console.error('Failed to send email verification: ', err.message)
       setError('Failed to send email verification')

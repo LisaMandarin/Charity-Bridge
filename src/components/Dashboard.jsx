@@ -4,18 +4,12 @@ import { Divider, message, Typography } from "antd"
 import { DashboardName } from "./DashboardName"
 import { DashboardPassword } from "./DashboardPassword"
 import { DashboardAvatar } from "./DashboardAvatar"
-const { Title, Link } = Typography
+import { DashboardEmail } from "./DashboardEmail"
+const { Link } = Typography
 
 export function Dashboard() {
     const user = useUser()
-    const [ email, setEmail ] = useState('')
-
-    useEffect(() => {
-        if (user.current) {
-            setEmail(user.current.email)
-        }
-    }, [user.current])
-
+    
     useEffect(() => {
         if (user.success) {
             message.success(user.success)
@@ -29,11 +23,7 @@ export function Dashboard() {
         <>
         { user.current ? (
             <div className="p-4 bg-white w-fit mx-auto">
-                <Title
-                    className="text-center"
-                >
-                    {email}
-                </Title>
+                <DashboardEmail />
                 <DashboardAvatar />
                 <Divider orientation="left" orientationMargin="0">
                     <span className="text-gray-300">Update Name</span>
