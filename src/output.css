@@ -566,6 +566,10 @@ video {
   top: 6rem;
 }
 
+.z-40 {
+  z-index: 40;
+}
+
 .m-auto {
   margin: auto;
 }
@@ -908,6 +912,11 @@ video {
 .bg-green-400 {
   --tw-bg-opacity: 1;
   background-color: rgb(74 222 128 / var(--tw-bg-opacity));
+}
+
+.bg-red-200 {
+  --tw-bg-opacity: 1;
+  background-color: rgb(254 202 202 / var(--tw-bg-opacity));
 }
 
 .p-1 {

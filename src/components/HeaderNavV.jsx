@@ -40,7 +40,7 @@ export function HeaderNavV () {
         },
         {
             key: 6,
-            icon: 'conoir:gift',
+            icon: 'iconoir:gift',
             text: 'Entertainment',
             path: '/entertainment',
         },
@@ -55,7 +55,7 @@ export function HeaderNavV () {
             />
         </div>
         <ul
-            className='bg-white flex flex-col fixed top-24 left-0 w-60 overflow-hidden'
+            className='bg-pink-200 z-40 flex flex-col fixed top-24 left-0 w-60 overflow-hidden'
             style={{
                 transform: show ? 'translateX(0)' : 'translateX(-100%)',
                 transition: 'transform .5s ease-in-out',
