@@ -17,6 +17,7 @@ import { Failure } from "./components/Failure";
 import { FBdelete } from "./components/FBdelete";
 import { Dashboard } from "./components/Dashboard";
 import { Verification } from "./components/Verification";
+import { PasswordRecovery } from "./components/PasswordRecovery";
 
 function App() {
   
@@ -43,6 +44,7 @@ function App() {
                 <Route path="/fbdelete" element={<FBdelete />} />
                 <Route path="/dashboard" element={<Dashboard />} />
                 <Route path="/verification/:userId/:secret" element={<Verification />} />
+                <Route path="passwordrecovery" element={<PasswordRecovery />} />
               </Routes>
             </main>
             <footer className="bg-pink-200 h-14">

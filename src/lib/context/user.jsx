@@ -150,8 +150,25 @@ export function UserProvider(props) {
     }
   }
 
+  async function passwordRecovery(email) {
+    setError(null)
+    setSuccess(null)
+    try {
+      const result = await account.createRecovery(
+        email,
+        'https://main--charitybridge.netlify.app/passwordrecovery'
+      )
+      console.log('Password recovery sent', result)
+      setSuccess('Password recovery sent')
+    } catch (err) {
+      console.error('Failed to send password recovery')
+      setError('Failed to send password recovery')
+    }
+    
+    }
+
   return (
-    <UserContext.Provider value={{ current: user, error, setError, success, setSuccess, login, logout, register, updateName, updatePassword, googleLogin, updatePrefs, emailVerification }}>
+    <UserContext.Provider value={{ current: user, error, setError, success, setSuccess, login, logout, register, updateName, updatePassword, googleLogin, updatePrefs, emailVerification, passwordRecovery }}>
       {props.children}
     </UserContext.Provider>
   );
