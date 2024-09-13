@@ -1,16 +1,38 @@
 import { Flex, Button, Typography, Avatar } from "antd"
 import { useUser } from "../lib/context/user"
 import { UserOutlined } from "@ant-design/icons"
+import { useEffect, useState } from "react"
+import { useStorage } from "../lib/context/storage"
+
 const { Link } = Typography
 
 export function HeaderUser() {
     const user = useUser()
+    const storage = useStorage()
+    const [ avatarURL, setAvatarURL ] = useState('')
+
+    useEffect(() => {
+        if (user.current && user.current.prefs.avatarId) {
+            const avatarId = user.current.prefs.avatarId
+            storage.getPreviewURL(avatarId)
+                .then((url) => {
+                    setAvatarURL(url)
+                })
+        } else {
+            setAvatarURL('')
+        }
+    }, [user])
 
     return (
         <>
             { user.current ? (
                 <div className="w-fit flex flex-row justify-around p-1 h-full border-4 border-pink-200">
-                    <Avatar size={60} icon={<UserOutlined />} className="my-auto"/>
+                    <Avatar 
+                        size={60} 
+                        icon={<UserOutlined />} 
+                        src={avatarURL}    
+                        className="my-auto"
+                    />
                     <Flex 
                         vertical 
                         align="flex-end" 
