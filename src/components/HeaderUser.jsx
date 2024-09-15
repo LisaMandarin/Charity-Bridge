@@ -38,7 +38,7 @@ export function HeaderUser() {
                         align="flex-end" 
                         justify="flex-end" 
                     >
-                        <p ><Link href="/dashboard">Hello, {user.current.name}</Link></p>
+                        <p><Link href="/dashboard">Hello, {user.current.name}</Link></p>
                         <p><Link href="#" onClick={() => user.logout()}>Logout</Link></p>
                     </Flex>
                 </div>
