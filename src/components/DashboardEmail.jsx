@@ -1,7 +1,7 @@
-import { Button, Typography } from "antd"
+import { Button } from "antd"
 import { useUser } from "../lib/context/user"
 import { useState, useEffect } from "react"
-const { Title } = Typography
+
 
 export function DashboardEmail() {
     const user = useUser()

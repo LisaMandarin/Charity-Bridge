@@ -1,4 +1,4 @@
-import { useParams } from "react-router-dom"
+import { useLocation, useParams } from "react-router-dom"
 import { account } from "../lib/appwrite"
 import { useEffect, useState } from "react"
 import { useUser } from "../lib/context/user"
@@ -6,15 +6,29 @@ import { Typography } from "antd"
 const { Link } = Typography
 
 export function Verification() {
-    const { userId, secret } = useParams()
     const [ success, setSuccess ] = useState(null)
     const [ error, setError ] = useState(null)
     const user = useUser()
+    const location = useLocation()
+
+    const getQueryParams = () => {
+        const params = new URLSearchParams(location.search)
+        return {
+            userId: params.get("userId"),
+            secret: params.get("secret"),
+        }
+    }
 
     useEffect(() => {
+        setSuccess(null)
+        setError(null)
+        
+        const { userId, secret } = getQueryParams()
+        if ( !userId || !secret ) {
+            setError('Invalid link')
+            return
+        }
         const verifyEmail = async() => {
-            setSuccess(null)
-            setError(null)
             try {
                 const result = await account.updateVerification(
                     userId,
@@ -28,7 +42,7 @@ export function Verification() {
             }
         }
         verifyEmail()
-    }, [userId, secret])
+    }, [getQueryParams])
 
     useEffect(() => {
         console.log('success: ', success)
@@ -37,7 +51,6 @@ export function Verification() {
     return (
         user.current ? (
             <div className="flex w-full h-full text-3xl justify-center">
-                <h1>Email Verification Status</h1>
                 { success && (
                     <div className="m-5">
                         {success}

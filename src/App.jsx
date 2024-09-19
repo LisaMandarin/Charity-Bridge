@@ -43,7 +43,7 @@ function App() {
                 <Route path="/failure" element={<Failure />} />
                 <Route path="/fbdelete" element={<FBdelete />} />
                 <Route path="/dashboard" element={<Dashboard />} />
-                <Route path="/verification/:userId/:secret" element={<Verification />} />
+                <Route path="/verification" element={<Verification />} />
                 <Route path="passwordrecovery" element={<PasswordRecovery />} />
               </Routes>
             </main>
