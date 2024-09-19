@@ -2,7 +2,8 @@ import { useParams } from "react-router-dom"
 import { account } from "../lib/appwrite"
 import { useEffect, useState } from "react"
 import { useUser } from "../lib/context/user"
-import { Login } from './Login'
+import { Typography } from "antd"
+const { Link } = Typography
 
 export function Verification() {
     const { userId, secret } = useParams()
@@ -36,19 +37,21 @@ export function Verification() {
     return (
         user.current ? (
             <div className="flex w-full h-full text-3xl justify-center">
-                { success ? (
+                { success && (
                     <div className="m-5">
                         {success}
                     </div>
-                ) : ""}
-                { error ? (
+                ) }
+                { error && (
                     <div className="m-5">
                         {error}
                     </div>
-                ): ""}
+                ) }
             </div>
         ) : (
-            <Login />
+            <div>
+                <p>Please <Link href="/login">log in</Link> your account to verify your email</p>
+            </div>
         )
     )
 }
