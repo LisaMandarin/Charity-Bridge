@@ -110,8 +110,10 @@ export function UserProvider(props) {
     try {
       account.createOAuth2Session(
         OAuthProvider.Google,
-        'http://localhost:5173/',
-        'http://localhost:5173/failure',
+        // 'http://localhost:5173/',
+        // 'http://localhost:5173/failure',
+        'https://main--charitybridge.netlify.app/',
+        'https://main--charitybridge.netlify.app/failure',
       )
       setSuccess('Google Login successful')
     } catch (err) {
