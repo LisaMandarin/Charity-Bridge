@@ -11,18 +11,20 @@ export function Verification() {
     const user = useUser()
     const location = useLocation()
 
-    const getQueryParams = () => {
-        const params = new URLSearchParams(location.search)
-        return {
-            userId: params.get("userId"),
-            secret: params.get("secret"),
-        }
-    }
+
 
     useEffect(() => {
         setSuccess(null)
         setError(null)
         
+        const getQueryParams = () => {
+            const params = new URLSearchParams(location.search);
+            return {
+                userId: params.get("userId"),
+                secret: params.get("secret"),
+            };
+        }
+
         const { userId, secret } = getQueryParams()
         if ( !userId || !secret ) {
             setError('Invalid link')
@@ -42,7 +44,7 @@ export function Verification() {
             }
         }
         verifyEmail()
-    }, [getQueryParams])
+    }, [location.search])
 
     useEffect(() => {
         console.log('success: ', success)
