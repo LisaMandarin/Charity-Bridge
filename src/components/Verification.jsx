@@ -37,6 +37,7 @@ export function Verification() {
     return (
         user.current ? (
             <div className="flex w-full h-full text-3xl justify-center">
+                <h1>Email Verification Status</h1>
                 { success && (
                     <div className="m-5">
                         {success}
