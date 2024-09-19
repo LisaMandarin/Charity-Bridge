@@ -129,6 +129,8 @@ export function UserProvider(props) {
           [key]: value
         }
       )
+      const updatedUser = await account.get()
+      setUser(updatedUser)
     } catch (err) {
       console.error('Failed to update preferences: ', err.message)
       setError('Failed to update preferences')
@@ -139,10 +141,9 @@ export function UserProvider(props) {
     setError(null)
     setSuccess(null)
     try {
-      const result = await account.createVerification(
+      await account.createVerification(
         'https://main--charitybridge.netlify.app/verification'
       )
-      console.log('result of createVerification: ', result)
       setSuccess('Verification email sent!')
     } catch (err) {
       console.error('Failed to send email verification: ', err.message)
@@ -154,11 +155,10 @@ export function UserProvider(props) {
     setError(null)
     setSuccess(null)
     try {
-      const result = await account.createRecovery(
+      await account.createRecovery(
         email,
         'https://main--charitybridge.netlify.app/passwordrecovery'
       )
-      console.log('Password recovery sent', result)
       setSuccess('Password recovery sent')
     } catch (err) {
       console.error('Failed to send password recovery')

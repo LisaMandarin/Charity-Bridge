@@ -1,4 +1,4 @@
-import { Avatar, Button, message, Upload } from "antd";
+import { Avatar, Button, message, Upload, Progress } from "antd";
 import { UserOutlined } from "@ant-design/icons";
 import { UploadOutlined } from "@ant-design/icons";
 import { useStorage } from "../lib/context/storage";
@@ -9,16 +9,29 @@ export function DashboardAvatar() {
     const user = useUser()
     const [ avatarURL, setAvatarURL ] = useState('')
     const storage = useStorage()
+    
     const customRequest = async(options) => {
-        if (user.current && user.current.prefs.avatarId) {
-            await storage.deleteAvatar(user.current.prefs.avatarId)
-            await storage.createAvatar(options.file)
+        try {
+            if (user.current && user.current.prefs.avatarId) {
+                await storage.deleteAvatar(user.current.prefs.avatarId)
+                await storage.createAvatar(options.file)
+            }
+            if (user.current && !user.current.prefs.avatarId) {
+                await storage.createAvatar(options.file)
+            }
+            options.onSuccess(null, options.file)
+        } catch (err) {
+            console.error('Failed to upload image', err.message)
+            options.onError(err)
         }
-        if (user.current && !user.current.prefs.avatarId) {
-            await storage.createAvatar(options.file)
+    }
+    const onChange = (event) => {
+        if (event.file.status === 'uploading') {
+            message.loading('Uploading Avatar image')
         }
     }
 
+    // get avatar when first rendering the component
     useEffect(() => {
         if (user.current && user.current.prefs.avatarId) {
             const avatarId = user.current.prefs.avatarId
@@ -32,6 +45,7 @@ export function DashboardAvatar() {
         }
     },[])
 
+    // update messages
     useEffect(() => {
         if (storage.error) {
             message.error(storage.error)
@@ -41,6 +55,7 @@ export function DashboardAvatar() {
         }
     }, [storage.success, storage.error])
 
+    // get avatar src from storage and update user prefs.
     useEffect(() => {
         if (storage.fileId) {
             storage.getPreviewURL(storage.fileId)
@@ -62,13 +77,15 @@ export function DashboardAvatar() {
             </div>
             <div>
                 <Upload
-                    customRequest={customRequest}
                     name="avatar"
-                    listType="picture"
+                    listType="text"
+                    showUploadList={false}
+                    customRequest={customRequest}
+                    onChange={onChange}
                     maxCount={1}
                 >
                     <Button icon={<UploadOutlined/>}>
-                    { user.current.prefs.avatarId ? `Update avatar` : `Create avatar`}
+                        { user.current.prefs.avatarId ? `Update avatar` : `Create avatar`}
                     </Button>
                 </Upload>
             </div>
