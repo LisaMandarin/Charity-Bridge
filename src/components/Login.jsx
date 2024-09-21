@@ -28,7 +28,7 @@ export function Login() {
       user.setSuccess(null)
     }
   }, [user, onReset])
-  
+ 
   return (
     <>
       <Form
@@ -76,6 +76,9 @@ export function Login() {
                 size='1.5em'
               />
             </Space>
+          </div>
+          <div>
+            <Link href="/passwordforgot">Forgot Password?</Link>
           </div>
         </div>        
       </Form>

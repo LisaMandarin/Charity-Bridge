@@ -1,19 +1,41 @@
 import { Button, Form, Input, message, Typography } from "antd"
-import { useParams } from "react-router-dom"
+import { useLocation, useParams } from "react-router-dom"
 import { account } from "../lib/appwrite"
-import { useEffect, useState } from "react"
+import { useCallback, useEffect, useState } from "react"
 const { Title } = Typography
 
 export function PasswordRecovery() {
-    const { userId, secret } = useParams()
     const [form] = Form.useForm()
+    const location = useLocation()
     const [ success, setSuccess ] = useState(null)
     const [ error, setError ] = useState(null)
 
+    const getQueryParams = useCallback(
+        () => {
+            const params = new URLSearchParams(location.search)
+            return {
+                userId: params.get("userId"),
+                secret: params.get("secret"),
+            }
+        }, [location.search]
+    )
+
+    useEffect(() => {
+        const { userId, secret } = getQueryParams()
+            if ( !userId || !secret) {
+                setError('Invalid link')
+                return
+            }
+    }, [getQueryParams])
+    
     const onFinish = async(values) => {
         setSuccess(null)
         setError(null)
         try {
+            const { userId, secret } = getQueryParams()
+            console.log('userId: ', userId)
+            console.log('secret: ', secret)
+            
             const result = await account.updateRecovery(
                 userId,
                 secret,
@@ -23,7 +45,7 @@ export function PasswordRecovery() {
             console.log('New password updated successfully', result)
             setSuccess('New password updated successfully')
         } catch (err) {
-            console.error('Failed to update password', err.message)
+            console.error('Failed to update password: ', err.message)
             setError('Failed to update password')
         }
     }

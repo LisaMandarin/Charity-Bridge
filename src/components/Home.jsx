@@ -1,6 +1,5 @@
 import { useUser } from "../lib/context/user"
-import { UserForm } from "./UserForm"
-import { UserList } from "./UserList"
+
 import { Link } from "react-router-dom"
 
 export function Home() {
@@ -12,9 +11,7 @@ export function Home() {
             <div
                 className="p-4"
             >
-                <UserForm />
-                <br />
-                <UserList />
+                This is homepage
             </div>
         ) : (
             <>

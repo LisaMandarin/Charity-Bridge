@@ -46,10 +46,6 @@ export function Verification() {
         verifyEmail()
     }, [location.search])
 
-    useEffect(() => {
-        console.log('success: ', success)
-        console.log('error: ', error)
-    }, [success, error])
     return (
         user.current ? (
             <div className="flex w-full h-full text-3xl justify-center">
