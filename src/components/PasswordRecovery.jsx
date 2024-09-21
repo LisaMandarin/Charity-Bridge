@@ -1,5 +1,5 @@
 import { Button, Form, Input, message, Typography } from "antd"
-import { useLocation, useParams } from "react-router-dom"
+import { useLocation, useNavigate, useParams } from "react-router-dom"
 import { account } from "../lib/appwrite"
 import { useCallback, useEffect, useState } from "react"
 const { Title } = Typography
@@ -7,6 +7,7 @@ const { Title } = Typography
 export function PasswordRecovery() {
     const [form] = Form.useForm()
     const location = useLocation()
+    const navigate = useNavigate()
     const [ success, setSuccess ] = useState(null)
     const [ error, setError ] = useState(null)
 
@@ -33,17 +34,17 @@ export function PasswordRecovery() {
         setError(null)
         try {
             const { userId, secret } = getQueryParams()
-            console.log('userId: ', userId)
-            console.log('secret: ', secret)
-            
-            const result = await account.updateRecovery(
+                
+            await account.updateRecovery(
                 userId,
                 secret,
                 values.newPassword,
                 values.confirmPassword
             )
-            console.log('New password updated successfully', result)
             setSuccess('New password updated successfully')
+            setTimeout(() => {
+                navigate("/login")
+            }, (2000));
         } catch (err) {
             console.error('Failed to update password: ', err.message)
             setError('Failed to update password')
