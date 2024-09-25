@@ -25,7 +25,6 @@ export function StorageProvider(props) {
                 ID.unique(),
                 file
             )
-            console.log('result(createAvatar): ', result)
             setSuccess('Avatar uploaded successfully')
             setFileId(result.$id)
         } catch (err) {
@@ -39,7 +38,7 @@ export function StorageProvider(props) {
         setSuccess(null)
         setFileId(null)
         try {
-            const result = await storage.deleteFile(
+            await storage.deleteFile(
                 BUCKET_AVATAR_ID,
                 id
             )

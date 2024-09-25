@@ -1,6 +1,7 @@
 import { Avatar, Button, message, Upload, Progress, Image } from "antd";
 import { UserOutlined } from "@ant-design/icons";
 import { UploadOutlined } from "@ant-design/icons";
+import { DeleteOutlined } from "@ant-design/icons";
 import { useStorage } from "../lib/context/storage";
 import { useEffect, useState } from "react";
 import { useUser } from "../lib/context/user";
@@ -33,7 +34,6 @@ export function DashboardAvatar() {
         if (!file.url && !file.preview) {
             file.preview = await getBase64(file.originFileObj) 
         }
-        console.log('file(onPreview: ', file)
         setPreviewImage(file.url || file.preview)
         setPreviewOpen(true)
     }
@@ -65,7 +65,14 @@ export function DashboardAvatar() {
           reader.onerror = (error) => reject(error);
         });
 
-    
+    const onRemove = async(e) => {
+        await storage.deleteAvatar(e.uid)
+        .then(() => {
+            if (user.current) {
+                user.updatePrefs('avatarId', "")
+            }
+        })
+    }
 
     // update messages
     useEffect(() => {
@@ -109,7 +116,6 @@ export function DashboardAvatar() {
         }
     }, [storage.fileId])
 
-    useEffect(() => console.log('FileList: ', fileList))
     return (
         <div className="text-center">
             <div className="flex justify-center">
@@ -119,6 +125,7 @@ export function DashboardAvatar() {
                     fileList={fileList}
                     onPreview={onPreview}
                     onChange={onChange}
+                    onRemove={onRemove}
                 >
                     {fileList.length >= 1 ? null : uploadButton}
                 </Upload>
