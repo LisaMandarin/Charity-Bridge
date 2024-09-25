@@ -1,5 +1,7 @@
 import { useUser } from "../lib/context/user"
-
+import { HomePost } from "./HomePost"
+import { HomeReview } from "./HomeReview"
+import { HomeNeed } from "./HomeNeed"
 import { Link } from "react-router-dom"
 
 export function Home() {
@@ -9,9 +11,11 @@ export function Home() {
         <>
         { user.current ? (
             <div
-                className="p-4"
+                className="grid sm:grid-cols-[1fr_2fr_1fr] md:mx-4 lg:mx-8"
             >
-                This is homepage
+                <HomeReview />
+                <HomePost />
+                <HomeNeed />
             </div>
         ) : (
             <>

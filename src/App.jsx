@@ -1,6 +1,5 @@
 import { Route, Routes } from "react-router-dom";
 import { UserProvider } from "./lib/context/user";
-import { UserInfosProvider } from "./lib/context/userInfo";
 import { StorageProvider } from "./lib/context/storage";
 import { Header } from "./components/Header";
 import { Register } from "./components/Register";
@@ -26,7 +25,6 @@ function App() {
     <div className="min-h-screen bg-slate-100 flex flex-col">
       <UserProvider>
         <StorageProvider>
-          <UserInfosProvider>
             <header className="bg-pink-200 h-24">
               <Header />
             </header>
@@ -52,7 +50,6 @@ function App() {
             <footer className="bg-pink-200 h-14">
               <Footer />
             </footer>
-          </UserInfosProvider>
         </StorageProvider>
       </UserProvider>
     </div>

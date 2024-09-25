@@ -1,4 +1,4 @@
-import { Avatar, Button, message, Upload, Progress } from "antd";
+import { Avatar, Button, message, Upload, Progress, Image } from "antd";
 import { UserOutlined } from "@ant-design/icons";
 import { UploadOutlined } from "@ant-design/icons";
 import { useStorage } from "../lib/context/storage";
@@ -7,9 +7,12 @@ import { useUser } from "../lib/context/user";
 
 export function DashboardAvatar() {
     const user = useUser()
-    const [ avatarURL, setAvatarURL ] = useState('')
     const storage = useStorage()
-    
+    // const [ avatarURL, setAvatarURL ] = useState('')
+    const [ fileList, setFileList ] = useState([])
+    const [ previewOpen, setPreviewOpen ] = useState(false)
+    const [ previewImage, setPreviewImage ] = useState('')
+
     const customRequest = async(options) => {
         try {
             if (user.current && user.current.prefs.avatarId) {
@@ -25,25 +28,44 @@ export function DashboardAvatar() {
             options.onError(err)
         }
     }
-    const onChange = (event) => {
-        if (event.file.status === 'uploading') {
-            message.loading('Uploading Avatar image')
+
+    const onPreview = async(file) => {
+        if (!file.url && !file.preview) {
+            file.preview = await getBase64(file.originFileObj) 
         }
+        console.log('file(onPreview: ', file)
+        setPreviewImage(file.url || file.preview)
+        setPreviewOpen(true)
+    }
+    
+
+    const onChange = ({fileList: newFileList}) => {
+        setFileList(newFileList)
     }
 
-    // get avatar when first rendering the component
-    useEffect(() => {
-        if (user.current && user.current.prefs.avatarId) {
-            const avatarId = user.current.prefs.avatarId
-            storage.getPreviewURL(avatarId)
-                .then((url) => {
-                    setAvatarURL(url)
-                })
-        } else {
-            console.error('no avatar file ID')
-            setAvatarURL('')
-        }
-    },[])
+    const uploadButton = (
+        <button
+            className="border-0 bg-transparent shadow-none"
+            type="button"
+        >
+            <UserOutlined />
+            <div
+                className="mt-2"
+            >
+                Upload
+            </div>
+        </button>
+    )
+
+    const getBase64 = (file) =>
+        new Promise((resolve, reject) => {
+          const reader = new FileReader();
+          reader.readAsDataURL(file);
+          reader.onload = () => resolve(reader.result);
+          reader.onerror = (error) => reject(error);
+        });
+
+    
 
     // update messages
     useEffect(() => {
@@ -55,13 +77,30 @@ export function DashboardAvatar() {
         }
     }, [storage.success, storage.error])
 
+   
+
+    useEffect(() => {
+        if (user.current && user.current.prefs.avatarId) {
+            const avatarId = user.current.prefs.avatarId
+            storage.getPreviewURL(avatarId).then((url) => {
+                setFileList([
+                    {
+                        uid: avatarId,
+                        name: "image.png",
+                        status: "done",
+                        url
+                    }
+                ])
+            })
+        } else {
+            console.error("no avatar file ID")
+        }
+    }, [])
+
     // get avatar src from storage and update user prefs.
     useEffect(() => {
         if (storage.fileId) {
             storage.getPreviewURL(storage.fileId)
-            .then((url) => {
-                setAvatarURL(url)
-            })
             .then(() => {
                 if (user.current) {
                     user.updatePrefs('avatarId', storage.fileId)
@@ -70,24 +109,32 @@ export function DashboardAvatar() {
         }
     }, [storage.fileId])
 
+    useEffect(() => console.log('FileList: ', fileList))
     return (
         <div className="text-center">
-            <div>
-                <Avatar size={64} src={avatarURL} icon={<UserOutlined />} />
-            </div>
-            <div>
+            <div className="flex justify-center">
                 <Upload
-                    name="avatar"
-                    listType="text"
-                    showUploadList={false}
                     customRequest={customRequest}
+                    listType="picture-circle"
+                    fileList={fileList}
+                    onPreview={onPreview}
                     onChange={onChange}
-                    maxCount={1}
                 >
-                    <Button icon={<UploadOutlined/>}>
-                        { user.current.prefs.avatarId ? `Update avatar` : `Create avatar`}
-                    </Button>
+                    {fileList.length >= 1 ? null : uploadButton}
                 </Upload>
+                {previewImage && (
+                    <Image 
+                        wrapperStyle={{
+                            display: 'none'
+                        }}
+                        preview={{
+                            visible: previewOpen,
+                            onVisibleChange: (visible => setPreviewOpen(visible)),
+                            afterOpenChange: visible => !visible && setPreviewImage('')
+                        }}
+                        src={previewImage}
+                    />
+                )}
             </div>
         </div>
     )
