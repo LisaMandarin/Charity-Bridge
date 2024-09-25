@@ -18,11 +18,9 @@ export function DashboardAvatar() {
         try {
             if (user.current && user.current.prefs.avatarId) {
                 await storage.deleteAvatar(user.current.prefs.avatarId)
-                await storage.createAvatar(options.file)
             }
-            if (user.current && !user.current.prefs.avatarId) {
-                await storage.createAvatar(options.file)
-            }
+            await storage.createAvatar(options.file)
+            
             options.onSuccess(null, options.file)
         } catch (err) {
             console.error('Failed to upload image', err.message)
@@ -117,32 +115,30 @@ export function DashboardAvatar() {
     }, [storage.fileId])
 
     return (
-        <div className="text-center">
-            <div className="flex justify-center">
-                <Upload
-                    customRequest={customRequest}
-                    listType="picture-circle"
-                    fileList={fileList}
-                    onPreview={onPreview}
-                    onChange={onChange}
-                    onRemove={onRemove}
-                >
-                    {fileList.length >= 1 ? null : uploadButton}
-                </Upload>
-                {previewImage && (
-                    <Image 
-                        wrapperStyle={{
-                            display: 'none'
-                        }}
-                        preview={{
-                            visible: previewOpen,
-                            onVisibleChange: (visible => setPreviewOpen(visible)),
-                            afterOpenChange: visible => !visible && setPreviewImage('')
-                        }}
-                        src={previewImage}
-                    />
-                )}
-            </div>
+        <div className="flex justify-center">
+            <Upload
+                customRequest={customRequest}
+                listType="picture-circle"
+                fileList={fileList}
+                onPreview={onPreview}
+                onChange={onChange}
+                onRemove={onRemove}
+            >
+                {fileList.length >= 1 ? null : uploadButton}
+            </Upload>
+            {previewImage && (
+                <Image 
+                    wrapperStyle={{
+                        display: 'none'
+                    }}
+                    preview={{
+                        visible: previewOpen,
+                        onVisibleChange: (visible => setPreviewOpen(visible)),
+                        afterOpenChange: visible => !visible && setPreviewImage('')
+                    }}
+                    src={previewImage}
+                />
+            )}
         </div>
     )
 }
