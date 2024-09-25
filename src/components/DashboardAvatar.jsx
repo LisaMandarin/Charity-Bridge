@@ -9,7 +9,6 @@ import { useUser } from "../lib/context/user";
 export function DashboardAvatar() {
     const user = useUser()
     const storage = useStorage()
-    // const [ avatarURL, setAvatarURL ] = useState('')
     const [ fileList, setFileList ] = useState([])
     const [ previewOpen, setPreviewOpen ] = useState(false)
     const [ previewImage, setPreviewImage ] = useState('')
@@ -18,8 +17,22 @@ export function DashboardAvatar() {
         try {
             if (user.current && user.current.prefs.avatarId) {
                 await storage.deleteAvatar(user.current.prefs.avatarId)
+                user.updatePrefs('avatarId', '')
             }
-            await storage.createAvatar(options.file)
+            const result = await storage.createAvatar(options.file)
+
+            if (user.current) {
+                user.updatePrefs('avatarId', result.$id)
+            }
+            
+            setFileList([
+                {
+                    uid: result.$id,
+                    name: options.file.name,
+                    status: "done",
+                    url: await storage.getPreviewURL(result.$id)
+                }
+            ])
             
             options.onSuccess(null, options.file)
         } catch (err) {
@@ -38,8 +51,20 @@ export function DashboardAvatar() {
     
 
     const onChange = ({fileList: newFileList}) => {
+        console.log('fileList: ', newFileList)
         setFileList(newFileList)
     }
+
+    const onRemove = async(file) => {
+        console.log('file: ', file)
+        await storage.deleteAvatar(file.uid)
+        if (user.current) {
+            user.updatePrefs('avatarId', "")
+        }
+        setFileList([])
+    }
+        
+    
 
     const uploadButton = (
         <button
@@ -63,14 +88,7 @@ export function DashboardAvatar() {
           reader.onerror = (error) => reject(error);
         });
 
-    const onRemove = async(e) => {
-        await storage.deleteAvatar(e.uid)
-        .then(() => {
-            if (user.current) {
-                user.updatePrefs('avatarId', "")
-            }
-        })
-    }
+
 
     // update messages
     useEffect(() => {
@@ -83,7 +101,7 @@ export function DashboardAvatar() {
     }, [storage.success, storage.error])
 
    
-
+    // fetch initial avatar
     useEffect(() => {
         if (user.current && user.current.prefs.avatarId) {
             const avatarId = user.current.prefs.avatarId
@@ -100,17 +118,12 @@ export function DashboardAvatar() {
         } else {
             console.error("no avatar file ID")
         }
-    }, [])
+    }, [user.current])
 
     // get avatar src from storage and update user prefs.
     useEffect(() => {
-        if (storage.fileId) {
-            storage.getPreviewURL(storage.fileId)
-            .then(() => {
-                if (user.current) {
-                    user.updatePrefs('avatarId', storage.fileId)
-                }
-            })
+        if (storage.fileId && user.current) {
+            user.updatePrefs('avatarId', storage.fileId)
         }
     }, [storage.fileId])
 
