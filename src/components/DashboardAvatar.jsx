@@ -1,7 +1,5 @@
-import { Avatar, Button, message, Upload, Progress, Image } from "antd";
+import { message, Upload, Image } from "antd";
 import { UserOutlined } from "@ant-design/icons";
-import { UploadOutlined } from "@ant-design/icons";
-import { DeleteOutlined } from "@ant-design/icons";
 import { useStorage } from "../lib/context/storage";
 import { useEffect, useState } from "react";
 import { useUser } from "../lib/context/user";
@@ -15,20 +13,18 @@ export function DashboardAvatar() {
 
     const customRequest = async(options) => {
         console.log("options(customRequest): ", options)
+
         try {
-            console.log('ready to delete avatar')
-            if (user.current && user.current.prefs.avatarId) {
-                await storage.deleteAvatar(user.current.prefs.avatarId)
-                user.updatePrefs('avatarId', '')
-                console.log('avatar deleted')
-            }
             console.log('ready to create avatar')
             const result = await storage.createAvatar(options.file)
             console.log('avatar created')
+
             if (user.current) {
-                user.updatePrefs('avatarId', result.$id)
+                console.log('user.current before updating prefs: ', user.current)
+                await user.updatePrefs('avatarId', result.$id)
                 console.log('user prefs updated')
             }
+
             console.log('ready to setFileList')
             setFileList([
                 {
@@ -39,6 +35,7 @@ export function DashboardAvatar() {
                 }
             ])
             console.log('setFileList done')
+            
             options.onSuccess(null, options.file)
         } catch (err) {
             console.error('Failed to custom request', err.message)

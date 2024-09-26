@@ -131,8 +131,7 @@ export function UserProvider(props) {
           [key]: value
         }
       )
-      const updatedUser = await account.get()
-      setUser(updatedUser)
+      setUser(result)
     } catch (err) {
       console.error('Failed to update preferences: ', err.message)
       setError('Failed to update preferences')
