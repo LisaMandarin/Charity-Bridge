@@ -14,6 +14,7 @@ export function DashboardAvatar() {
     const [ previewImage, setPreviewImage ] = useState('')
 
     const customRequest = async(options) => {
+        console.log("options(customRequest): ", options)
         try {
             console.log('ready to delete avatar')
             if (user.current && user.current.prefs.avatarId) {
@@ -34,7 +35,7 @@ export function DashboardAvatar() {
                     uid: result.$id,
                     name: options.file.name,
                     status: "done",
-                    url: await storage.getPreviewURL(result.$id)
+                    url: await storage.getPreviewURL(result.$id),
                 }
             ])
             console.log('setFileList done')
@@ -68,7 +69,15 @@ export function DashboardAvatar() {
         setFileList([])
     }
         
-    
+    const beforeUpload = (file) => {
+        console.log('file(beforeUpload: ', file)
+        const isOver5M = file.size / 1024 / 1024 > 3
+        if (isOver5M) {
+            message.error('Image must be smaller than 3MB')
+            return Upload.LIST_IGNORE;
+        }
+        return true
+    }
 
     const uploadButton = (
         <button
@@ -131,6 +140,10 @@ export function DashboardAvatar() {
         }
     }, [storage.fileId])
 
+    useEffect(() => {
+        console.log('fileList: ', fileList)
+    }, [fileList])
+
     return (
         <div className="flex justify-center">
             <Upload
@@ -140,6 +153,8 @@ export function DashboardAvatar() {
                 onPreview={onPreview}
                 onChange={onChange}
                 onRemove={onRemove}
+                beforeUpload={beforeUpload}
+                accept=".png,.jpeg,.webp"
             >
                 {fileList.length >= 1 ? null : uploadButton}
             </Upload>
