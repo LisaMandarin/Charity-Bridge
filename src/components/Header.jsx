@@ -17,6 +17,45 @@ export function Header() {
     </div>
   );
 
+  const items = [
+      {
+          key: 1,
+          icon: 'fluent:food-16-regular',
+          text: 'Food',
+          path: '/food',
+      },
+      {
+          key: 2,
+          icon: 'hugeicons:clothes',
+          text: 'Clothing',
+          path: '/clothing',
+      },
+      {
+          key: 3,
+          icon: 'lucide:house-plus',
+          text: 'Housing',
+          path: '/housing',
+      },
+      {
+          key: 4,
+          icon: 'hugeicons:car-01',
+          text: 'Transportation',
+          path: '/transportation',
+      },
+      {
+          key: 5,
+          icon: 'streamline:quality-education',
+          text: 'Education',
+          path: '/education',
+      },
+      {
+          key: 6,
+          icon: 'iconoir:gift',
+          text: 'Entertainment',
+          path: '/entertainment',
+      },
+  ]
+
   return (
     <>
       <Row className="h-full leading-10">
@@ -25,10 +64,10 @@ export function Header() {
         </Col>
         <Col flex={3} className="h-full">
           <div className="hidden md:block h-full">
-            <HeaderNavH />
+            <HeaderNavH items={items} />
           </div>
           <div className="block md:hidden h-full">
-            <HeaderNavV />
+            <HeaderNavV items={items} />
           </div>
         </Col>
         <Col flex={1} className="h-full mr-4 bg-pink-50 max-w-fit">

@@ -5,6 +5,7 @@ import { DashboardName } from "./DashboardName"
 import { DashboardPassword } from "./DashboardPassword"
 import { DashboardAvatar } from "./DashboardAvatar"
 import { DashboardEmail } from "./DashboardEmail"
+import { DashboardPost } from "./DashboardPost"
 const { Link } = Typography
 
 export function Dashboard() {
@@ -37,12 +38,22 @@ export function Dashboard() {
                 <DashboardPassword 
                     user={user}
                 />
+                <Divider orientation="left" orientationMargin="0">
+                    <span className="text-gray-300">Post</span>
+                </Divider>
+                <DashboardPost />
             </div>
         ) : (
             <div className="text-3xl text-center p-4">
                 Please <Link className="text-3xl" href="/login">log in</Link> to see more information
             </div>
         )}
+        {/* <div className="p-4 bg-white w-fit mx-auto">
+            <Divider orientation="left" orientationMargin="0">
+                <span className="text-gray-300">Post</span>
+            </Divider>
+            <DashboardPost />
+        </div> */}
         </>
     )
 }
