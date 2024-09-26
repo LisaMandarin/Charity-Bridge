@@ -27,6 +27,7 @@ export function StorageProvider(props) {
             )
             setSuccess('Avatar uploaded successfully')
             setFileId(result.$id)
+            return result
         } catch (err) {
             console.error('Failed to create avatar image: ', err.message)
             setError('Failed to upload avatar image')
