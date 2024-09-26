@@ -15,16 +15,20 @@ export function DashboardAvatar() {
 
     const customRequest = async(options) => {
         try {
+            console.log('ready to delete avatar')
             if (user.current && user.current.prefs.avatarId) {
                 await storage.deleteAvatar(user.current.prefs.avatarId)
                 user.updatePrefs('avatarId', '')
+                console.log('avatar deleted')
             }
+            console.log('ready to create avatar')
             const result = await storage.createAvatar(options.file)
-
+            console.log('avatar created')
             if (user.current) {
                 user.updatePrefs('avatarId', result.$id)
+                console.log('user prefs updated')
             }
-            
+            console.log('ready to setFileList')
             setFileList([
                 {
                     uid: result.$id,
@@ -33,10 +37,10 @@ export function DashboardAvatar() {
                     url: await storage.getPreviewURL(result.$id)
                 }
             ])
-            
+            console.log('setFileList done')
             options.onSuccess(null, options.file)
         } catch (err) {
-            console.error('Failed to upload image', err.message)
+            console.error('Failed to custom request', err.message)
             options.onError(err)
         }
     }
@@ -51,12 +55,12 @@ export function DashboardAvatar() {
     
 
     const onChange = ({fileList: newFileList}) => {
-        console.log('fileList: ', newFileList)
+        console.log('fileList(onChange): ', newFileList)
         setFileList(newFileList)
     }
 
     const onRemove = async(file) => {
-        console.log('file: ', file)
+        console.log('file(onRemove): ', file)
         await storage.deleteAvatar(file.uid)
         if (user.current) {
             user.updatePrefs('avatarId', "")
