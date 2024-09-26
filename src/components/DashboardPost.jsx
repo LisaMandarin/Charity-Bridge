@@ -64,6 +64,12 @@ export function DashboardPost() {
                     <Input />
                 </Form.Item>
                 <Form.Item
+                    label="Location"
+                    name="location"
+                >
+                    <Input />
+                </Form.Item>
+                <Form.Item
                     label="Description"
                     name="description"
                     rules={[
