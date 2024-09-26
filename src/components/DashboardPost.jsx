@@ -1,5 +1,7 @@
-import { Button, Form, Input, Space } from "antd"
+import { Button, Form, Input, InputNumber, Radio, Select, Space } from "antd"
 import Upload from "antd/es/upload/Upload"
+import { categoryItems } from "./HeaderCategory"
+import { Icon } from '@iconify/react';
 
 export function DashboardPost() {
     const [ form ] = Form.useForm()
@@ -12,6 +14,18 @@ export function DashboardPost() {
     const onReset = () => {
         form.resetFields()
     }
+
+    const categoryOptions = () => {
+        const options = categoryItems.map(item => {
+          return { value: item.text, label: (
+            <Space>
+                <Icon icon={item.icon}/>
+                <span>{item.text}</span>
+            </Space>
+          )}
+        })
+        return options
+      }
     
     return (
         <div className="md:w-[600px]">
@@ -37,19 +51,22 @@ export function DashboardPost() {
                         }
                     ]}
                 >
-                    <Input />
+                    <Input allowClear showCount maxLength={40}/>
                 </Form.Item>
                 <Form.Item
                     label="Quantity"
                     name="quantity"
                 >
-                    <Input />
+                    <InputNumber min={1}/>
                 </Form.Item>
                 <Form.Item
                     label="Condition"
                     name="condition"
                 >
-                    <Input />
+                    <Radio.Group>
+                        <Radio value="new">New</Radio>
+                        <Radio value="used">Used</Radio>
+                    </Radio.Group>
                 </Form.Item>
                 <Form.Item
                     label="Category"
@@ -61,7 +78,7 @@ export function DashboardPost() {
                         }
                     ]}
                 >
-                    <Input />
+                    <Select options={categoryOptions()}/>
                 </Form.Item>
                 <Form.Item
                     label="Location"
@@ -79,7 +96,7 @@ export function DashboardPost() {
                         }
                     ]}
                 >
-                    <Input.TextArea />
+                    <Input.TextArea autoSize allowClear />
                 </Form.Item>
                 <Form.Item
                     label="Photos"
