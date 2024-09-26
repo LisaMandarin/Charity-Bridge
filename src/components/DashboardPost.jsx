@@ -2,6 +2,7 @@ import { Button, Form, Input, InputNumber, Radio, Select, Space } from "antd"
 import Upload from "antd/es/upload/Upload"
 import { categoryItems } from "./HeaderCategory"
 import { Icon } from '@iconify/react';
+import { PlusOutlined } from "@ant-design/icons";
 
 export function DashboardPost() {
     const [ form ] = Form.useForm()
@@ -27,6 +28,12 @@ export function DashboardPost() {
         return options
       }
     
+    const normFile = (e) => {
+        if (Array.isArray(e)) {
+            return e;
+        }
+        return e?.fileList;
+    }
     return (
         <div className="md:w-[600px]">
             <Form
@@ -107,11 +114,17 @@ export function DashboardPost() {
                             message: 'Please upload at least one photo of the product'
                         }
                     ]}
+                    valuePropName="fileList"
+                    getValueFromEvent={normFile}
                 >
                     <Upload
                         listType="picture-card"
+                        action='/upload.do'
                     >
-                        <Button>upload</Button>
+                        <Space direction="vertical">
+                            <PlusOutlined />
+                            <Button className="border-0 bg-transparent shadow-none">upload</Button>
+                        </Space>
                     </Upload>
                 </Form.Item>
                 <Form.Item
