@@ -12,20 +12,13 @@ export function DashboardAvatar() {
     const [ previewImage, setPreviewImage ] = useState('')
 
     const customRequest = async(options) => {
-        console.log("options(customRequest): ", options)
-
         try {
-            console.log('ready to create avatar')
             const result = await storage.createAvatar(options.file)
-            console.log('avatar created')
 
             if (user.current) {
-                console.log('user.current before updating prefs: ', user.current)
                 await user.updatePrefs('avatarId', result.$id)
-                console.log('user prefs updated')
             }
 
-            console.log('ready to setFileList')
             setFileList([
                 {
                     uid: result.$id,
@@ -34,9 +27,8 @@ export function DashboardAvatar() {
                     url: await storage.getPreviewURL(result.$id),
                 }
             ])
-            console.log('setFileList done')
             
-            options.onSuccess(null, options.file)
+            options.onSuccess(null, options.file.name)
         } catch (err) {
             console.error('Failed to custom request', err.message)
             options.onError(err)
@@ -53,12 +45,10 @@ export function DashboardAvatar() {
     
 
     const onChange = ({fileList: newFileList}) => {
-        console.log('fileList(onChange): ', newFileList)
         setFileList(newFileList)
     }
 
     const onRemove = async(file) => {
-        console.log('file(onRemove): ', file)
         await storage.deleteAvatar(file.uid)
         if (user.current) {
             user.updatePrefs('avatarId', "")
@@ -67,7 +57,6 @@ export function DashboardAvatar() {
     }
         
     const beforeUpload = (file) => {
-        console.log('file(beforeUpload: ', file)
         const isOver5M = file.size / 1024 / 1024 > 3
         if (isOver5M) {
             message.error('Image must be smaller than 3MB')
@@ -136,10 +125,6 @@ export function DashboardAvatar() {
             user.updatePrefs('avatarId', storage.fileId)
         }
     }, [storage.fileId])
-
-    useEffect(() => {
-        console.log('fileList: ', fileList)
-    }, [fileList])
 
     return (
         <div className="flex justify-center">
