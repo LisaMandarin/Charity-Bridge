@@ -9,3 +9,4 @@ export const account = new Account(client);
 export const databases = new Databases(client);
 export { OAuthProvider }
 export const storage = new Storage(client)
+export const productStorage = new Storage(client)

@@ -57,8 +57,8 @@ export function DashboardAvatar() {
     }
         
     const beforeUpload = (file) => {
-        const isOver5M = file.size / 1024 / 1024 > 3
-        if (isOver5M) {
+        const isOver3M = file.size / 1024 / 1024 > 3
+        if (isOver3M) {
             message.error('Image must be smaller than 3MB')
             return Upload.LIST_IGNORE;
         }

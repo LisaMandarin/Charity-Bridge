@@ -1,16 +1,30 @@
-import { Button, Form, Input, InputNumber, Radio, Select, Space } from "antd"
+import { Button, Form, Image, Input, InputNumber, message, Radio, Select, Space } from "antd"
 import Upload from "antd/es/upload/Upload"
 import { categoryItems } from "./HeaderCategory"
 import { Icon } from '@iconify/react';
 import { PlusOutlined } from "@ant-design/icons";
+import { useEffect, useState } from "react";
+import { useProductStorage } from "../lib/context/productStorage";
 
 export function DashboardPost() {
     const [ form ] = Form.useForm()
-    const onFinish = (values) => {
+    const product = useProductStorage()
+    const [ error, setError ] = useState(null)
+    const [ success, setSuccess ] = useState(null)
+    const [ previewImage, setPreviewImage ] = useState('')
+    const [ previewOpen, setPreviewOpen ] = useState(false)
+    const [ fileIds, setFileId ] = useState([])
+
+    const onFinish = async(values) => {
+        setSuccess(null)
         console.log('form values: ', values)
+        
+        setSuccess('Your product is posted')
     }
     const onFinishFailed = (errorInfo) => {
+        setError(null)
         console.log('form errorInfo: ', errorInfo)
+        setError('Failed to post')
     }
     const onReset = () => {
         form.resetFields()
@@ -28,12 +42,60 @@ export function DashboardPost() {
         return options
       }
     
-    const normFile = (e) => {
-        if (Array.isArray(e)) {
-            return e;
+
+    const beforeUpload = (file) => {
+        console.log('file(beforeUpload: ' , file)
+        setError(null)
+        const isOver3M = file.size / 1024 / 1024 > 3
+        if (isOver3M) {
+            setError('Only 3MB or under is allowed')
+            return Upload.LIST_IGNORE;
         }
-        return e?.fileList;
+        return true
     }
+
+    const customRequest = async(options) => {
+        try {
+            const result = await product.createFile(options.file)
+            console.log('success: ', result)
+            setFileId(current => [...current, result.$id])
+        } catch (err) {
+            console.error('Failed to custom request', err.message)
+        }
+    }
+
+    const onPreview = async(file) => {
+        console.log('onPreivew file: ', file)
+        if (!file.url && !file.preview) {
+            file.preview = await getBase64(file.originFileObj)
+        }
+        setPreviewImage(file.url || file.preview)
+        setPreviewOpen(true)
+    }
+
+    const getBase64 = (file) => 
+        new Promise((resolve, reject) => {
+            const reader = new FileReader();
+            reader.readAsDataURL(file);
+            reader.onload = () => resolve(reader.result);
+            reader.onerror = (error) => reject(error)
+        })
+
+    useEffect(() => {
+        form.setFieldsValue({
+            photos: fileIds
+        })
+    }, [fileIds])
+
+    useEffect(() => {
+        if (error) {
+            message.error(error)
+        }
+        if (success) {
+            message.success(success)
+        }
+    }, [error, success])
+
     return (
         <div className="md:w-[600px]">
             <Form
@@ -114,18 +176,30 @@ export function DashboardPost() {
                             message: 'Please upload at least one photo of the product'
                         }
                     ]}
-                    valuePropName="fileList"
-                    getValueFromEvent={normFile}
-                >
+                >                    
                     <Upload
+                        multiple
                         listType="picture-card"
-                        action='/upload.do'
+                        beforeUpload={beforeUpload}
+                        customRequest={customRequest}
+                        // onPreview={onPreview}
                     >
                         <Space direction="vertical">
                             <PlusOutlined />
-                            <Button className="border-0 bg-transparent shadow-none">upload</Button>
+                            <Button>Upload</Button>
                         </Space>
                     </Upload>
+                    {/* {previewImage && (
+                        <Image 
+                            wrapperStyle={{ display: 'none'}}
+                            preview={{
+                                visible: previewOpen,
+                                onVisibleChange: (visible => setPreviewOpen(visible)),
+                                afterOpenChange: visible => !visible && setPreviewImage('')
+                            }}
+                            src={previewImage}
+                        />
+                    )} */}
                 </Form.Item>
                 <Form.Item
                     wrapperCol={{
