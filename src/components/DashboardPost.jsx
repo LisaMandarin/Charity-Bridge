@@ -13,7 +13,9 @@ export function DashboardPost() {
     const [ success, setSuccess ] = useState(null)
     const [ previewImage, setPreviewImage ] = useState('')
     const [ previewOpen, setPreviewOpen ] = useState(false)
+    const [ fileList, setFileList ] = useState([])
     const [ fileIds, setFileId ] = useState([])
+
 
     const onFinish = async(values) => {
         setSuccess(null)
@@ -58,10 +60,26 @@ export function DashboardPost() {
         try {
             const result = await product.createFile(options.file)
             console.log('success: ', result)
+
+            const productUrl = await product.getPreviewURL(result.$id)
+
             setFileId(current => [...current, result.$id])
+            setFileList(current => [
+                ...current,
+                {
+                    uid: result.$id,
+                    name: options.file.name,
+                    status: "done",
+                    url: productUrl
+                }
+            ])
         } catch (err) {
             console.error('Failed to custom request', err.message)
         }
+    }
+
+    const handleUploadChange = ({fileList: newFileList}) => {
+        setFileList(newFileList)
     }
 
     const onPreview = async(file) => {
@@ -71,6 +89,12 @@ export function DashboardPost() {
         }
         setPreviewImage(file.url || file.preview)
         setPreviewOpen(true)
+    }
+
+    const onRemove = async(file) => {
+        await product.deleteFile(file.uid)
+        const newFileList = fileList.filter(f => f.uid !== file.uid)
+        setFileList(newFileList)
     }
 
     const getBase64 = (file) => 
@@ -95,6 +119,10 @@ export function DashboardPost() {
             message.success(success)
         }
     }, [error, success])
+
+    useEffect(() => {
+        console.log('fileList: ', fileList)
+    }, [fileList])
 
     return (
         <div className="md:w-[600px]">
@@ -182,14 +210,16 @@ export function DashboardPost() {
                         listType="picture-card"
                         beforeUpload={beforeUpload}
                         customRequest={customRequest}
-                        // onPreview={onPreview}
+                        onPreview={onPreview}
+                        onRemove={onRemove}
+                        fileList={fileList}
                     >
                         <Space direction="vertical">
                             <PlusOutlined />
                             <Button>Upload</Button>
                         </Space>
                     </Upload>
-                    {/* {previewImage && (
+                    {previewImage && (
                         <Image 
                             wrapperStyle={{ display: 'none'}}
                             preview={{
@@ -199,7 +229,7 @@ export function DashboardPost() {
                             }}
                             src={previewImage}
                         />
-                    )} */}
+                    )}
                 </Form.Item>
                 <Form.Item
                     wrapperCol={{
