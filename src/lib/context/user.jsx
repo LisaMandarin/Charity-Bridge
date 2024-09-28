@@ -11,20 +11,29 @@ export function useUser() {
 
 export function UserProvider(props) {
   const [ user, setUser ] = useState(null);
+  const [ loading, setLoading ] = useState(true)
   const [ error, setError ] = useState(null);
   const [ success, setSuccess ] = useState(null);
   const navigate = useNavigate()
 
   async function fetchUser() {
+    setLoading(true)
     try {
       const session = account.getSession('current')
       if (session) {
-        const currentUser = await account.get();
-        setError(null)
-        setSuccess(null)
-        setUser(currentUser)
+        try {
+          const currentUser = await account.get();
+          console.log('get user successfully')
+          setLoading(false)
+          setError(null)
+          setSuccess(null)
+          setUser(currentUser)
+        } catch (err) {
+          console.error("Can't get account")
+        }
       }
     } catch (error) {
+      setLoading(false)
       setUser(null)
       setSuccess(null)
     }
@@ -169,7 +178,7 @@ export function UserProvider(props) {
     }
 
   return (
-    <UserContext.Provider value={{ current: user, error, setError, success, setSuccess, login, logout, register, updateName, updatePassword, googleLogin, updatePrefs, emailVerification, passwordRecovery }}>
+    <UserContext.Provider value={{ current: user, loading, error, setError, success, setSuccess, login, logout, register, updateName, updatePassword, googleLogin, updatePrefs, emailVerification, passwordRecovery }}>
       {props.children}
     </UserContext.Provider>
   );

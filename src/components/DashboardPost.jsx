@@ -6,30 +6,45 @@ import { PlusOutlined } from "@ant-design/icons";
 import { useEffect, useState } from "react";
 import { useProductStorage } from "../lib/context/productStorage";
 import { useProductInfo } from "../lib/context/productInfo";
+import { useUser } from "../lib/context/user";
 
 export function DashboardPost() {
+    const { current } = useUser()
+    const now = new Date()
     const [ form ] = Form.useForm()
     const product = useProductStorage()
     const productInfo = useProductInfo()
     const [ error, setError ] = useState(null)
     const [ success, setSuccess ] = useState(null)
+    const [ userId, setUserId ] = useState('')
+    const [ fileList, setFileList ] = useState([])
+    const [ fileIds, setFileIds ] = useState([])
     const [ previewImage, setPreviewImage ] = useState('')
     const [ previewOpen, setPreviewOpen ] = useState(false)
-    const [ fileList, setFileList ] = useState([])
-    const [ fileIds, setFileId ] = useState([])
 
-
-    const onFinish = async(values) => {
+    const onFinish = async() => {
         setSuccess(null)
-        console.log('form values: ', values)
-        const result = await productInfo.createForm(values)
-        console.log('result(onFinish)', result)
-        setSuccess('Your product is posted')
-        form.resetFields()
+
+        if (userId && now) {
+            form.setFieldsValue(
+                {
+                    userId,
+                    time: now
+                }
+            )
+            const updatedValues = form.getFieldsValue(true)
+            await productInfo.createForm(updatedValues)
+
+            setSuccess('Your product is posted')
+            form.resetFields()
+        } else {
+            return false
+        }
+        
     }
     const onFinishFailed = (errorInfo) => {
         setError(null)
-        console.log('form errorInfo: ', errorInfo)
+        console.error('form errorInfo: ', errorInfo)
         setError('Failed to post')
     }
     const onReset = () => {
@@ -56,7 +71,6 @@ export function DashboardPost() {
     }
 
     const beforeUpload = (file) => {
-        console.log('file(beforeUpload: ' , file)
         setError(null)
         const isOver3M = file.size / 1024 / 1024 > 3
         if (isOver3M) {
@@ -69,11 +83,10 @@ export function DashboardPost() {
     const customRequest = async(options) => {
         try {
             const result = await product.createFile(options.file)
-            console.log('success: ', result)
-
+    
             const productUrl = await product.getPreviewURL(result.$id)
 
-            setFileId(current => [...current, result.$id])
+            setFileIds(current => [...current, result.$id])
             setFileList(current => [
                 ...current,
                 {
@@ -89,7 +102,6 @@ export function DashboardPost() {
     }
 
     const onPreview = async(file) => {
-        console.log('onPreivew file: ', file)
         if (!file.url && !file.preview) {
             file.preview = await getBase64(file.originFileObj)
         }
@@ -118,6 +130,12 @@ export function DashboardPost() {
     }, [fileIds])
 
     useEffect(() => {
+        if (current && current.$id) {
+            setUserId(current.$id)
+        }
+    }, [current, form])
+
+    useEffect(() => {
         if (error) {
             message.error(error)
         }
@@ -125,10 +143,6 @@ export function DashboardPost() {
             message.success(success)
         }
     }, [error, success])
-
-    useEffect(() => {
-        console.log('fileList: ', fileList)
-    }, [fileList])
 
     return (
         <div className="md:w-[600px]">
@@ -144,6 +158,12 @@ export function DashboardPost() {
                     span: 16
                 }}
             >
+                <Form.Item hidden label="userId" name="userId">
+                    <Input />
+                </Form.Item>
+                <Form.Item hidden label="time" name="time">
+                    <Input />
+                </Form.Item>
                 <Form.Item
                     label="Product"
                     name="product"
