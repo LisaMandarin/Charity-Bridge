@@ -22,7 +22,7 @@ export function Dashboard() {
 
     return (
         <>
-        {/* { user.current ? (
+        { user.current ? (
             <div className="p-4 bg-white w-fit mx-auto">
                 <DashboardEmail />
                 <DashboardAvatar />
@@ -47,13 +47,13 @@ export function Dashboard() {
             <div className="text-3xl text-center p-4">
                 Please <Link className="text-3xl" href="/login">log in</Link> to see more information
             </div>
-        )} */}
-        <div className="p-4 bg-white w-fit mx-auto">
+        )}
+        {/* <div className="p-4 bg-white w-fit mx-auto">
             <Divider orientation="left" orientationMargin="0">
                 <span className="text-gray-300">Post</span>
             </Divider>
             <DashboardPost />
-        </div>
+        </div> */}
         </>
     )
 }
