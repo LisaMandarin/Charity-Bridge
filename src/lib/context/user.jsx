@@ -19,9 +19,8 @@ export function UserProvider(props) {
   async function fetchUser() {
     setLoading(true)
     try {
-      const session = account.getSession('current')
+      const session = await account.getSession('current')
       if (session) {
-        console.log('session: ', session)
         try {
           const currentUser = await account.get();
           console.log('currentUser: ', currentUser)

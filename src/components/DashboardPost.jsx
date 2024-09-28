@@ -7,6 +7,7 @@ import { useEffect, useState } from "react";
 import { useProductStorage } from "../lib/context/productStorage";
 import { useProductInfo } from "../lib/context/productInfo";
 import { useUser } from "../lib/context/user";
+import { useNavigate } from "react-router-dom";
 
 export function DashboardPost() {
     const { current } = useUser()
@@ -21,6 +22,7 @@ export function DashboardPost() {
     const [ fileIds, setFileIds ] = useState([])
     const [ previewImage, setPreviewImage ] = useState('')
     const [ previewOpen, setPreviewOpen ] = useState(false)
+    const navigate = useNavigate()
 
     const onFinish = async() => {
         setSuccess(null)
@@ -35,10 +37,15 @@ export function DashboardPost() {
             const updatedValues = form.getFieldsValue(true)
             await productInfo.createForm(updatedValues)
 
-            setSuccess('Your product is posted')
+            setSuccess('Your product is posted.')
+
             form.resetFields()
             setFileList([])
             setFileIds([])
+
+            setTimeout(() => {
+                navigate('/')
+            }, 2000)
         } else {
             return false
         }

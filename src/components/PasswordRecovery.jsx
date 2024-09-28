@@ -1,5 +1,5 @@
 import { Button, Form, Input, message, Typography } from "antd"
-import { useLocation, useNavigate, useParams } from "react-router-dom"
+import { useLocation, useNavigate } from "react-router-dom"
 import { account } from "../lib/appwrite"
 import { useCallback, useEffect, useState } from "react"
 const { Title } = Typography
