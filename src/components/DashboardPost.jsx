@@ -37,6 +37,8 @@ export function DashboardPost() {
 
             setSuccess('Your product is posted')
             form.resetFields()
+            setFileList([])
+            setFileIds([])
         } else {
             return false
         }
@@ -49,6 +51,8 @@ export function DashboardPost() {
     }
     const onReset = () => {
         form.resetFields()
+        setFileList([])
+        setFileIds([])
     }
 
     const categoryOptions = () => {
