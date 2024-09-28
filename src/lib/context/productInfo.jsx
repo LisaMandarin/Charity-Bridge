@@ -30,13 +30,12 @@ export function ProductInfoProvider(props) {
         }
     }
     
-    async function listDocuments(query) {
+    async function listDocuments() {
         setError(null)
         try {
             const result = await productInfoDatabase.listDocuments(
                 DATABASE_ID,
                 COLLECTION_ID,
-                query
             )
             console.log('document listing...', result)
             return result
