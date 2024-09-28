@@ -25,6 +25,7 @@ export function DashboardPost() {
         const result = await productInfo.createForm(values)
         console.log('result(onFinish)', result)
         setSuccess('Your product is posted')
+        form.resetFields()
     }
     const onFinishFailed = (errorInfo) => {
         setError(null)
