@@ -19,6 +19,7 @@ import { Verification } from "./components/Verification";
 import { PasswordRecovery } from "./components/PasswordRecovery";
 import { PasswordForgot } from "./components/PasswordForgot";
 import { ProductStorageProvider } from "./lib/context/productStorage";
+import { ProductInfoProvider } from "./lib/context/productInfo";
 
 function App() {
   
@@ -27,6 +28,7 @@ function App() {
       <UserProvider>
         <StorageProvider>
           <ProductStorageProvider>
+            <ProductInfoProvider>
               <header className="bg-pink-200 h-24">
                 <Header />
               </header>
@@ -52,7 +54,8 @@ function App() {
               <footer className="bg-pink-200 h-14">
                 <Footer />
               </footer>
-            </ProductStorageProvider>
+            </ProductInfoProvider>
+          </ProductStorageProvider>
         </StorageProvider>
       </UserProvider>
     </div>

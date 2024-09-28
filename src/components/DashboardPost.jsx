@@ -5,10 +5,12 @@ import { Icon } from '@iconify/react';
 import { PlusOutlined } from "@ant-design/icons";
 import { useEffect, useState } from "react";
 import { useProductStorage } from "../lib/context/productStorage";
+import { useProductInfo } from "../lib/context/productInfo";
 
 export function DashboardPost() {
     const [ form ] = Form.useForm()
     const product = useProductStorage()
+    const productInfo = useProductInfo()
     const [ error, setError ] = useState(null)
     const [ success, setSuccess ] = useState(null)
     const [ previewImage, setPreviewImage ] = useState('')
@@ -20,7 +22,8 @@ export function DashboardPost() {
     const onFinish = async(values) => {
         setSuccess(null)
         console.log('form values: ', values)
-        
+        const result = await productInfo.createForm(values)
+        console.log('result(onFinish)', result)
         setSuccess('Your product is posted')
     }
     const onFinishFailed = (errorInfo) => {
@@ -44,6 +47,12 @@ export function DashboardPost() {
         return options
       }
     
+
+    const onCategoryChange = (e) => {
+        form.setFieldsValue({
+            category: e.toLowerCase()
+        })
+    }
 
     const beforeUpload = (file) => {
         console.log('file(beforeUpload: ' , file)
@@ -76,10 +85,6 @@ export function DashboardPost() {
         } catch (err) {
             console.error('Failed to custom request', err.message)
         }
-    }
-
-    const handleUploadChange = ({fileList: newFileList}) => {
-        setFileList(newFileList)
     }
 
     const onPreview = async(file) => {
@@ -175,7 +180,7 @@ export function DashboardPost() {
                         }
                     ]}
                 >
-                    <Select options={categoryOptions()}/>
+                    <Select options={categoryOptions()} onChange={onCategoryChange}/>
                 </Form.Item>
                 <Form.Item
                     label="Location"

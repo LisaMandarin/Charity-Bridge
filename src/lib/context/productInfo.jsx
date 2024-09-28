@@ -33,11 +33,13 @@ export function ProductInfoProvider(props) {
     async function listDocuments(query) {
         setError(null)
         try {
-            await productInfoDatabase.listDocuments(
+            const result = await productInfoDatabase.listDocuments(
                 DATABASE_ID,
                 COLLECTION_ID,
                 query
             )
+            console.log('document listing...', result)
+            return result
         } catch(err) {
             console.error('Failed to list product information: ', err.message)
             setError('Failed to list product information')
@@ -53,6 +55,7 @@ export function ProductInfoProvider(props) {
                 id
             )
             console.log('form deleted successfully: ', result)
+            return result
         } catch(err) {
             console.error('Failed to delete form: ', err.message)
             setError('Failed to delete form')
