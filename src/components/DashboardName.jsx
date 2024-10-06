@@ -50,7 +50,11 @@ export function DashboardName({user}) {
                 >
                     <Input allowClear/>
                 </Form.Item>
-                <Form.Item className="flex justify-end">
+                <Form.Item
+                    wrapperCol={{
+                        offset: 8
+                    }}
+                >
                     <Button 
                         type="primary"
                         htmlType="submit"

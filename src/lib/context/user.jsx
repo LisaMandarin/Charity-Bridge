@@ -23,7 +23,7 @@ export function UserProvider(props) {
       if (session) {
         try {
           const currentUser = await account.get();
-          console.log('currentUser: ', currentUser)
+          
           setLoading(false)
           setError(null)
           setSuccess(null)

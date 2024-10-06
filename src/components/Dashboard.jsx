@@ -1,11 +1,12 @@
 import { useEffect, useState } from "react"
 import { useUser } from "../lib/context/user"
-import { Divider, message, Typography } from "antd"
+import { Divider, message, Space, Typography } from "antd"
 import { DashboardName } from "./DashboardName"
 import { DashboardPassword } from "./DashboardPassword"
 import { DashboardAvatar } from "./DashboardAvatar"
 import { DashboardEmail } from "./DashboardEmail"
 import { DashboardPost } from "./DashboardPost"
+import { DashboardProfile } from "./DashboardProfile"
 const { Link } = Typography
 
 export function Dashboard() {
@@ -24,8 +25,10 @@ export function Dashboard() {
         <>
         { user.current ? (
             <div className="p-4 bg-white w-fit mx-auto">
-                <DashboardEmail />
-                <DashboardAvatar />
+                <Space direction="vertical" size="large" className="w-full">
+                    <DashboardEmail />
+                    <DashboardAvatar />
+                </Space>
                 <Divider orientation="left" orientationMargin="0">
                     <span className="text-gray-300">Update Name</span>
                 </Divider>
@@ -39,6 +42,10 @@ export function Dashboard() {
                     user={user}
                 />
                 <Divider orientation="left" orientationMargin="0">
+                    <span className="text-gray-300">Profile</span>
+                </Divider>
+                <DashboardProfile />
+                <Divider orientation="left" orientationMargin="0">
                     <span className="text-gray-300">Post</span>
                 </Divider>
                 <DashboardPost />
@@ -48,12 +55,6 @@ export function Dashboard() {
                 Please <Link className="text-3xl" href="/login">log in</Link> to see more information
             </div>
         )}
-        {/* <div className="p-4 bg-white w-fit mx-auto">
-            <Divider orientation="left" orientationMargin="0">
-                <span className="text-gray-300">Post</span>
-            </Divider>
-            <DashboardPost />
-        </div> */}
         </>
     )
 }

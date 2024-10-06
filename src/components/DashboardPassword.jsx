@@ -81,7 +81,9 @@ export function DashboardPassword({user}) {
                     <Input type="password" allowClear />
                 </Form.Item>
                 <Form.Item
-                    className="flex justify-end"
+                    wrapperCol={{
+                        offset: 8
+                    }}
                 >
                     <Button 
                         type="primary"
