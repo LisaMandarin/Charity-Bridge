@@ -1,12 +1,13 @@
 import { useEffect, useState } from "react"
 import { useUser } from "../lib/context/user"
-import { Divider, message, Space, Typography } from "antd"
+import { Divider, message, Space, Typography, Spin } from "antd"
 import { DashboardName } from "./DashboardName"
 import { DashboardPassword } from "./DashboardPassword"
 import { DashboardAvatar } from "./DashboardAvatar"
 import { DashboardEmail } from "./DashboardEmail"
 import { DashboardPost } from "./DashboardPost"
 import { DashboardProfile } from "./DashboardProfile"
+import { SessionFailure } from "./SessionFailure"
 const { Link } = Typography
 
 export function Dashboard() {
@@ -20,6 +21,18 @@ export function Dashboard() {
             message.error(user.error)
         }
     }, [user.success, user.error])
+
+    if (user.loading) {
+        return (
+            <Spin size="large" spinning={user.loading} fullscreen />
+        )
+    }
+
+    if (!user.current) {
+        return (
+            <SessionFailure />
+        )
+    }
 
     return (
         <>

@@ -18,24 +18,19 @@ export function UserProvider(props) {
 
   async function fetchUser() {
     setLoading(true)
+    setError(null)
+    setSuccess(null)
     try {
       const session = await account.getSession('current')
       if (session) {
-        try {
           const currentUser = await account.get();
-          
-          setLoading(false)
-          setError(null)
-          setSuccess(null)
           setUser(currentUser)
-        } catch (err) {
-          console.error("Can't get account")
-        }
       }
     } catch (error) {
-      setLoading(false)
       setUser(null)
-      setSuccess(null)
+      console.error('Failed to fetch user')
+    } finally {
+      setLoading(false)
     }
   }
 
@@ -46,6 +41,7 @@ export function UserProvider(props) {
   async function login(email, password) {
     setError(null)
     setSuccess(null)
+    setLoading(true)
     try {
       await account.createEmailPasswordSession(email, password);
       await fetchUser()
@@ -54,19 +50,25 @@ export function UserProvider(props) {
     } catch(error) {
       setError('Failed to login')
       console.error('Login error: ', error.message)
+    } finally {
+      setLoading(false)
     }
   }
 
   async function logout() {
     setError(null)
     setSuccess(null)
+    setLoading(true)
     try {
       await account.deleteSession('current')
+      
       setSuccess('You have logged out.')
       setUser(null)
     } catch (error) {
       setError('Failed to logout')
       console.error('Logout error: ', error.message)
+    } finally {
+      setLoading(false)
     }
   }
 

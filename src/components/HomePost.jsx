@@ -46,8 +46,6 @@ export function HomePost() {
         return newDay
     }
 
-    useEffect(() => console.log('data: ', data), [data])
-    useEffect(() => console.log('dataTable: ',dataTable), [dataTable])
 
     return (
         <div className="">

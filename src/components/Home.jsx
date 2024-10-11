@@ -2,27 +2,31 @@ import { useUser } from "../lib/context/user"
 import { HomePost } from "./HomePost"
 import { HomeReview } from "./HomeReview"
 import { HomeNeed } from "./HomeNeed"
-import { Link } from "react-router-dom"
+import { Spin } from "antd"
+import { SessionFailure } from "./SessionFailure"
+
 
 export function Home() {
     const user = useUser()
 
-    return (
-        <>
-        { user.current ? (
-            <div
-                className="grid sm:grid-cols-[1fr_2fr_1fr] md:mx-4 lg:mx-8"
-            >
-                <HomeReview />
-                <HomePost />
-                <HomeNeed />
-            </div>
-        ) : (
-            <>
-                <div className="text-3xl text-center p-4">Please <Link to="/login">log in</Link> to see more information</div>
-            </>
+    if (user.loading) {
+        console.log('home loading...')
+        return (
+            <Spin size="large" spinning={user.loading} fullscreen />
         )
-        }
-        </>
+    }
+
+    if (!user.current) {
+        return (
+            <SessionFailure />
+        )
+    }
+
+    return (
+        <div className="grid sm:grid-cols-[1fr_2fr_1fr] md:mx-4 lg:mx-8">
+            <HomeReview />
+            <HomePost />
+            <HomeNeed />
+        </div>
     )
 }

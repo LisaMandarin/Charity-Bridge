@@ -37,7 +37,6 @@ export function ProductInfoProvider(props) {
                 DATABASE_ID,
                 COLLECTION_ID,
             )
-            console.log('document listing...', result)
             return result
         } catch(err) {
             console.error('Failed to list product information: ', err.message)

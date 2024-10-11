@@ -1,8 +1,9 @@
-import { useLocation, useParams } from "react-router-dom"
+import { useLocation } from "react-router-dom"
 import { account } from "../lib/appwrite"
 import { useEffect, useState } from "react"
 import { useUser } from "../lib/context/user"
-import { Typography } from "antd"
+import { Typography, Spin } from "antd"
+import { SessionFailure } from "./SessionFailure"
 const { Link } = Typography
 
 export function Verification() {
@@ -46,25 +47,31 @@ export function Verification() {
         verifyEmail()
     }, [location.search])
 
-    return (
-        user.current ? (
-            <div className="flex w-full h-full text-3xl justify-center">
-                { success && (
-                    <div className="m-5">
-                        {success}
-                    </div>
-                ) }
-                { error && (
-                    <div className="m-5">
-                        {error}
-                    </div>
-                ) }
-            </div>
-        ) : (
-            <div>
-                <p>Please <Link href="/login">log in</Link> your account to verify your email</p>
-            </div>
+    if (user.loading) {
+        return (
+            <Spin size="large" spinning={user.loading} fullscreen />
         )
+    }
+
+    if (!user.current) {
+        return (
+            <SessionFailure />
+        )
+    }
+
+    return (
+        <div className="flex w-full h-full text-3xl justify-center">
+            { success && (
+                <div className="m-5">
+                    {success}
+                </div>
+            ) }
+            { error && (
+                <div className="m-5">
+                    {error}
+                </div>
+            ) }
+        </div>
     )
 }
 

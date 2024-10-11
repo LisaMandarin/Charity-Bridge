@@ -1,4 +1,4 @@
-import { message, Button, Flex, Form, Input, Space, Typography } from "antd"
+import { message, Button, Flex, Form, Input, Space, Typography, Spin } from "antd"
 import { useUser } from "../lib/context/user"
 import { useEffect } from "react"
 const { Title, Link } = Typography
@@ -21,6 +21,12 @@ export function Register() {
             user.setSuccess(null)
         }
     }, [user.error, user.success, user.setError, user.setSuccess])
+
+    if (user.loading) {
+        return (
+            <Spin size="large" spinning={user.loading} fullscreen />
+        )
+    }
 
     return (
         <>

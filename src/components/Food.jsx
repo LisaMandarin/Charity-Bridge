@@ -1,13 +1,23 @@
-import dayjs from "dayjs"
+import { useUser } from "../lib/context/user"
+import { Spin } from "antd"
+import { SessionFailure } from "./SessionFailure"
 
 export function Food() {
-    const now = dayjs().format('MM-DD, YYYY')
-    const myBday = dayjs('1981-06-08', 'YYYY-MM-DD')
-    const newBDay = dayjs(myBday).format('MM-DD, YYYY')
+    const user = useUser()
+    
+    if (user.loading) {
+        return (
+            <Spin size="large" spinning={user.loading} fullscreen />
+        )
+    }
+
+    if (!user.current) {
+        return (
+            <SessionFailure />
+        )
+    }
+
     return (
-        <>
-            <p>{now}</p>
-            <p>{newBDay}</p>
-        </>
+        <p>This is Food Component</p>
     )
 }

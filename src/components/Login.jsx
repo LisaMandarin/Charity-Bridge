@@ -1,7 +1,8 @@
-import { message, Button, Flex, Form, Input, Typography, Space } from "antd";
+import { message, Button, Flex, Form, Input, Typography, Space, Spin } from "antd";
 import { useUser } from "../lib/context/user";
 import { FaGoogle, FaFacebook } from "react-icons/fa6";
 import { useCallback, useEffect } from "react";
+import { SessionFailure } from "./SessionFailure";
 
 const { Title, Link } = Typography;
 
@@ -29,6 +30,12 @@ export function Login() {
     }
   }, [user, onReset])
  
+  if (user.loading) {
+    return (
+      <Spin size="large" spinning={user.loading} fullscreen />
+    )
+  }
+
   return (
     <>
       <Form
