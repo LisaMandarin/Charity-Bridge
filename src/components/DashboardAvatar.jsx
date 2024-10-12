@@ -102,22 +102,8 @@ export function DashboardAvatar() {
    
     // fetch initial avatar
     useEffect(() => {
-        if (user.current && user.current.prefs.avatarId) {
-            const avatarId = user.current.prefs.avatarId
-            storage.getPreviewURL(avatarId).then((url) => {
-                setFileList([
-                    {
-                        uid: avatarId,
-                        name: "image.png",
-                        status: "done",
-                        url
-                    }
-                ])
-            })
-        } else {
-            console.error("no avatar file ID")
-        }
-    }, [user.current])
+        user.fetchUser()
+    }, [])
 
     // get avatar src from storage and update user prefs.
     useEffect(() => {

@@ -25,9 +25,8 @@ export function UserProfileProvider(props) {
                 ID.unique(),
                 form
             )
-            console.log('Form created', result)
-            return result
             setSuccess('Your profile is updated')
+            return result
         } catch (err) {
             console.error('Failed to create form: ', err.message)
             setError('Failed to update your profile')

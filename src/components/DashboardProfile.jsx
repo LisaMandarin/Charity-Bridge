@@ -10,9 +10,7 @@ export function DashboardProfile() {
     const userProfile = useUserProfile()
     
     const onFinish = async(values) => {
-        console.log('form values: ', values)
         await userProfile.createForm(values)
-        console.log('onFinish done')
         form.resetFields()
     }
 

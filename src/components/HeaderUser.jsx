@@ -1,10 +1,9 @@
-import { Flex, Button, Typography, Avatar } from "antd"
+import { Flex, Button, Avatar } from "antd"
 import { useUser } from "../lib/context/user"
 import { UserOutlined } from "@ant-design/icons"
 import { useEffect, useState } from "react"
 import { useStorage } from "../lib/context/storage"
-
-const { Link } = Typography
+import { Link } from "react-router-dom"
 
 export function HeaderUser() {
     const user = useUser()
@@ -12,16 +11,21 @@ export function HeaderUser() {
     const [ avatarURL, setAvatarURL ] = useState('')
 
     useEffect(() => {
-        if (user.current && user.current.prefs.avatarId) {
+        user.fetchUser()
+    }, [])
+
+    useEffect(() => {
+        if (user.current && user.current.prefs && user.current.prefs.avatarId) {
             const avatarId = user.current.prefs.avatarId
             storage.getPreviewURL(avatarId)
                 .then((url) => {
                     setAvatarURL(url)
                 })
+                .catch((error) => console.error("Failed to fetch avatar URL", error.message))
         } else {
             setAvatarURL('')
         }
-    }, [user])
+    }, [user.current])
 
     return (
         <>
@@ -38,8 +42,8 @@ export function HeaderUser() {
                         align="flex-end" 
                         justify="flex-end" 
                     >
-                        <p><Link href="/dashboard">Hello, {user.current.name}</Link></p>
-                        <p><Link href="#" onClick={() => user.logout()}>Logout</Link></p>
+                        <p><Link to="/dashboard">Hello, {user.current.name}</Link></p>
+                        <p><Link to="#" onClick={() => user.logout()}>Logout</Link></p>
                     </Flex>
                 </div>
             ) : (

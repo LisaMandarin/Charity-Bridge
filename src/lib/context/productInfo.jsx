@@ -22,7 +22,6 @@ export function ProductInfoProvider(props) {
                 ID.unique(),
                 form
             )
-            console.log('form created successfully', result)
             return result
         } catch(err) {
             console.error('Failed to create form: ', err.message)
@@ -52,7 +51,6 @@ export function ProductInfoProvider(props) {
                 COLLECTION_ID,
                 id
             )
-            console.log('form deleted successfully: ', result)
             return result
         } catch(err) {
             console.error('Failed to delete form: ', err.message)

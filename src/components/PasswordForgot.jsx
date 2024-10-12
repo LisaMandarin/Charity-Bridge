@@ -8,7 +8,6 @@ export function PasswordForgot() {
 
     const onFinish = async(values) => {
         await user.passwordRecovery(values.email)
-        console.log('Sent')
     }
     
     const onFinishFailed = (errorInfo) => {

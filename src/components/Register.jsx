@@ -1,7 +1,8 @@
 import { message, Button, Flex, Form, Input, Space, Typography, Spin } from "antd"
 import { useUser } from "../lib/context/user"
 import { useEffect } from "react"
-const { Title, Link } = Typography
+const { Title } = Typography
+import { Link } from "react-router-dom"
 
 export function Register() {
     const [ form ] = Form.useForm()
@@ -143,7 +144,7 @@ export function Register() {
             </Form.Item>
         </Form>
         <div style={{maxWidth: 400, margin: '0 auto', textAlign: "center"}}>
-                Already have an account? <Link href="/login">Sign in</Link>
+                Already have an account? <Link to="/login">Sign in</Link>
         </div>
         </>
     )

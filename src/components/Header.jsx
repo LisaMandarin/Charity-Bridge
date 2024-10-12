@@ -3,8 +3,8 @@ import { HeaderNavV } from "./HeaderNavV";
 import { HeaderUser } from "./HeaderUser";
 import smallLogo from "../assets/images/small-logo.webp"
 import { Col, Row } from "antd";
-import { Link } from "react-router-dom";
 import { categoryItems } from "./HeaderCategory";
+import { Link } from "react-router-dom";
 
 
 export function Header() {

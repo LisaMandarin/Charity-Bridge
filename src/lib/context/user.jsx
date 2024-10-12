@@ -1,5 +1,5 @@
 import { ID, OAuthProvider } from "appwrite";
-import { createContext, useContext, useEffect, useState } from "react";
+import { createContext, useCallback, useContext, useEffect, useState } from "react";
 import { account } from "../appwrite";
 import { useNavigate } from "react-router-dom";
 
@@ -14,37 +14,69 @@ export function UserProvider(props) {
   const [ loading, setLoading ] = useState(true)
   const [ error, setError ] = useState(null);
   const [ success, setSuccess ] = useState(null);
+  const [ isSession, setIsSession ] = useState(null)
   const navigate = useNavigate()
 
-  async function fetchUser() {
+  const fetchSession = useCallback(async() => {
     setLoading(true)
     setError(null)
     setSuccess(null)
+    setIsSession(null)
+
     try {
       const session = await account.getSession('current')
       if (session) {
-          const currentUser = await account.get();
-          setUser(currentUser)
+        setIsSession(true)
+        return true
+      } else {
+        setIsSession(false) 
+        return false
       }
     } catch (error) {
-      setUser(null)
-      console.error('Failed to fetch user')
+      console.error('Failed to fetch session: ', error.message)
+      setIsSession(false)
+      return false
     } finally {
       setLoading(false)
     }
-  }
+  }, [])  // this function is used to ensure <ProtectedRoute> works when the session is true
 
+  
+  const fetchUser = useCallback(async() => {
+      setLoading(true)
+      setError(null)
+      setSuccess(null)
+      try {
+        const sessionExists = await fetchSession()
+        if (sessionExists) {
+          const result = await account.get() 
+          setUser(result)
+        } else {
+          setUser(null)
+        }
+      } catch (err) {
+        console.error('Failed to fetch logged-in user data')
+        setUser(null)
+      } finally {
+        setLoading(false)
+      }
+  }, [fetchSession])
+  
   useEffect(() => {
     fetchUser()
-  }, [])
+  }, [fetchUser])
 
   async function login(email, password) {
     setError(null)
     setSuccess(null)
     setLoading(true)
     try {
-      await account.createEmailPasswordSession(email, password);
-      await fetchUser()
+      const session = await account.createEmailPasswordSession(email, password);
+    
+      if (session) {
+        await fetchSession();
+      }
+      
       setSuccess('You have logged in')
       setTimeout(() => navigate('/'), 3000)
     } catch(error) {
@@ -61,9 +93,9 @@ export function UserProvider(props) {
     setLoading(true)
     try {
       await account.deleteSession('current')
-      
       setSuccess('You have logged out.')
       setUser(null)
+      await fetchSession()
     } catch (error) {
       setError('Failed to logout')
       console.error('Logout error: ', error.message)
@@ -71,10 +103,12 @@ export function UserProvider(props) {
       setLoading(false)
     }
   }
-
+  
   async function register(email, password, username) {
     setError(null)
     setSuccess(null)
+    setLoading(true)
+    
     try {
       await account.create(ID.unique(), email, password, username)
       setSuccess('You have successfully registered with Charity Bridge.\nLogging in...')
@@ -84,25 +118,31 @@ export function UserProvider(props) {
     } catch (error) {
       setError('Failed to register')
       console.error('Register error: ', error.message)
+    } finally {
+      setLoading(false)
     }
   }
 
   async function updateName(name) {
     setError(null)
     setSuccess(null)
+    setLoading(true)
     try {
       await account.updateName(name)
+      setUser({...user, name: name})
       setSuccess("User's name updated successfully")
-      fetchUser()
     } catch (err) {
       console.error("Failed to update user's name: ", err.message)
       setError("Failed to update user's name")
+    } finally {
+      setLoading(false)
     }
   }
 
   async function updatePassword(newPassword, oldPassword) {
     setError(null)
     setSuccess(null)
+    setLoading(true)
     try {
       await account.updatePassword(
         newPassword,
@@ -112,24 +152,33 @@ export function UserProvider(props) {
     } catch (err) {
       setError('Failed to update password')
       console.error('Failed to update password: ', err.message)
+    } finally {
+      setLoading(false)
     }
   }
 
   async function googleLogin () {
     setError(null)
     setSuccess(null)
+    setLoading(true)
+
+    const redirectURL = window.location.hostname === 'localhost'
+      ? 'http://localhost:5173/oauthsuccess' : 'https://main--charitybridge.netlify.app/';
+    
+    const failURL = window.location.hostname === 'localhost'
+      ? 'http://localhost:5173/oauthfailure' : 'https://main--charitybridge.netlify.app/oauthfailure'
     try {
       account.createOAuth2Session(
         OAuthProvider.Google,
-        // 'http://localhost:5173/',
-        // 'http://localhost:5173/failure',
-        'https://main--charitybridge.netlify.app/',
-        'https://main--charitybridge.netlify.app/failure',
+        redirectURL,
+        failURL
       )
       setSuccess('Google Login successful')
     } catch (err) {
       setError('Failed to use Google login')
       console.error('Fail to use Google login', err.message)
+    } finally {
+      setLoading(false)
     }
   }
 
@@ -180,7 +229,7 @@ export function UserProvider(props) {
     }
 
   return (
-    <UserContext.Provider value={{ current: user, loading, error, setError, success, setSuccess, login, logout, register, updateName, updatePassword, googleLogin, updatePrefs, emailVerification, passwordRecovery }}>
+    <UserContext.Provider value={{ current: user, isSession, loading, error, setError, success, setSuccess, fetchSession, fetchUser, login, logout, register, updateName, updatePassword, googleLogin, updatePrefs, emailVerification, passwordRecovery }}>
       {props.children}
     </UserContext.Provider>
   );

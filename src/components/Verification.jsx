@@ -1,18 +1,11 @@
 import { useLocation } from "react-router-dom"
 import { account } from "../lib/appwrite"
 import { useEffect, useState } from "react"
-import { useUser } from "../lib/context/user"
-import { Typography, Spin } from "antd"
-import { SessionFailure } from "./SessionFailure"
-const { Link } = Typography
 
 export function Verification() {
     const [ success, setSuccess ] = useState(null)
     const [ error, setError ] = useState(null)
-    const user = useUser()
     const location = useLocation()
-
-
 
     useEffect(() => {
         setSuccess(null)
@@ -37,7 +30,6 @@ export function Verification() {
                     userId,
                     secret
                 )
-                console.log('result of updateVerification: ', result)
                 setSuccess('Email verification done')
             } catch (err) {
                 console.error('Failed to verify email: ', err.message)
@@ -46,18 +38,6 @@ export function Verification() {
         }
         verifyEmail()
     }, [location.search])
-
-    if (user.loading) {
-        return (
-            <Spin size="large" spinning={user.loading} fullscreen />
-        )
-    }
-
-    if (!user.current) {
-        return (
-            <SessionFailure />
-        )
-    }
 
     return (
         <div className="flex w-full h-full text-3xl justify-center">

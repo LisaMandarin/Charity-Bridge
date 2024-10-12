@@ -21,7 +21,6 @@ export function ProductStorageProvider(props) {
                 ID.unique(),
                 file
             )
-            console.log('file created: ', result)
             setFileId(result.$id)
             return result
         } catch (err) {
@@ -35,7 +34,6 @@ export function ProductStorageProvider(props) {
                 BUCKET_PRODUCT_ID,
                 id
             )
-            console.log('file deleted')
         } catch (err) {
             console.error('Failed to delete file: ', err.message)
 
@@ -48,7 +46,6 @@ export function ProductStorageProvider(props) {
                 BUCKET_PRODUCT_ID,
                 id
             )
-            console.log('Got preview url successfully', response)
             return response.href
         } catch (err) {
             console.error('Failed to getPreview', err.message)

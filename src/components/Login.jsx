@@ -2,9 +2,9 @@ import { message, Button, Flex, Form, Input, Typography, Space, Spin } from "ant
 import { useUser } from "../lib/context/user";
 import { FaGoogle, FaFacebook } from "react-icons/fa6";
 import { useCallback, useEffect } from "react";
-import { SessionFailure } from "./SessionFailure";
+import { Link } from "react-router-dom";
 
-const { Title, Link } = Typography;
+const { Title } = Typography;
 
 export function Login() {
   const [form] = Form.useForm();
@@ -85,13 +85,13 @@ export function Login() {
             </Space>
           </div>
           <div>
-            <Link href="/passwordforgot">Forgot Password?</Link>
+            <Link to="/passwordforgot" className="underline hover:text-blue-500 hover:no-underline">Forgot Password?</Link>
           </div>
         </div>        
       </Form>
 
       <div className="max-w-96 my-0 mx-auto text-center">
-        Create an account? <Link href="/register">Sign up</Link> now
+        Create an account? <Link to="/register" className="underline hover:text-blue-500 hover:no-underline">Sign up</Link> now
       </div>
     </>
   );
