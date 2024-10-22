@@ -1,6 +1,5 @@
-import { useEffect} from "react"
 import { useUser } from "../lib/context/user"
-import { Divider, message, Space } from "antd"
+import { Divider, Space } from "antd"
 import { DashboardName } from "./DashboardName"
 import { DashboardPassword } from "./DashboardPassword"
 import { DashboardAvatar } from "./DashboardAvatar"
@@ -10,19 +9,6 @@ import { DashboardProfile } from "./DashboardProfile"
 
 export function Dashboard() {
     const user = useUser()
-    
-    useEffect(() => {
-        user.fetchUser()
-    }, [])
-
-    useEffect(() => {
-        if (user.success) {
-            message.success(user.success)
-        }
-        if (user.error) {
-            message.error(user.error)
-        }
-    }, [user.success, user.error])
 
     return (
         <>

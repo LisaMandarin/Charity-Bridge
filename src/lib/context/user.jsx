@@ -1,7 +1,8 @@
 import { ID, OAuthProvider } from "appwrite";
-import { createContext, useCallback, useContext, useEffect, useState } from "react";
+import { createContext, useContext, useEffect, useState } from "react";
 import { account } from "../appwrite";
 import { useNavigate } from "react-router-dom";
+import { message } from "antd";
 
 const UserContext = createContext();
 
@@ -12,8 +13,6 @@ export function useUser() {
 export function UserProvider(props) {
   const [ user, setUser ] = useState(null);
   const [ loading, setLoading ] = useState(true)
-  const [ error, setError ] = useState(null);
-  const [ success, setSuccess ] = useState(null);
   const [ isSession, setIsSession ] = useState(null)
   const navigate = useNavigate()
 
@@ -22,8 +21,6 @@ export function UserProvider(props) {
   }, [])
 
   async function fetchSession() {
-    setError(null)
-    setSuccess(null)
     setLoading(true)
 
     try {
@@ -32,7 +29,7 @@ export function UserProvider(props) {
         setIsSession(true)
         const result = await fetchUser()
         if (!result) {
-          setError('Failed to fetch account data')
+          message.error('Failed to fetch account data')
         }
       }
 
@@ -46,9 +43,6 @@ export function UserProvider(props) {
   }
 
   async function fetchUser() {
-    setError(null)
-    setSuccess(null)
-
     try {
       const result = await account.get()
       if (result?.$id) {
@@ -64,15 +58,13 @@ export function UserProvider(props) {
   }
   
   async function login(email, password) {
-    setError(null)
-    setSuccess(null)
     setLoading(true)
 
     try {
       const session = await account.createEmailPasswordSession(email, password);
       
       if (!session?.$id) {
-        setError("Invalid session data")
+        message.error("Invalid session data")
         return
       }
 
@@ -81,15 +73,15 @@ export function UserProvider(props) {
       const result = await fetchUser()
       
       if (!result) {
-        setError('Failed to fetch account data')
+        message.error('Failed to fetch account data')
         return
       }
 
-      setSuccess('You have logged in')
-      setTimeout(() => navigate('/'), 3000)
+      message.success('You have logged in')
+      setTimeout(() => navigate('/'), 1500)
       
     } catch(error) {
-      setError('Failed to login')
+      message.error('Failed to login')
       console.error('Login error: ', error.message)
 
     } finally {
@@ -98,18 +90,16 @@ export function UserProvider(props) {
   }
 
   async function logout() {
-    setError(null)
-    setSuccess(null)
     setLoading(true)
 
     try {
       await account.deleteSession('current')
       setUser(null)
       setIsSession(false)
-      setSuccess('You have logged out.')
+      message.success('You have logged out.')
 
     } catch (error) {
-      setError('Failed to logout')
+      message.error('Failed to logout')
       console.error('Logout error: ', error.message)
 
     } finally {
@@ -145,18 +135,16 @@ export function UserProvider(props) {
   }
 
   async function updateName(name) {
-    setError(null)
-    setSuccess(null)
     setLoading(true)
 
     try {
       await account.updateName(name)
       setUser(prev => ({...prev, name: name}))
-      setSuccess("User's name updated successfully")
+      message.success("User's name updated successfully")
 
     } catch (error) {
       console.error("Failed to update user's name: ", error.message)
-      setError("Failed to update user's name")
+      message.error("Failed to update user's name")
 
     } finally {
       setLoading(false)
@@ -164,8 +152,6 @@ export function UserProvider(props) {
   }
 
   async function updatePassword(newPassword, oldPassword) {
-    setError(null)
-    setSuccess(null)
     setLoading(true)
 
     try {
@@ -173,10 +159,10 @@ export function UserProvider(props) {
         newPassword,
         oldPassword
       )
-      setSuccess('Password updated successfully')
+      message.success('Password updated successfully')
 
     } catch (error) {
-      setError('Failed to update password')
+      message.error('Failed to update password')
       console.error('Failed to update password: ', error.message)
       
     } finally {
@@ -185,8 +171,6 @@ export function UserProvider(props) {
   }
 
   async function googleLogin () {
-    setError(null)
-    setSuccess(null)
     setLoading(true)
 
     const redirectURL = window.location.hostname === 'localhost'
@@ -200,9 +184,9 @@ export function UserProvider(props) {
         redirectURL,
         failURL
       )
-      setSuccess('Google Login successful')
+      message.success('Google Login successful')
     } catch (err) {
-      setError('Failed to use Google login')
+      message.error('Failed to use Google login')
       console.error('Fail to use Google login', err.message)
     } finally {
       setLoading(false)
@@ -210,8 +194,6 @@ export function UserProvider(props) {
   }
 
   async function updatePrefs(key, value) {
-    setError(null)
-    setSuccess(null)
     try {
       const result = await account.updatePrefs(
         {
@@ -220,43 +202,39 @@ export function UserProvider(props) {
       )
       setUser(result)
     } catch (err) {
+      message.error('Failed to update preferences')
       console.error('Failed to update preferences: ', err.message)
-      setError('Failed to update preferences')
     }
   }
 
   async function emailVerification() {
-    setError(null)
-    setSuccess(null)
     try {
       await account.createVerification(
         'https://main--charitybridge.netlify.app/verification'
       )
-      setSuccess('Verification email sent!')
+      message.success('Verification email sent!')
     } catch (err) {
       console.error('Failed to send email verification: ', err.message)
-      setError('Failed to send email verification')
+      message.error('Failed to send email verification')
     }
   }
 
   async function passwordRecovery(email) {
-    setError(null)
-    setSuccess(null)
     try {
       await account.createRecovery(
         email,
         'https://main--charitybridge.netlify.app/passwordrecovery'
       )
-      setSuccess('Password recovery sent')
+      message.success('Password recovery sent')
     } catch (err) {
       console.error('Failed to send password recovery')
-      setError('Failed to send password recovery')
+      message.error('Failed to send password recovery')
     }
     
     }
 
   return (
-    <UserContext.Provider value={{ current: user, isSession, loading, error, setError, success, setSuccess, fetchSession, fetchUser, login, logout, register, updateName, updatePassword, googleLogin, updatePrefs, emailVerification, passwordRecovery }}>
+    <UserContext.Provider value={{ current: user, isSession, loading, fetchSession, fetchUser, login, logout, register, updateName, updatePassword, googleLogin, updatePrefs, emailVerification, passwordRecovery }}>
       {props.children}
     </UserContext.Provider>
   );
