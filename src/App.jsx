@@ -1,9 +1,7 @@
 import { Route, Routes } from "react-router-dom";
-import { Header } from "./components/Header";
 import { Register } from "./components/Register";
 import { Login } from "./components/Login";
 import { Home } from "./components/Home";
-import { Footer } from "./components/Footer";
 import { Food } from "./components/Food";
 import { Clothing } from "./components/Clothing";
 import { Housing } from "./components/Housing";
@@ -29,7 +27,7 @@ function App() {
     <div >
       <main >
         <Routes>
-          <Route element={<Layout />}>
+          <Route element={<Layout />}>  
             <Route path="/login" element={<Login />} />
             <Route path="/register" element={<Register />}/>
             <Route path="/sessionfailure" element={<SessionFailure />} />       

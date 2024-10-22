@@ -17,71 +17,81 @@ export function UserProvider(props) {
   const [ isSession, setIsSession ] = useState(null)
   const navigate = useNavigate()
 
-  const fetchSession = useCallback(async() => {
-    setLoading(true)
+  useEffect(() => {
+    fetchSession()
+  }, [])
+
+  async function fetchSession() {
     setError(null)
     setSuccess(null)
-    setIsSession(null)
+    setLoading(true)
 
     try {
       const session = await account.getSession('current')
-      if (session) {
+      if (session?.$id) {
         setIsSession(true)
-        return true
-      } else {
-        setIsSession(false) 
-        return false
+        const result = await fetchUser()
+        if (!result) {
+          setError('Failed to fetch account data')
+        }
       }
+
     } catch (error) {
-      console.error('Failed to fetch session: ', error.message)
+      console.error('Failed to fetch current session: ', error.message)
       setIsSession(false)
-      return false
+
     } finally {
       setLoading(false)
     }
-  }, [])  // this function is used to ensure <ProtectedRoute> works when the session is true
+  }
 
-  
-  const fetchUser = useCallback(async() => {
-      setLoading(true)
-      setError(null)
-      setSuccess(null)
-      try {
-        const sessionExists = await fetchSession()
-        if (sessionExists) {
-          const result = await account.get() 
-          setUser(result)
-        } else {
-          setUser(null)
-        }
-      } catch (err) {
-        console.error('Failed to fetch logged-in user data')
-        setUser(null)
-      } finally {
-        setLoading(false)
+  async function fetchUser() {
+    setError(null)
+    setSuccess(null)
+
+    try {
+      const result = await account.get()
+      if (result?.$id) {
+        setUser(result)
+        return result
       }
-  }, [fetchSession])
-  
-  useEffect(() => {
-    fetchUser()
-  }, [fetchUser])
 
+    } catch (error) {
+      console.error('Failed to fetch user: ', error.message)
+      setUser(null)
+      return null
+    }
+  }
+  
   async function login(email, password) {
     setError(null)
     setSuccess(null)
     setLoading(true)
+
     try {
       const session = await account.createEmailPasswordSession(email, password);
-    
-      if (session) {
-        await fetchSession();
-      }
       
+      if (!session?.$id) {
+        setError("Invalid session data")
+        return
+      }
+
+      setIsSession(true)
+
+      const result = await fetchUser()
+      
+      if (!result) {
+        setError('Failed to fetch account data')
+        return
+      }
+
       setSuccess('You have logged in')
       setTimeout(() => navigate('/'), 3000)
+      
     } catch(error) {
       setError('Failed to login')
       console.error('Login error: ', error.message)
+
     } finally {
       setLoading(false)
     }
@@ -91,14 +101,17 @@ export function UserProvider(props) {
     setError(null)
     setSuccess(null)
     setLoading(true)
+
     try {
       await account.deleteSession('current')
-      setSuccess('You have logged out.')
       setUser(null)
-      await fetchSession()
+      setIsSession(false)
+      setSuccess('You have logged out.')
+
     } catch (error) {
       setError('Failed to logout')
       console.error('Logout error: ', error.message)
+
     } finally {
       setLoading(false)
     }
@@ -110,14 +123,22 @@ export function UserProvider(props) {
     setLoading(true)
     
     try {
-      await account.create(ID.unique(), email, password, username)
+      const result = await account.create(ID.unique(), email, password, username)
+      
+      if (!result?.$id) {
+        setError('Unable to register')
+        return
+      }
+      
       setSuccess('You have successfully registered with Charity Bridge.\nLogging in...')
-      setTimeout(async() => {
-        await login(email, password)
-      }, 3000)
+      
+      await login(email, password)
+      
+
     } catch (error) {
       setError('Failed to register')
       console.error('Register error: ', error.message)
+
     } finally {
       setLoading(false)
     }
@@ -127,13 +148,16 @@ export function UserProvider(props) {
     setError(null)
     setSuccess(null)
     setLoading(true)
+
     try {
       await account.updateName(name)
-      setUser({...user, name: name})
+      setUser(prev => ({...prev, name: name}))
       setSuccess("User's name updated successfully")
-    } catch (err) {
-      console.error("Failed to update user's name: ", err.message)
+
+    } catch (error) {
+      console.error("Failed to update user's name: ", error.message)
       setError("Failed to update user's name")
+
     } finally {
       setLoading(false)
     }
@@ -143,15 +167,18 @@ export function UserProvider(props) {
     setError(null)
     setSuccess(null)
     setLoading(true)
+
     try {
       await account.updatePassword(
         newPassword,
         oldPassword
       )
       setSuccess('Password updated successfully')
-    } catch (err) {
+
+    } catch (error) {
       setError('Failed to update password')
-      console.error('Failed to update password: ', err.message)
+      console.error('Failed to update password: ', error.message)
+      
     } finally {
       setLoading(false)
     }

@@ -11,10 +11,6 @@ export function HeaderUser() {
     const [ avatarURL, setAvatarURL ] = useState('')
 
     useEffect(() => {
-        user.fetchUser()
-    }, [])
-
-    useEffect(() => {
         if (user.current && user.current.prefs && user.current.prefs.avatarId) {
             const avatarId = user.current.prefs.avatarId
             storage.getPreviewURL(avatarId)
