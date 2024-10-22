@@ -1,6 +1,7 @@
 import { createContext, useContext, useState } from "react"
 import { storage } from "../appwrite"
 import { ID } from "appwrite"
+import { message } from "antd"
 
 export const BUCKET_AVATAR_ID = "66e14204003a70a632ed"
 
@@ -11,61 +12,68 @@ export function useStorage() {
 }
 
 export function StorageProvider(props) {
-    const [ error, setError ] = useState(null)
-    const [ success, setSuccess ] = useState(null)
     const [ fileId, setFileId ] = useState(null) 
+    const [ loading, setLoading ] = useState(true)
 
     async function createAvatar(file) {
-        setError(null)
-        setSuccess(null)
-        setFileId(null)
+        setLoading(true)
+
         try {
             const result = await storage.createFile(
                 BUCKET_AVATAR_ID,
                 ID.unique(),
                 file
             )
-            setSuccess('Avatar uploaded successfully')
+
+            message.success('Avatar uploaded successfully')
             setFileId(result.$id)
             return result
-        } catch (err) {
-            console.error('Failed to create avatar image: ', err.message)
-            setError('Failed to upload avatar image')
+
+        } catch (error) {
+            console.error('Failed to create avatar image: ', error.message)
+            message.error('Failed to upload avatar image')
+            setFileId(null)
+            return null
+
+        } finally {
+            setLoading(false)
         }
     }
 
     async function deleteAvatar(id) {
-        setError(null)
-        setSuccess(null)
-        setFileId(null)
+        setLoading(true)
+
         try {
-            await storage.deleteFile(
-                BUCKET_AVATAR_ID,
-                id
-            )
-        } catch (err) {
-            console.error('Failed to delete avatar image: ', err.message)
-            setError('Failed to delete avatar image')
+            await storage.deleteFile(BUCKET_AVATAR_ID, id)
+
+            message.success('Avatar deleted successfully')
+            setFileId(null)
+            return true
+        } catch (error) {
+            console.error('Failed to delete avatar image: ', error.message)
+            message.error('Failed to delete avatar image')
+        } finally {
+            setLoading(false)
         }
     }
 
     async function getPreviewURL(id) {
-        setError(null)
-        setSuccess(null)
         try {
-            const response = await storage.getFilePreview(
+            const response = storage.getFilePreview(
                 BUCKET_AVATAR_ID,
                 id
             )
             return response.href
+            
         } catch (err) {
             console.error('Failed to getPreview: ', err.message)
-            setError('Failed to get image preview')
+            message.error('Failed to get image preview')
+            return null
         }
     }
 
     return (
-        <StorageContext.Provider value={{error, success, fileId, createAvatar, deleteAvatar, getPreviewURL}}>
+        <StorageContext.Provider value={{fileId, loading, createAvatar, deleteAvatar, getPreviewURL}}>
             {props.children}
         </StorageContext.Provider>
     )

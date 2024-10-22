@@ -15,8 +15,14 @@ export function DashboardAvatar() {
         try {
             const result = await storage.createAvatar(options.file)
 
-            if (user.current) {
-                await user.updatePrefs('avatarId', result.$id)
+            if (!result) {
+                throw new Error('Failed to create avatar')
+            }
+
+            const updatedResult = await user.updatePrefs('avatarId', result.$id)
+
+            if (!updatedResult) {
+                throw new Error("Failed to update user preferences")
             }
 
             setFileList([
@@ -29,9 +35,11 @@ export function DashboardAvatar() {
             ])
             
             options.onSuccess(null, options.file.name)
-        } catch (err) {
-            console.error('Failed to custom request', err.message)
-            options.onError(err)
+
+        } catch (error) {
+            console.error('Failed to custom request', error.message)
+            setFileList([])
+            options.onError(error)
         }
     }
 
@@ -87,23 +95,6 @@ export function DashboardAvatar() {
           reader.onerror = (error) => reject(error);
         });
 
-
-
-    // update messages
-    useEffect(() => {
-        if (storage.error) {
-            message.error(storage.error)
-        }
-        if (storage.success) {
-            message.success(storage.success)
-        }
-    }, [storage.success, storage.error])
-
-   
-    // fetch initial avatar
-    useEffect(() => {
-        user.fetchUser()
-    }, [])
 
     // get avatar src from storage and update user prefs.
     useEffect(() => {
