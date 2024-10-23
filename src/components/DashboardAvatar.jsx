@@ -1,4 +1,4 @@
-import { Avatar, Button, Space, Spin, Upload } from "antd"
+import { Avatar, Button, Space, Spin, Upload, message } from "antd"
 import { UserOutlined, UploadOutlined } from "@ant-design/icons"
 import { useEffect, useState } from "react"
 import { useStorage } from "../lib/context/storage"
@@ -40,6 +40,15 @@ export function DashboardAvatar({user}) {
             console.error("Failed to upload avatar: ", error.message)
         }
     }
+
+    const beforeUpload = (file) => {
+        const isOver3M = file.size / 1024 / 1024 > 3
+        if (isOver3M) {
+            message.error('Image must be smaller than 3MB')
+            return Upload.LIST_IGNORE;
+        }
+        return true
+    }
     
     useEffect(() => {
         const avatarId = user?.current?.prefs?.avatarId
@@ -63,6 +72,8 @@ export function DashboardAvatar({user}) {
                         customRequest={customRequest}
                         fileList={fileList}
                         showUploadList={false}
+                        beforeUpload={beforeUpload}
+                        accept=".png,.jpeg,.webp"
                     >
                         <Button icon={<UploadOutlined />}>upload avatar</Button>
                     </Upload>
