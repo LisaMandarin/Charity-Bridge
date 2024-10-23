@@ -15,7 +15,7 @@ export function Dashboard() {
             <div className="p-4 bg-white w-fit mx-auto">
                 <Space direction="vertical" size="large" className="w-full">
                     <DashboardEmail user={user}/>
-                    <DashboardAvatar />
+                    <DashboardAvatar user={user}/>
                 </Space>
 
                 <Divider orientation="left" orientationMargin="0">

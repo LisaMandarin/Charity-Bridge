@@ -13,7 +13,7 @@ export function useStorage() {
 
 export function StorageProvider(props) {
     const [ fileId, setFileId ] = useState(null) 
-    const [ loading, setLoading ] = useState(true)
+    const [ loading, setLoading ] = useState(false)
 
     async function createAvatar(file) {
         setLoading(true)

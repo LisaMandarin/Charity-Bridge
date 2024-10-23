@@ -201,9 +201,11 @@ export function UserProvider(props) {
         }
       )
       setUser(result)
+      return true
     } catch (err) {
       message.error('Failed to update preferences')
       console.error('Failed to update preferences: ', err.message)
+      return false
     }
   }
 
