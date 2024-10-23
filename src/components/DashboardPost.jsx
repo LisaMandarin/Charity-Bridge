@@ -15,8 +15,7 @@ export function DashboardPost() {
     const [ form ] = Form.useForm()
     const product = useProductStorage()
     const productInfo = useProductInfo()
-    const [ error, setError ] = useState(null)
-    const [ success, setSuccess ] = useState(null)
+
     const [ userId, setUserId ] = useState('')
     const [ fileList, setFileList ] = useState([])
     const [ fileIds, setFileIds ] = useState([])
@@ -145,15 +144,6 @@ export function DashboardPost() {
             setUserId(current.$id)
         }
     }, [current, form])
-
-    useEffect(() => {
-        if (error) {
-            message.error(error)
-        }
-        if (success) {
-            message.success(success)
-        }
-    }, [error, success])
 
     return (
         <div className="md:w-[600px]">
