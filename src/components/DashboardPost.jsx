@@ -6,61 +6,61 @@ import { PlusOutlined } from "@ant-design/icons";
 import { useEffect, useState } from "react";
 import { useProductStorage } from "../lib/context/productStorage";
 import { useProductInfo } from "../lib/context/productInfo";
-import { useUser } from "../lib/context/user";
 import { useNavigate } from "react-router-dom";
 
-export function DashboardPost() {
-    const { current } = useUser()
+export function DashboardPost({user}) {
     const now = new Date()
     const [ form ] = Form.useForm()
     const product = useProductStorage()
     const productInfo = useProductInfo()
-
     const [ userId, setUserId ] = useState('')
-    const [ fileList, setFileList ] = useState([])
     const [ fileIds, setFileIds ] = useState([])
     const [ previewImage, setPreviewImage ] = useState('')
     const [ previewOpen, setPreviewOpen ] = useState(false)
+    const [ uploadBtnVisible, setUploadBtnVisible ] = useState(true)
     const navigate = useNavigate()
 
     const onFinish = async() => {
-        setSuccess(null)
+        if (!userId || !now) {
+            console.error("User ID or time is missing.")
+            return
+        }
 
-        if (userId && now) {
-            form.setFieldsValue(
-                {
-                    userId,
-                    time: now
-                }
-            )
+        try {
+            form.setFieldsValue({
+                userId,
+                time: now,
+            })
+
             const updatedValues = form.getFieldsValue(true)
             await productInfo.createForm(updatedValues)
 
-            setSuccess('Your product is posted.')
+            message.success("Your product is posted.", 2, ()=> {
+                navigate("/")
+            })
 
             form.resetFields()
-            setFileList([])
             setFileIds([])
 
-            setTimeout(() => {
-                navigate('/')
-            }, 2000)
-        } else {
-            return false
+        } catch (error) {
+            console.error("Failed onFinish: ", error.message)
+            message.error("Something went wrong when submitting the form.")
         }
         
     }
+
     const onFinishFailed = (errorInfo) => {
-        setError(null)
         console.error('form errorInfo: ', errorInfo)
-        setError('Failed to post')
+        message.error("Failed to post form.")
     }
+
     const onReset = () => {
         form.resetFields()
         setFileList([])
         setFileIds([])
     }
 
+// **************** Handle select options ****************
     const categoryOptions = () => {
         const options = categoryItems.map(item => {
           return { value: item.text, label: (
@@ -76,15 +76,22 @@ export function DashboardPost() {
 
     const onCategoryChange = (e) => {
         form.setFieldsValue({
-            category: e.toLowerCase()
+            category: e.trim().toLowerCase()
         })
     }
 
-    const beforeUpload = (file) => {
-        setError(null)
+// **************** Handle imagge upload ****************
+    const beforeUpload = (file, fileList) => {
         const isOver3M = file.size / 1024 / 1024 > 3
         if (isOver3M) {
-            setError('Only 3MB or under is allowed')
+            message.error('Only 3MB or under is allowed')
+            return Upload.LIST_IGNORE;
+        }
+
+        const currentFiles = form.getFieldValue('photos') || []
+        
+        if (currentFiles.length + fileList.length > 5) {
+            message.error("You can only upload up to 5 files.")
             return Upload.LIST_IGNORE;
         }
         return true
@@ -94,56 +101,80 @@ export function DashboardPost() {
         try {
             const result = await product.createFile(options.file)
     
+            if (!result?.$id) {
+                throw new Error("Failed to create file or missing file ID.")
+            }
+
             const productUrl = await product.getPreviewURL(result.$id)
 
             setFileIds(current => [...current, result.$id])
-            setFileList(current => [
-                ...current,
-                {
-                    uid: result.$id,
-                    name: options.file.name,
-                    status: "done",
-                    url: productUrl
-                }
-            ])
-        } catch (err) {
-            console.error('Failed to custom request', err.message)
+            
+            options.onSuccess({}, {
+                ...options.file, 
+                uid: result.$id, 
+                url: productUrl
+            })
+            message.success(`${options.file.name} uploaded successfully.`)
+
+        } catch (error) {
+            console.error('Failed to custom request', error.message)
+            message.error(`Failed to upload ${options.file.name}.  Please try again`)
+            options.onError(error, {message: "Custom upload failed."})
         }
     }
 
     const onPreview = async(file) => {
-        if (!file.url && !file.preview) {
-            file.preview = await getBase64(file.originFileObj)
+        try {
+            if (!file.url && !file.preview) {
+                file.preview = await getBase64(file.originFileObj)
+            }
+            setPreviewImage(file.url || file.preview)
+            setPreviewOpen(true)
+
+        } catch (error) {
+            console.error("Failed to generate preview: ", error.message)
+            message.error("Unable to preview this file")
         }
-        setPreviewImage(file.url || file.preview)
-        setPreviewOpen(true)
     }
 
-    const onRemove = async(file) => {
-        await product.deleteFile(file.uid)
-        const newFileList = fileList.filter(f => f.uid !== file.uid)
-        setFileList(newFileList)
-    }
-
-    const getBase64 = (file) => 
-        new Promise((resolve, reject) => {
+    const getBase64 = async (file) => {
+        if (!file) {
+            console.error("No origin file object available for preview.")
+            return Promise.reject(new Error("Invalid file object"))
+        }
+        return new Promise((resolve, reject) => {
             const reader = new FileReader();
             reader.readAsDataURL(file);
             reader.onload = () => resolve(reader.result);
             reader.onerror = (error) => reject(error)
         })
+    }
+
+    const onRemove = async(file) => {
+        const result = await product.deleteFile(file.xhr.uid)
+        
+        if (result) {
+            setFileIds(current => [
+                current.filter(id => {
+                    id !== file.uid
+                })
+            ])
+            message.success("File removed successfully.")
+        }
+    }
 
     useEffect(() => {
         form.setFieldsValue({
             photos: fileIds
         })
+        setUploadBtnVisible(fileIds.length < 5)
     }, [fileIds])
 
     useEffect(() => {
-        if (current && current.$id) {
-            setUserId(current.$id)
+        if (user?.current?.$id) {
+            setUserId(user.current.$id)
         }
-    }, [current, form])
+    }, [user?.current?.$id])
 
     return (
         <div className="md:w-[600px]">
@@ -152,12 +183,8 @@ export function DashboardPost() {
                 form={form}
                 onFinish={onFinish}
                 onFinishFailed={onFinishFailed}
-                labelCol={{
-                    span: 8
-                }}
-                wrapperCol={{
-                    span: 16
-                }}
+                labelCol={{ span: 8 }}
+                wrapperCol={{ span: 16 }}
             >
                 <Form.Item hidden label="userId" name="userId">
                     <Input />
@@ -180,6 +207,12 @@ export function DashboardPost() {
                 <Form.Item
                     label="Quantity"
                     name="quantity"
+                    rules={[
+                        {
+                            required: true,
+                            message: "Please enter a valid quantity"
+                        }
+                    ]}
                 >
                     <InputNumber min={1}/>
                 </Form.Item>
@@ -225,6 +258,7 @@ export function DashboardPost() {
                 <Form.Item
                     label="Photos"
                     name="photos"
+                    valuePropName="fileList"
                     rules={[
                         {
                             required: true,
@@ -239,20 +273,21 @@ export function DashboardPost() {
                         customRequest={customRequest}
                         onPreview={onPreview}
                         onRemove={onRemove}
-                        fileList={fileList}
+                        accept=".png,.jpeg,.webp"
                     >
-                        <Space direction="vertical">
-                            <PlusOutlined />
-                            <Button>Upload</Button>
-                        </Space>
+                        {uploadBtnVisible && (
+                            <Space direction="vertical">
+                                <PlusOutlined />
+                                <Button>Upload</Button>
+                            </Space>
+                        )}
                     </Upload>
                     {previewImage && (
                         <Image 
                             wrapperStyle={{ display: 'none'}}
                             preview={{
                                 visible: previewOpen,
-                                onVisibleChange: (visible => setPreviewOpen(visible)),
-                                afterOpenChange: visible => !visible && setPreviewImage('')
+                                onVisibleChange: setPreviewOpen,
                             }}
                             src={previewImage}
                         />

@@ -40,7 +40,7 @@ export function Dashboard() {
                     <span className="text-gray-300">Post</span>
                 </Divider>
 
-                <DashboardPost />
+                <DashboardPost user={user}/>
             </div>
         </>
     )

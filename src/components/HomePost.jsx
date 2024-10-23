@@ -21,7 +21,7 @@ export function HomePost() {
     ]
     useEffect(() => {
         productInfo.listDocuments()
-            .then(response => setData(response.documents))
+            .then(response => setData(response))
     }, [productInfo, setData])
 
     useEffect(() => {
