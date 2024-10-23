@@ -14,28 +14,32 @@ export function Dashboard() {
         <>
             <div className="p-4 bg-white w-fit mx-auto">
                 <Space direction="vertical" size="large" className="w-full">
-                    <DashboardEmail />
+                    <DashboardEmail user={user}/>
                     <DashboardAvatar />
                 </Space>
+
                 <Divider orientation="left" orientationMargin="0">
                     <span className="text-gray-300">Update Name</span>
                 </Divider>
-                <DashboardName 
-                    user={user}
-                />
+
+                <DashboardName user={user} />
+
                 <Divider orientation="left" orientationMargin="0">
                     <span className="text-gray-300">Update Password</span>
                 </Divider>
-                <DashboardPassword 
-                    user={user}
-                />
+
+                <DashboardPassword user={user} />
+
                 <Divider orientation="left" orientationMargin="0">
                     <span className="text-gray-300">Profile</span>
                 </Divider>
+
                 <DashboardProfile />
+
                 <Divider orientation="left" orientationMargin="0">
                     <span className="text-gray-300">Post</span>
                 </Divider>
+
                 <DashboardPost />
             </div>
         </>

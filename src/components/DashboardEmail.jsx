@@ -3,8 +3,8 @@ import { useUser } from "../lib/context/user"
 import { useState, useEffect } from "react"
 
 
-export function DashboardEmail() {
-    const user = useUser()
+export function DashboardEmail({user}) {
+    
     const [ email, setEmail ] = useState('')
     const [ isVerified, setIsVerified ] = useState(false)
 
