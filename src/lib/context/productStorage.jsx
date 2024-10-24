@@ -50,7 +50,6 @@ export function ProductStorageProvider(props) {
         if (!id) {
             throw new Error("Invalid file ID when deleting file")
         }
-        console.log('id: ', id)
         setLoading(true)
 
         try {

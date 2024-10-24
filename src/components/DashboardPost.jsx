@@ -18,6 +18,8 @@ export function DashboardPost({user}) {
     const [ previewImage, setPreviewImage ] = useState('')
     const [ previewOpen, setPreviewOpen ] = useState(false)
     const [ uploadBtnVisible, setUploadBtnVisible ] = useState(true)
+    const [ isSubmitted, setIsSubmitted ] = useState(false)
+    const [ hasChanges, setHasChanges ] = useState(false)
     const navigate = useNavigate()
 
     const onFinish = async() => {
@@ -36,6 +38,7 @@ export function DashboardPost({user}) {
             await productInfo.createForm(updatedValues)
 
             message.success("Your product is posted.", 2, ()=> {
+                setIsSubmitted(true)
                 navigate("/")
             })
 
@@ -59,12 +62,12 @@ export function DashboardPost({user}) {
             await deleteAllFiles(fileIds)
             form.resetFields()
             setFileIds([])
-            
+            setHasChanges(false)
+
         } catch (error) {
             console.error("Failed to reset: ", error.message)
             message.error("Failed to delete all files during reset.")
-        }
-        
+        }  
     }
 
     const deleteAllFiles = async(fileIds) => {
@@ -205,6 +208,20 @@ export function DashboardPost({user}) {
         }
     }, [user?.current?.$id])
 
+    useEffect(() => {
+        const handleBeforeunload = (event) => {
+            event.preventDefault()
+            event.returnValue = ""
+        }
+
+        if (!isSubmitted && (hasChanges || fileIds.length > 0)) {
+            window.addEventListener('beforeunload', handleBeforeunload)
+        }
+        return () => {
+            window.removeEventListener('beforeunload', handleBeforeunload)
+        }        
+    }, [fileIds, isSubmitted, hasChanges])
+
     return (
         <div className="md:w-[600px]">
             <Form
@@ -212,6 +229,7 @@ export function DashboardPost({user}) {
                 form={form}
                 onFinish={onFinish}
                 onFinishFailed={onFinishFailed}
+                onChange={() => setHasChanges(true)}
                 labelCol={{ span: 8 }}
                 wrapperCol={{ span: 16 }}
             >
