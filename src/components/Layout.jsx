@@ -4,7 +4,7 @@ import { Outlet } from "react-router-dom";
 
 export function Layout() {
     return (
-        <div className="min-h-screen bg-slate-100 flex flex-col">
+        <div className="min-h-screen min-w-[350px] bg-slate-100 flex flex-col">
             <header className="bg-pink-200 h-24">
                 <Header />
             </header>
