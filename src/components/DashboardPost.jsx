@@ -1,4 +1,4 @@
-import { Button, Form, Image, Input, InputNumber, message, Radio, Select, Space } from "antd"
+import { Button, Form, Image, Input, InputNumber, message, Radio, Select, Space, Spin } from "antd"
 import Upload from "antd/es/upload/Upload"
 import { categoryItems } from "./HeaderCategory"
 import { Icon } from '@iconify/react';
@@ -59,10 +59,12 @@ export function DashboardPost({user}) {
 
     const onReset = async() => {
         try {
-            await deleteAllFiles(fileIds)
-            form.resetFields()
-            setFileIds([])
-            setHasChanges(false)
+            const result = await deleteAllFiles(fileIds)
+            if (result) {
+                form.resetFields()
+                setFileIds([])
+                setHasChanges(false)
+            }
 
         } catch (error) {
             console.error("Failed to reset: ", error.message)
@@ -78,6 +80,7 @@ export function DashboardPost({user}) {
         try {
             await Promise.all(
                 fileIds.map(async(id) => {
+                    console.log('id: ', id)
                     const result = await product.deleteFile(id)
         
                     if (!result) {
@@ -85,10 +88,12 @@ export function DashboardPost({user}) {
                     }
                 })
             )
+            return true
             
         } catch (error) {
             console.error("Failed to delete all files: ", error.message)
             message.error("Failed to delete the uploaded files")
+            return false
         }
     }
 
@@ -186,11 +191,9 @@ export function DashboardPost({user}) {
         const result = await product.deleteFile(file.xhr.uid)
         
         if (result) {
-            setFileIds(current => [
-                current.filter(id => {
-                    id !== file.uid
-                })
-            ])
+            setFileIds(current => 
+                current.filter(id => id !== file.xhr.uid)
+            )
             message.success("File removed successfully.")
         }
     }
@@ -222,6 +225,9 @@ export function DashboardPost({user}) {
         }        
     }, [fileIds, isSubmitted, hasChanges])
 
+    useEffect(() => {
+        console.log("fileIds: ", fileIds)
+    }, [fileIds])
     return (
         <div className="md:w-[600px]">
             <Form
@@ -312,23 +318,25 @@ export function DashboardPost({user}) {
                             message: 'Please upload at least one photo of the product'
                         }
                     ]}
-                >                    
-                    <Upload
-                        multiple
-                        listType="picture-card"
-                        beforeUpload={beforeUpload}
-                        customRequest={customRequest}
-                        onPreview={onPreview}
-                        onRemove={onRemove}
-                        accept=".png,.jpeg,.webp"
-                    >
-                        {uploadBtnVisible && (
-                            <Space direction="vertical">
-                                <PlusOutlined />
-                                <Button>Upload</Button>
-                            </Space>
-                        )}
-                    </Upload>
+                >   
+                    <Spin spinning={product.loading}>
+                        <Upload
+                            multiple
+                            listType="picture-card"
+                            beforeUpload={beforeUpload}
+                            customRequest={customRequest}
+                            onPreview={onPreview}
+                            onRemove={onRemove}
+                            accept=".png,.jpeg,.webp"
+                        >
+                            {uploadBtnVisible && (
+                                <Space direction="vertical">
+                                    <PlusOutlined />
+                                    <Button>Upload</Button>
+                                </Space>
+                            )}
+                        </Upload>
+                    </Spin>                 
                     {previewImage && (
                         <Image 
                             wrapperStyle={{ display: 'none'}}
