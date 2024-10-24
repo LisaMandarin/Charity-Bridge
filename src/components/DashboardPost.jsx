@@ -54,10 +54,39 @@ export function DashboardPost({user}) {
         message.error("Failed to post form.")
     }
 
-    const onReset = () => {
-        form.resetFields()
-        setFileList([])
-        setFileIds([])
+    const onReset = async() => {
+        try {
+            await deleteAllFiles(fileIds)
+            form.resetFields()
+            setFileIds([])
+            
+        } catch (error) {
+            console.error("Failed to reset: ", error.message)
+            message.error("Failed to delete all files during reset.")
+        }
+        
+    }
+
+    const deleteAllFiles = async(fileIds) => {
+        if (!fileIds || fileIds.length === 0) {
+            console.error("File IDs are not valid")
+            return
+        }
+        try {
+            await Promise.all(
+                fileIds.map(async(id) => {
+                    const result = await product.deleteFile(id)
+        
+                    if (!result) {
+                        throw new Error(`Can't delete file with ID: ${id}`)
+                    }
+                })
+            )
+            
+        } catch (error) {
+            console.error("Failed to delete all files: ", error.message)
+            message.error("Failed to delete the uploaded files")
+        }
     }
 
 // **************** Handle select options ****************
