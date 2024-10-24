@@ -80,7 +80,6 @@ export function DashboardPost({user}) {
         try {
             await Promise.all(
                 fileIds.map(async(id) => {
-                    console.log('id: ', id)
                     const result = await product.deleteFile(id)
         
                     if (!result) {
@@ -225,9 +224,6 @@ export function DashboardPost({user}) {
         }        
     }, [fileIds, isSubmitted, hasChanges])
 
-    useEffect(() => {
-        console.log("fileIds: ", fileIds)
-    }, [fileIds])
     return (
         <div className="md:w-[600px]">
             <Form

@@ -1,8 +1,7 @@
 import { useEffect, useState } from "react"
 import { useProductInfo } from "../lib/context/productInfo"
-import { Table } from "antd"
+import { Spin, Table } from "antd"
 import dayjs from "dayjs"
-import { useUser } from "../lib/context/user"
 
 export function HomePost() {
     const productInfo = useProductInfo()
@@ -49,7 +48,9 @@ export function HomePost() {
 
     return (
         <div className="">
-            <Table dataSource={dataTable} columns={columns} />
+            <Spin spinning={productInfo.loading}>
+                <Table dataSource={dataTable} columns={columns} />
+            </Spin>
         </div>
     )
 }
