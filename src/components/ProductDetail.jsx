@@ -32,10 +32,6 @@ export function ProductDetail() {
 
     }, [productId])
 
-    useEffect(() => {
-        console.log("product: ", product)
-    }, [product])
-
     return (
         <>
             <p>This is product detail page: {productId}</p>

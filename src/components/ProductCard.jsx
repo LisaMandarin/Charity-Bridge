@@ -1,7 +1,6 @@
 import { Card, Pagination } from "antd";
 import { useProductInfo } from "../lib/context/productInfo";
 import { useEffect, useState } from "react";
-import { useProductStorage } from "../lib/context/productStorage";
 import { Link } from "react-router-dom";
 const { Meta } = Card
 
@@ -22,10 +21,6 @@ export function ProductCard() {
         }
         fetchData()
     }, [])
-
-    useEffect(() => {
-        console.log("data: ", data)
-    }, [data])
 
     return (
         <div className="w-full bg-white">
