@@ -1,16 +1,16 @@
-import { Typography } from "antd"
+import { ProductCard } from "./ProductCard"
+import { Space, Typography } from "antd"
+
 const { Title } = Typography
 
 export function HomePost() {
-    
-
 
     return (
-        <div className="w-full bg-white">
-            <div className="product-card">
-                <Title className="text-center p-4">This is Product Name</Title>
-                <div >dd</div>
-            </div>            
-        </div>
+        <>
+            <Space direction="vertical" className="bg-white">
+                <Title className="text-center pt-4">Items Giving Away</Title>
+                <ProductCard />
+            </Space>
+        </>
     )
 }
