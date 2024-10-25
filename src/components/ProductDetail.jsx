@@ -2,11 +2,14 @@ import { useEffect, useState } from "react"
 import { message } from "antd"
 import { useParams } from "react-router-dom"
 import { useProductInfo } from "../lib/context/productInfo"
+import { ProductSlideShow } from "./ProductSlideShow"
 
 export function ProductDetail() {
     const { productId } = useParams()
     const productInfo = useProductInfo()
     const [ product, setProduct ] = useState(null)
+    const [ photoURL, setPhotoURL ] = useState([])
+
 
     useEffect(() => {
         if (!productId) {
@@ -29,12 +32,19 @@ export function ProductDetail() {
         }
 
         fetchProduct(productId)
-
     }, [productId])
+
+    useEffect(() => {
+        if (product?.photoURL) {
+            setPhotoURL(product.photoURL)
+        }
+    }, [product?.photoURL])
 
     return (
         <>
             <p>This is product detail page: {productId}</p>
+            <ProductSlideShow photoURL={ photoURL } />
+            
         </>
     )
 }
