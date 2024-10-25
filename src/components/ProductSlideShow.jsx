@@ -1,4 +1,4 @@
-import React from "react"
+import React, { useEffect } from "react"
 import Slider from "react-slick"
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
@@ -6,18 +6,18 @@ import "../ProductSlider.css"
 
 export function ProductSlideShow({ photoURL }) {
     const settings = {    
-        dots: true,
-        infinite: true,
+        dots: photoURL.length > 1,
+        infinite: photoURL.length > 1,
         speed: 500,
         slidesToShow: 1,
         slidesToScroll: 1,
-        autoplay: true,
+        autoplay: photoURL.length > 1,
         autoplaySpeed: 2000,
         cssEase: "linear",
       };
 
     return (
-        <div className="image-slider w-9/12 sm:w-[360px] m-auto text-center">
+        <div className="image-slider w-[300px] sm:w-[360px] m-auto text-center">
             <Slider {...settings} >
                 {photoURL.map((image, index) => (
                     <div key={index}>

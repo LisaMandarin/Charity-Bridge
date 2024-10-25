@@ -49,8 +49,8 @@ export function ProductDetail() {
         <>
             { product && (
                 <>
-                    <div className="flex flex-row justify-center bg-slate-100">
-                        <div className="p-8">
+                    <div className="flex flex-col sm:flex-row justify-center bg-slate-100">
+                        <div className="p-8 bg-gray-900">
                             <ProductSlideShow photoURL={ product.photoURL } />
                         </div>
                         <ul className="p-8">
