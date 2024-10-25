@@ -7,7 +7,6 @@ const { Meta } = Card
 
 export function ProductCard() {
     const productInfo = useProductInfo()
-    const productStorage = useProductStorage()
     const [ data, setData ] = useState([])
     const [ currentPage, setCurrentPage ] = useState(1)
     const itemsPerPage = 1
@@ -18,18 +17,15 @@ export function ProductCard() {
     useEffect(() => {
         async function fetchData() {
             const documents = await productInfo.listDocuments()
-
-            const dataWithUrls = await Promise.all(
-                documents.map(async(item) => {
-                    const photoId = item.photos[0]
-                    const photoUrl = await productStorage.getPreviewURL(photoId)
-                    return {...item, photoUrl}
-                })
-            );
-            setData(dataWithUrls)
+            
+            setData(documents)
         }
         fetchData()
     }, [])
+
+    useEffect(() => {
+        console.log("data: ", data)
+    }, [data])
 
     return (
         <div className="w-full bg-white">
@@ -41,7 +37,7 @@ export function ProductCard() {
                             hoverable
                             cover={
                                 <div className="w-full aspect-square">
-                                    <img alt="image1" src={item.photoUrl} className="w-full h-full object-cover object-center"/>
+                                    <img alt="image1" src={item.photoURL[0]} className="w-full h-full object-cover object-center"/>
                                 </div>
                             }
                         >

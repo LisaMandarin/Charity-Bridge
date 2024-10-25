@@ -1,6 +1,6 @@
 import { createContext, useContext, useState } from "react";
 import { productInfoDatabase } from "../appwrite";
-import { ID } from "appwrite";
+import { ID, Query } from "appwrite";
 import { message } from "antd";
 
 const ProductInfoContext = createContext()
@@ -41,6 +41,9 @@ export function ProductInfoProvider(props) {
             const result = await productInfoDatabase.listDocuments(
                 DATABASE_ID,
                 COLLECTION_ID,
+                [
+                    Query.orderDesc("time")
+                ]
             )
 
             if (!result || result.documents.length === 0) {
