@@ -90,8 +90,31 @@ export function ProductInfoProvider(props) {
         }
     }
 
+    async function getDocument(id) {
+        if (!id) {
+            message.error("Invalid product ID")
+        }
+        try {
+            const result = await productInfoDatabase.getDocument(
+                DATABASE_ID,
+                COLLECTION_ID,
+                id)
+            
+            if(!result) {
+                throw new Error("Can't get product information")
+            }
+
+            return result
+
+        } catch (error) {
+            console.error("Failed to get product information: ", error.message)
+            message.error("Failed to get product information")
+            return null
+        }
+    }
+
     return (
-        <ProductInfoContext.Provider value={{loading, createForm, listDocuments, deleteForm}}>
+        <ProductInfoContext.Provider value={{loading, createForm, listDocuments, deleteForm, getDocument}}>
             {props.children}
         </ProductInfoContext.Provider>
     )

@@ -2,6 +2,7 @@ import { Card, Pagination } from "antd";
 import { useProductInfo } from "../lib/context/productInfo";
 import { useEffect, useState } from "react";
 import { useProductStorage } from "../lib/context/productStorage";
+import { Link } from "react-router-dom";
 const { Meta } = Card
 
 export function ProductCard() {
@@ -34,17 +35,19 @@ export function ProductCard() {
         <div className="w-full bg-white">
             <div className="w-full sm:w-[360px] p-4 m-auto">
                 { currentItems && currentItems.map(item => (
-                    <Card 
-                        key={item.$id} 
-                        hoverable
-                        cover={
-                            <div className="w-full aspect-square">
-                                <img alt="image1" src={item.photoUrl} className="w-full h-full object-cover object-center"/>
-                            </div>
-                        }
-                     >
-                        <Meta title={`${item.product}`} />
-                    </Card>
+                    <Link to={`/product/${item.$id}`} key={item.$id}>
+                        <Card 
+                            key={item.$id} 
+                            hoverable
+                            cover={
+                                <div className="w-full aspect-square">
+                                    <img alt="image1" src={item.photoUrl} className="w-full h-full object-cover object-center"/>
+                                </div>
+                            }
+                        >
+                            <Meta title={`${item.product}`} />
+                        </Card>
+                    </Link>
                 ))}
             </div> 
             <div>

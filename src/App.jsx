@@ -12,6 +12,7 @@ import { SessionFailure } from "./components/SessionFailure";
 import { OAuthFailure } from "./components/OAuthFailure";
 import { FBdelete } from "./components/FBdelete";
 import { Dashboard } from "./components/Dashboard";
+import { ProductDetail } from "./components/ProductDetail";
 import { Verification } from "./components/Verification";
 import { PasswordRecovery } from "./components/PasswordRecovery";
 import { PasswordForgot } from "./components/PasswordForgot";
@@ -35,9 +36,9 @@ function App() {
             <Route path="/passwordforgot" element={<PasswordForgot />} />
             <Route path="/oauthfailure" element={<OAuthFailure />} />
             <Route path="/fbdelete" element={<FBdelete />} />
+            <Route path="/" element={<ProtectedRoute><Home /></ProtectedRoute>}/>
             
             {/* protected components */}
-            <Route path="/" element={<ProtectedRoute><Home /></ProtectedRoute>}/>
             <Route path="/food" element={<ProtectedRoute><Food /></ProtectedRoute>} />
             <Route path="/clothing" element={<ProtectedRoute><Clothing /></ProtectedRoute>} />
             <Route path="/housing" element={<ProtectedRoute><Housing /></ProtectedRoute>} />
@@ -45,6 +46,7 @@ function App() {
             <Route path="/education" element={<ProtectedRoute><Education /></ProtectedRoute>} />
             <Route path="/entertainment" element={<ProtectedRoute><Entertainment /></ProtectedRoute>} />
             <Route path="/dashboard" element={<ProtectedRoute><Dashboard /></ProtectedRoute>} />
+            <Route path="product/:productId" element={<ProtectedRoute><ProductDetail /></ProtectedRoute>} />
             <Route path="/verification" element={<Verification />} />
             <Route path="/oauthsuccess" element={<ProtectedRoute><OauthSuccess /></ProtectedRoute>}></Route>
           </Route>

@@ -29,10 +29,14 @@ export function DashboardPost({user}) {
         }
 
         try {
-            form.setFieldsValue({
-                userId,
-                time: now,
-            })
+            if (fileIds && fileIds.length > 0) {
+                const photoURL = await getPhotoURL(fileIds)
+                form.setFieldsValue({
+                    userId,
+                    time: now,
+                    photoURL
+                })
+            }
 
             const updatedValues = form.getFieldsValue(true)
             await productInfo.createForm(updatedValues)
@@ -70,6 +74,25 @@ export function DashboardPost({user}) {
             console.error("Failed to reset: ", error.message)
             message.error("Failed to delete all files during reset.")
         }  
+    }
+
+    const getPhotoURL = async(fileIds) => {
+        if (!fileIds || fileIds.length === 0) {
+            console.error("Unable to retrieve file IDs")
+            return []
+        }
+        try {
+            const photoURL = await Promise.all(
+                fileIds.map(async(id) => {
+                    return await product.getPreviewURL(id)
+                })
+            ) 
+            
+            return photoURL
+        } catch (error) {
+            console.error("Failed to get photo URL: ", error.message)
+            return []
+        }
     }
 
     const deleteAllFiles = async(fileIds) => {
@@ -241,6 +264,9 @@ export function DashboardPost({user}) {
                 <Form.Item hidden label="time" name="time">
                     <Input />
                 </Form.Item>
+                <Form.Item hidden label="photoURL" name="photoURL">
+                    <Input />
+                </Form.Item>
                 <Form.Item
                     label="Product"
                     name="product"
@@ -323,7 +349,7 @@ export function DashboardPost({user}) {
                             customRequest={customRequest}
                             onPreview={onPreview}
                             onRemove={onRemove}
-                            accept=".png,.jpeg,.webp"
+                            accept="image/png, image/jpeg, image/webp"
                         >
                             {uploadBtnVisible && (
                                 <Space direction="vertical">
