@@ -1,14 +1,18 @@
 import { useEffect, useState } from "react"
-import { message } from "antd"
+import { message, Space } from "antd"
 import { useParams } from "react-router-dom"
 import { useProductInfo } from "../lib/context/productInfo"
 import { ProductSlideShow } from "./ProductSlideShow"
+import dayjs from "dayjs"
+import {Typography} from "antd"
+const { Title } = Typography
+
 
 export function ProductDetail() {
     const { productId } = useParams()
     const productInfo = useProductInfo()
     const [ product, setProduct ] = useState(null)
-    const [ photoURL, setPhotoURL ] = useState([])
+    const [ time, setTime ] = useState(null)
 
 
     useEffect(() => {
@@ -35,17 +39,38 @@ export function ProductDetail() {
     }, [productId])
 
     useEffect(() => {
-        if (product?.photoURL) {
-            setPhotoURL(product.photoURL)
+        if (product?.time) {
+            const newTime = dayjs(product.time)
+            setTime(newTime)
         }
-    }, [product?.photoURL])
+    }, [product?.time])
 
     return (
         <>
-            <p>This is product detail page: {productId}</p>
-            <div>
-                <ProductSlideShow photoURL={ photoURL } />
-            </div>
+            { product && (
+                <>
+                    <div className="flex flex-row justify-center bg-slate-100">
+                        <div className="p-8">
+                            <ProductSlideShow photoURL={ product.photoURL } />
+                        </div>
+                        <ul className="p-8">
+                            <Space direction="vertical">
+                                <li><Title>{product.product}</Title><br /></li>
+                                <li><span className="font-extrabold">Quantity: </span>{product.quantity}</li>
+                                <li><span className="font-extrabold">Condition: </span>{product.condition}</li>
+                                <li><span className="font-extrabold">Category: </span>{product.category}</li>
+                                <li><span className="font-extrabold">Location: </span>{product.location}</li>
+                                <li><span className="font-extrabold">Description: </span>{product.description}</li>
+                                <li><span className="font-extrabold">Post time: </span>{time ? time.format('MM/DD/YYYY') : "N/A"}</li>
+                            </Space>
+                            
+                        </ul>
+                    </div> 
+                    
+                    
+                </>
+            )}
+            
             
         </>
     )
