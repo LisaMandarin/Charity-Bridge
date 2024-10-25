@@ -43,7 +43,9 @@ export function ProductDetail() {
     return (
         <>
             <p>This is product detail page: {productId}</p>
-            <ProductSlideShow photoURL={ photoURL } />
+            <div>
+                <ProductSlideShow photoURL={ photoURL } />
+            </div>
             
         </>
     )

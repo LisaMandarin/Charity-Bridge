@@ -9,7 +9,6 @@ export function ProductCard() {
     const [ data, setData ] = useState([])
     const [ currentPage, setCurrentPage ] = useState(1)
     const itemsPerPage = 1
-
     const startIndex = (currentPage-1) * itemsPerPage
     const currentItems = data.slice(startIndex, startIndex + itemsPerPage)
 
