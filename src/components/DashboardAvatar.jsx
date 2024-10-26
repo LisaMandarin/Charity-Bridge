@@ -14,7 +14,7 @@ export function DashboardAvatar({user}) {
             if (avatarId) {
                 const deleteResult = await storage.deleteAvatar(avatarId)
                 if (!deleteResult) {
-                    throw new Error("Failed to delete current avatar")
+                    console.error("Failed to delete current avatar")
                 }
             }
 
