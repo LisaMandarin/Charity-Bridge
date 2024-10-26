@@ -42,7 +42,7 @@ export function Login() {
         form={form}
         name="userLogin"
         layout="vertical"
-        className="max-w-96 my-0 mx-auto p-6 bg-white"
+        className="w-96 my-0 mx-auto p-6 bg-white"
         onFinish={onFinish}
       >
         <Title underline className="text-center">
