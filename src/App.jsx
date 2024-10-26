@@ -36,7 +36,7 @@ function App() {
             <Route path="/passwordforgot" element={<PasswordForgot />} />
             <Route path="/oauthfailure" element={<OAuthFailure />} />
             <Route path="/fbdelete" element={<FBdelete />} />
-            <Route path="/" element={<ProtectedRoute><Home /></ProtectedRoute>}/>
+            <Route path="/" element={<Home />}/>
             
             {/* protected components */}
             <Route path="/food" element={<ProtectedRoute><Food /></ProtectedRoute>} />
