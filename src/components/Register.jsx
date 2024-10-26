@@ -35,12 +35,7 @@ export function Register() {
             form={form}
             name="userRegister"
             layout="vertical"
-            style={{
-                maxWidth: 400, 
-                padding: "24px", 
-                margin: '0 auto',
-                backgroundColor: "white"
-            }}
+            className="w-96 p-6 my-0 mx-auto bg-white"
             onFinish={(values) => user.register(values.email, values.password, values.username)}
             scrollToFirstError
         >
