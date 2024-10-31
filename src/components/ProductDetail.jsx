@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react"
-import { message, Space } from "antd"
+import { Avatar, message, Space } from "antd"
 import { useParams } from "react-router-dom"
 import { useProductInfo } from "../lib/context/productInfo"
 import { ProductSlideShow } from "./ProductSlideShow"
@@ -56,7 +56,8 @@ export function ProductDetail() {
                 const result = await getUser(product.userId)
                 setContributor({
                     name: result.name,
-                    avatarId: result.prefs?.avatarId || null
+                    avatarId: result.prefs?.avatarId || null,
+                    avatarUrl: result.prefs?.avatarUrl || null
                 })
             }
         }
@@ -65,17 +66,6 @@ export function ProductDetail() {
         
     }, [product?.userId])
 
-    useEffect(() => {
-        async function fetchAvatarUrl() {
-            if (contributor?.avatarId) {
-                const avatarUrl = await productStorage.getPreviewURL(contributor.avatarId)
-                setAvatarUrl(avatarUrl)
-            }
-        } 
-        
-        fetchAvatarUrl()
-
-    }, [contributor?.avatarId])
 
     return (
         <>
@@ -94,7 +84,7 @@ export function ProductDetail() {
                                 <li><span className="font-extrabold">Location: </span>{product.location}</li>
                                 <li><span className="font-extrabold">Description: </span>{product.description}</li>
                                 <li><span className="font-extrabold">Post time: </span>{time ? time.format('MM/DD/YYYY') : "N/A"}</li>
-                                <li><span className="font-extrabold">Contributor: </span>{contributor ? contributor.name : "N/A"} {avatarUrl && <img src={avatarUrl} />} </li>
+                                <li><span className="font-extrabold">Contributor: </span>{contributor?.avatarUrl && <Avatar src={contributor.avatarUrl}/>} {contributor ? contributor.name : "N/A"}</li>
                             </Space>
                         </ul>
                     </div> 
