@@ -5,9 +5,9 @@ const projectId = import.meta.env.VITE_APPWRITE_PROJECT
 const apiKey = import.meta.env.VITE_APPWRITE_API_KEY
 
 const client = new Client()
-    .setEndpoint(endpoint) // Your API Endpoint
-    .setProject(projectId) // Your project ID
-    .setKey(apiKey); // Your secret API key
+    .setEndpoint(endpoint) 
+    .setProject(projectId) 
+    .setKey(apiKey);
 
 const users = new Users(client);
 

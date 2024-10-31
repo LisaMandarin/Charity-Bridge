@@ -333,7 +333,7 @@ export function DashboardPost({user}) {
                 <Form.Item
                     label="Photos"
                     name="photos"
-                    valuePropName="fileList"
+                    valuePropName="filelist"
                     rules={[
                         {
                             required: true,
@@ -341,34 +341,36 @@ export function DashboardPost({user}) {
                         }
                     ]}
                 >   
-                    <Spin spinning={product.loading}>
-                        <Upload
-                            multiple
-                            listType="picture-card"
-                            beforeUpload={beforeUpload}
-                            customRequest={customRequest}
-                            onPreview={onPreview}
-                            onRemove={onRemove}
-                            accept="image/png, image/jpeg, image/webp"
-                        >
-                            {uploadBtnVisible && (
-                                <Space direction="vertical">
-                                    <PlusOutlined />
-                                    <Button>Upload</Button>
-                                </Space>
-                            )}
-                        </Upload>
-                    </Spin>                 
-                    {previewImage && (
-                        <Image 
-                            wrapperStyle={{ display: 'none'}}
-                            preview={{
-                                visible: previewOpen,
-                                onVisibleChange: setPreviewOpen,
-                            }}
-                            src={previewImage}
-                        />
-                    )}
+                    <div>
+                        <Spin spinning={product.loading}>
+                            <Upload
+                                multiple
+                                listType="picture-card"
+                                beforeUpload={beforeUpload}
+                                customRequest={customRequest}
+                                onPreview={onPreview}
+                                onRemove={onRemove}
+                                accept="image/png, image/jpeg, image/webp"
+                            >
+                                {uploadBtnVisible && (
+                                    <Space direction="vertical">
+                                        <PlusOutlined />
+                                        <Button>Upload</Button>
+                                    </Space>
+                                )}
+                            </Upload>
+                        </Spin>                 
+                        {previewImage && (
+                            <Image 
+                                wrapperStyle={{ display: 'none'}}
+                                preview={{
+                                    visible: previewOpen,
+                                    onVisibleChange: setPreviewOpen,
+                                }}
+                                src={previewImage}
+                            />
+                        )}
+                    </div>
                 </Form.Item>
                 <Form.Item
                     wrapperCol={{

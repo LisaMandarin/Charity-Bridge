@@ -41,7 +41,6 @@ export function DashboardAvatar({user}) {
                 }
             ])
 
-            console.log('Avatar updated successfully: ', updatePrefsResult)
         } catch (error) {
             console.error("Failed to upload avatar: ", error.message)
         }

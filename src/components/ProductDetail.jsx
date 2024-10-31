@@ -96,15 +96,10 @@ export function ProductDetail() {
                                 <li><span className="font-extrabold">Post time: </span>{time ? time.format('MM/DD/YYYY') : "N/A"}</li>
                                 <li><span className="font-extrabold">Contributor: </span>{contributor ? contributor.name : "N/A"} {avatarUrl && <img src={avatarUrl} />} </li>
                             </Space>
-                            
                         </ul>
                     </div> 
-                    
-                    
                 </>
             )}
-            
-            
         </>
     )
 }

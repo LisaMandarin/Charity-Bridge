@@ -4,9 +4,8 @@ import { useEffect } from "react"
 import dayjs from "dayjs"
 import { useUserProfile } from "../lib/context/userProfile"
 
-export function DashboardProfile() {
+export function DashboardProfile({user}) {
     const [ form ] = Form.useForm()
-    const { current } = useUser()
     const userProfile = useUserProfile()
     
     const onFinish = async(values) => {
@@ -22,31 +21,23 @@ export function DashboardProfile() {
         form.resetFields()
     }
 
-    useEffect(() => {
-        if (current && current.$id) {
-            form.setFieldsValue({
-                userId: current.$id,
-                name: current.name,
-                email: current.email,
-                avatar: current.prefs.avatarId
-            })
-        }
-    }, [current, form])
     return (
         <div>
             <Form
                 name="profile-form"
                 form={form}
+                initialValues={{
+                    userId: user?.current?.$id,
+                    name: user?.current?.name,
+                    email: user?.current?.email,
+                    avatar: user?.current?.prefs.avatarId
+                }}
                 onFinish={onFinish}
                 onFinishFailed={onFinishFailed}
                 labelCol={{span: 8}}
                 wrapperCol={{span: 16}}
                 className="w-[600px] bg-white"
             >
-                <Form.Item label="ID" name="userId" hidden> <Input /> </Form.Item>
-                <Form.Item label="Name" name="name" hidden> <Input /> </Form.Item>
-                <Form.Item label="Email" name="email" hidden> <Input /> </Form.Item>
-                <Form.Item label="Avatar" name="avatar" hidden> <Input /> </Form.Item>
                 <Form.Item label="Birthday" name="birthday">
                     <DatePicker maxDate={dayjs()}/>
                 </Form.Item>
@@ -58,7 +49,7 @@ export function DashboardProfile() {
                     </Radio.Group>
                 </Form.Item>
                 <Form.Item label="Introduction" name="introduction">
-                    <Input.TextArea autoSize></Input.TextArea>
+                    <Input.TextArea autoSize />
                 </Form.Item>
                 <Form.Item label="phone" name="phone">
                     <Input />

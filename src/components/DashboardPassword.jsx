@@ -24,11 +24,14 @@ export function DashboardPassword({user}) {
                 className="w-full md:w-[600px] mx-auto"
                 onFinish={onFinish}
             >
+                <Form.Item name="username" hidden>
+                    <Input type="text" autoComplete="username"/>
+                </Form.Item>
                 <Form.Item
                     label="Old Password"
                     name="oldPassword"
                 >
-                    <Input type="password" allowClear/>
+                    <Input type="password" allowClear autoComplete="current-password" />
                 </Form.Item>
                 <Form.Item
                     label="New Password"
@@ -57,7 +60,7 @@ export function DashboardPassword({user}) {
                     ]}
                     hasFeedback
                 >
-                    <Input type="password" allowClear/>
+                    <Input type="password" allowClear autoComplete="new-password" />
                 </Form.Item>
                 <Form.Item
                     label="Confirm Password"
@@ -78,7 +81,7 @@ export function DashboardPassword({user}) {
                     ]}
                     hasFeedback
                 >
-                    <Input type="password" allowClear />
+                    <Input type="password" allowClear autoComplete="new-password" />
                 </Form.Item>
                 <Form.Item
                     wrapperCol={{

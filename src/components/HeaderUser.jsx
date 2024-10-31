@@ -1,37 +1,10 @@
 import { Flex, Button, Avatar } from "antd"
 import { useUser } from "../lib/context/user"
 import { UserOutlined } from "@ant-design/icons"
-import { useEffect, useState } from "react"
-import { useStorage } from "../lib/context/storage"
 import { Link } from "react-router-dom"
 
 export function HeaderUser() {
     const user = useUser()
-    // const storage = useStorage()
-    // const [ avatarURL, setAvatarURL ] = useState('')
-
-    // useEffect(() => {
-    //     let isMounted = true
-
-    //     if (user.current && user.current.prefs && user.current.prefs.avatarId) {
-    //         const avatarId = user.current.prefs.avatarId
-    //         storage.getPreviewURL(avatarId)
-    //             .then(url => {
-    //                 if (isMounted) setAvatarURL(url)
-    //             })
-    //             .catch(error => {
-    //                 console.error("Failed to get image url: ", error.message)
-    //                 if (isMounted) setAvatarURL('')
-    //             })
-                
-    //     } else {
-    //         setAvatarURL('')
-    //     }
-
-    //     return () => {
-    //         isMounted = false
-    //     }
-    // }, [user.current])
 
     return (
         <>

@@ -34,7 +34,7 @@ export function Dashboard() {
                     <span className="text-gray-300">Profile</span>
                 </Divider>
 
-                <DashboardProfile />
+                <DashboardProfile user={user} />
 
                 <Divider orientation="left" orientationMargin="0">
                     <span className="text-gray-300">Post</span>
