@@ -1,10 +1,9 @@
 import { Avatar, Button, Space, Spin, Upload, message } from "antd"
 import { UserOutlined, UploadOutlined } from "@ant-design/icons"
-import { useEffect, useState } from "react"
+import { useState } from "react"
 import { useStorage } from "../lib/context/storage"
 
 export function DashboardAvatar({user}) {
-    const [ avatarURL, setAvatarURL ] = useState('')
     const storage = useStorage()
     const [ fileList, setFileList ] = useState([])
 
@@ -23,19 +22,26 @@ export function DashboardAvatar({user}) {
                 throw new Error("Failed to create avatar")
             }
 
-            const updatePrefs = await user.updatePrefs('avatarId', result.$id)
-            console.log("update prefs: ", updatePrefs)
-            if (!updatePrefs) {
-                throw new Error("Failed to update user preferences")
+            const avatarUrl = await storage.getPreviewURL(result.$id)
+
+            const updatePrefsResult = await user.updatePrefs({
+                avatarId: result.$id,
+                avatarUrl: avatarUrl
+            })
+            
+            if (!updatePrefsResult) {
+                throw new Error("Failed to update preferences in user")
             }
 
             setFileList([
                 {
                     uid: result.$id,
                     name: options.file.name,
-                    url: await storage.getPreviewURL(result.$id),
+                    url: avatarUrl,
                 }
             ])
+
+            console.log('Avatar updated successfully: ', updatePrefsResult)
         } catch (error) {
             console.error("Failed to upload avatar: ", error.message)
         }
@@ -50,14 +56,6 @@ export function DashboardAvatar({user}) {
         return true
     }
     
-    useEffect(() => {
-        const avatarId = user?.current?.prefs?.avatarId
-        if (avatarId) {
-            storage.getPreviewURL(avatarId)
-                .then(url => setAvatarURL(url))
-        }
-    }, [user?.current?.prefs?.avatarId])
-    
     return (
         <div className="flex justify-center">
             <Spin spinning={storage.loading}>
@@ -66,7 +64,7 @@ export function DashboardAvatar({user}) {
                         size={64} 
                         icon={<UserOutlined />} 
                         alt={`${user.current.name || "User"}'s avatar`}
-                        src={avatarURL}
+                        src={user.current.prefs.avatarUrl}
                     />
                     <Upload
                         customRequest={customRequest}

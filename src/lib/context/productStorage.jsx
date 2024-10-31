@@ -3,7 +3,7 @@ import { productStorage } from "../appwrite"
 import { ID } from "appwrite"
 import { message } from "antd"
 
-export const BUCKET_PRODUCT_ID = "66f6ace5001dc6aa5c65"
+const BUCKET_PRODUCT_ID = import.meta.env.VITE_BUCKET_PRODUCT_STORAGE_ID
 
 const ProductStorageContext = createContext()
 

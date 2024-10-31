@@ -193,19 +193,25 @@ export function UserProvider(props) {
     }
   }
 
-  async function updatePrefs(key, value) {
+  async function updatePrefs(newPrefs) {
     try {
-      const result = await account.updatePrefs(
-        {
-          [key]: value
-        }
-      )
+      const updatePrefs = {
+        ...user.prefs,
+        ...newPrefs
+      }
+      const result = await account.updatePrefs(updatePrefs)
+
+      if (!result) {
+        throw new Error("Unable to update prefs")
+      }
+
       setUser(result)
-      return true
+      return result
+
     } catch (err) {
       message.error('Failed to update preferences')
       console.error('Failed to update preferences: ', err.message)
-      return false
+      return null
     }
   }
 

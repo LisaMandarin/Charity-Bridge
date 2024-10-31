@@ -1,9 +1,11 @@
 import { Client, Databases, Account, OAuthProvider, Storage } from "appwrite";
 
+const endpoint = import.meta.env.VITE_APPWRITE_ENDPOINT
+const projectId = import.meta.env.VITE_APPWRITE_PROJECT
 const client = new Client();
 client
-    .setEndpoint('https://cloud.appwrite.io/v1')
-    .setProject('66abbd80001d74153b78')
+    .setEndpoint(endpoint)
+    .setProject(projectId)
 
 export const account = new Account(client);
 export { OAuthProvider }

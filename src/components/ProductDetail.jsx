@@ -4,15 +4,20 @@ import { useParams } from "react-router-dom"
 import { useProductInfo } from "../lib/context/productInfo"
 import { ProductSlideShow } from "./ProductSlideShow"
 import dayjs from "dayjs"
+import { getUser } from "../../api/getUser"
 import {Typography} from "antd"
+import { useProductStorage } from "../lib/context/productStorage"
 const { Title } = Typography
 
 
 export function ProductDetail() {
     const { productId } = useParams()
     const productInfo = useProductInfo()
+    const productStorage = useProductStorage()
     const [ product, setProduct ] = useState(null)
     const [ time, setTime ] = useState(null)
+    const [ contributor, setContributor ] = useState()
+    const [ avatarUrl, setAvatarUrl ] = useState()
 
 
     useEffect(() => {
@@ -45,6 +50,33 @@ export function ProductDetail() {
         }
     }, [product?.time])
 
+    useEffect(() => {
+        async function fetchContributor() {
+            if (product?.userId) {
+                const result = await getUser(product.userId)
+                setContributor({
+                    name: result.name,
+                    avatarId: result.prefs?.avatarId || null
+                })
+            }
+        }
+
+        fetchContributor()
+        
+    }, [product?.userId])
+
+    useEffect(() => {
+        async function fetchAvatarUrl() {
+            if (contributor?.avatarId) {
+                const avatarUrl = await productStorage.getPreviewURL(contributor.avatarId)
+                setAvatarUrl(avatarUrl)
+            }
+        } 
+        
+        fetchAvatarUrl()
+
+    }, [contributor?.avatarId])
+
     return (
         <>
             { product && (
@@ -62,6 +94,7 @@ export function ProductDetail() {
                                 <li><span className="font-extrabold">Location: </span>{product.location}</li>
                                 <li><span className="font-extrabold">Description: </span>{product.description}</li>
                                 <li><span className="font-extrabold">Post time: </span>{time ? time.format('MM/DD/YYYY') : "N/A"}</li>
+                                <li><span className="font-extrabold">Contributor: </span>{contributor ? contributor.name : "N/A"} {avatarUrl && <img src={avatarUrl} />} </li>
                             </Space>
                             
                         </ul>
