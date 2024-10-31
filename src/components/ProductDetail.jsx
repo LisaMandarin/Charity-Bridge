@@ -13,11 +13,8 @@ const { Title } = Typography
 export function ProductDetail() {
     const { productId } = useParams()
     const productInfo = useProductInfo()
-    const productStorage = useProductStorage()
     const [ product, setProduct ] = useState(null)
-    const [ time, setTime ] = useState(null)
     const [ contributor, setContributor ] = useState()
-    const [ avatarUrl, setAvatarUrl ] = useState()
 
 
     useEffect(() => {
@@ -42,13 +39,6 @@ export function ProductDetail() {
 
         fetchProduct(productId)
     }, [productId])
-
-    useEffect(() => {
-        if (product?.time) {
-            const newTime = dayjs(product.time)
-            setTime(newTime)
-        }
-    }, [product?.time])
 
     useEffect(() => {
         async function fetchContributor() {
@@ -83,7 +73,7 @@ export function ProductDetail() {
                                 <li><span className="font-extrabold">Category: </span>{product.category}</li>
                                 <li><span className="font-extrabold">Location: </span>{product.location}</li>
                                 <li><span className="font-extrabold">Description: </span>{product.description}</li>
-                                <li><span className="font-extrabold">Post time: </span>{time ? time.format('MM/DD/YYYY') : "N/A"}</li>
+                                <li><span className="font-extrabold">Post time: </span>{product?.time ? dayjs(product.time).format('MM/DD/YYYY') : "N/A"}</li>
                                 <li><span className="font-extrabold">Contributor: </span>{contributor?.avatarUrl && <Avatar src={contributor.avatarUrl}/>} {contributor ? contributor.name : "N/A"}</li>
                             </Space>
                         </ul>
