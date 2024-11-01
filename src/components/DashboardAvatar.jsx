@@ -1,7 +1,8 @@
-import { Avatar, Button, Space, Spin, Upload, message } from "antd"
+import { Avatar, Button, Space, Spin, Upload, message, Typography } from "antd"
 import { UserOutlined, UploadOutlined } from "@ant-design/icons"
 import { useState } from "react"
 import { useStorage } from "../lib/context/storage"
+const { Title } = Typography
 
 export function DashboardAvatar({user}) {
     const storage = useStorage()
@@ -57,25 +58,28 @@ export function DashboardAvatar({user}) {
     
     return (
         <div className="flex justify-center">
-            <Spin spinning={storage.loading}>
-                <Space direction="vertical" className="text-center">
-                    <Avatar 
-                        size={64} 
-                        icon={<UserOutlined />} 
-                        alt={`${user.current.name || "User"}'s avatar`}
-                        src={user.current.prefs.avatarUrl}
-                    />
-                    <Upload
-                        customRequest={customRequest}
-                        fileList={fileList}
-                        showUploadList={false}
-                        beforeUpload={beforeUpload}
-                        accept=".png,.jpeg,.webp"
-                    >
-                        <Button icon={<UploadOutlined />}>upload avatar</Button>
-                    </Upload>
-                </Space>
-            </Spin>
+            <Space direction="vertical" className="flex items-center">
+                <Title>Change Avatar</Title>
+                <Spin spinning={storage.loading}>
+                    <Space direction="vertical" className="text-center">
+                        <Avatar 
+                            size={64} 
+                            icon={<UserOutlined />} 
+                            alt={`${user.current.name || "User"}'s avatar`}
+                            src={user.current.prefs.avatarUrl}
+                        />
+                        <Upload
+                            customRequest={customRequest}
+                            fileList={fileList}
+                            showUploadList={false}
+                            beforeUpload={beforeUpload}
+                            accept=".png,.jpeg,.webp"
+                        >
+                            <Button icon={<UploadOutlined />}>upload avatar</Button>
+                        </Upload>
+                    </Space>
+                </Spin>
+            </Space>
         </div>
     )
 }

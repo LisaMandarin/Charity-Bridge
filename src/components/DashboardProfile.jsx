@@ -1,8 +1,7 @@
-import { Button, DatePicker, Form, Input, Radio, Space } from "antd"
-import { useUser } from "../lib/context/user" 
-import { useEffect } from "react"
+import { Button, DatePicker, Form, Input, Radio, Space, Typography } from "antd"
 import dayjs from "dayjs"
 import { useUserProfile } from "../lib/context/userProfile"
+const { Title } = Typography
 
 export function DashboardProfile({user}) {
     const [ form ] = Form.useForm()
@@ -22,7 +21,8 @@ export function DashboardProfile({user}) {
     }
 
     return (
-        <div>
+        <div className="flex flex-col items-center md:w-[600px] mx-auto">
+            <Title className="text-center">Manage Profile</Title>
             <Form
                 name="profile-form"
                 form={form}
@@ -36,7 +36,7 @@ export function DashboardProfile({user}) {
                 onFinishFailed={onFinishFailed}
                 labelCol={{span: 8}}
                 wrapperCol={{span: 16}}
-                className="w-[600px] bg-white"
+                className="w-full md:w-[600px] mx-auto"
             >
                 <Form.Item label="Birthday" name="birthday">
                     <DatePicker maxDate={dayjs()}/>

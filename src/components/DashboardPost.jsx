@@ -1,4 +1,4 @@
-import { Button, Form, Image, Input, InputNumber, message, Radio, Select, Space, Spin } from "antd"
+import { Button, Form, Image, Input, InputNumber, message, Radio, Select, Space, Spin, Typography } from "antd"
 import Upload from "antd/es/upload/Upload"
 import { categoryItems } from "./HeaderCategory"
 import { Icon } from '@iconify/react';
@@ -7,6 +7,7 @@ import { useEffect, useState } from "react";
 import { useProductStorage } from "../lib/context/productStorage";
 import { useProductInfo } from "../lib/context/productInfo";
 import { useNavigate } from "react-router-dom";
+const { Title } = Typography
 
 export function DashboardPost({user}) {
     const now = new Date()
@@ -248,7 +249,8 @@ export function DashboardPost({user}) {
     }, [fileIds, isSubmitted, hasChanges])
 
     return (
-        <div className="md:w-[600px]">
+        <div className="flex flex-col items-center md:w-[600px] mx-auto">
+            <Title className="text-center">Add Post</Title>
             <Form
                 name="post-form"
                 form={form}
@@ -257,6 +259,7 @@ export function DashboardPost({user}) {
                 onChange={() => setHasChanges(true)}
                 labelCol={{ span: 8 }}
                 wrapperCol={{ span: 16 }}
+                className="w-full"
             >
                 <Form.Item hidden label="userId" name="userId">
                     <Input />
