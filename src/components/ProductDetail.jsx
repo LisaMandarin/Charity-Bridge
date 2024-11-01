@@ -4,9 +4,8 @@ import { useParams } from "react-router-dom"
 import { useProductInfo } from "../lib/context/productInfo"
 import { ProductSlideShow } from "./ProductSlideShow"
 import dayjs from "dayjs"
-import { getUser } from "../../api/getUser"
+import { getUser } from "../lib/serverAppwrite"
 import {Typography} from "antd"
-import { useProductStorage } from "../lib/context/productStorage"
 const { Title } = Typography
 
 
