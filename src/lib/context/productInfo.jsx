@@ -116,8 +116,36 @@ export function ProductInfoProvider(props) {
         }
     }
 
+    async function listDocumentsByQuery(query) {
+        setLoading(true)
+        try {
+            const result = await productInfoDatabase.listDocuments(
+                DATABASE_ID,
+                COLLECTION_ID,
+                [
+                    Query.orderDesc("time"),
+                    query
+                ]
+            )
+
+            if (!result || result.documents.length === 0) {
+                throw new Error("No documents by query found")
+            }
+
+            return result.documents
+
+        } catch(err) {
+            console.error('Failed to list product information by query: ', err.message)
+            message.error('Failed to list product information by query')
+            return null
+
+        } finally {
+            setLoading(false)
+        }
+    }
+
     return (
-        <ProductInfoContext.Provider value={{loading, createForm, listDocuments, deleteForm, getDocument}}>
+        <ProductInfoContext.Provider value={{loading, createForm, listDocuments, deleteForm, getDocument, listDocumentsByQuery}}>
             {props.children}
         </ProductInfoContext.Provider>
     )

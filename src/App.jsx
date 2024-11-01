@@ -2,12 +2,6 @@ import { Route, Routes } from "react-router-dom";
 import { Register } from "./components/Register";
 import { Login } from "./components/Login";
 import { Home } from "./components/Home";
-import { Food } from "./components/Food";
-import { Clothing } from "./components/Clothing";
-import { Housing } from "./components/Housing";
-import { Transportation } from "./components/Transportation";
-import { Education } from "./components/Education";
-import { Entertainment } from "./components/Entertainment";
 import { SessionFailure } from "./components/SessionFailure";
 import { OAuthFailure } from "./components/OAuthFailure";
 import { FBdelete } from "./components/FBdelete";
@@ -19,6 +13,7 @@ import { PasswordForgot } from "./components/PasswordForgot";
 import { ProtectedRoute } from "./lib/protectedRoute";
 import { OauthSuccess } from "./components/OAuthSuccess";
 import { Layout } from "./components/Layout";
+import { ProductByCategory } from "./components/ProductByCategory";
 
 
 
@@ -39,12 +34,7 @@ function App() {
             <Route path="/" element={<Home />}/>
             
             {/* protected components */}
-            <Route path="/food" element={<ProtectedRoute><Food /></ProtectedRoute>} />
-            <Route path="/clothing" element={<ProtectedRoute><Clothing /></ProtectedRoute>} />
-            <Route path="/housing" element={<ProtectedRoute><Housing /></ProtectedRoute>} />
-            <Route path="/transportation" element={<ProtectedRoute><Transportation /></ProtectedRoute>} />
-            <Route path="/education" element={<ProtectedRoute><Education /></ProtectedRoute>} />
-            <Route path="/entertainment" element={<ProtectedRoute><Entertainment /></ProtectedRoute>} />
+            <Route path="/product/:category" element={<ProtectedRoute><ProductByCategory /></ProtectedRoute>}/>
             <Route path="/dashboard" element={<ProtectedRoute><Dashboard /></ProtectedRoute>} />
             <Route path="product/:productId" element={<ProtectedRoute><ProductDetail /></ProtectedRoute>} />
             <Route path="/verification" element={<Verification />} />
