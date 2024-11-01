@@ -2,7 +2,7 @@ import { Query } from "appwrite"
 import { useEffect, useState } from "react"
 import { useProductInfo } from "../lib/context/productInfo"
 import { Card, message, Typography } from "antd"
-import { useParams } from "react-router-dom"
+import { Link, useParams } from "react-router-dom"
 const { Title } = Typography
 const { Meta } = Card
 
@@ -26,21 +26,27 @@ export function ProductByCategory() {
     }, [])
 
     return (
-        <div className="m-4">
+        <div className="m-8">
             <Title>{category}</Title>
-            <div className="grid grid-cols-auto-fit gap-4">
-            {/* <div style={{
-                // display: "grid",
-                // gridTemplateColumns: "repeat(auto-fit, minmax(100px, 1fr))"
-            }}> */}
+            {/* <div className="grid grid-cols-auto-fit gap-4"> */}
+            <div style={{
+                display: "grid",
+                gridTemplateColumns: "repeat(auto-fit, minmax(100px, 1fr))",
+                gap: "1rem",
+            }}>
                 {documents && documents.map(d => (
-                    <Card key={d.$id}
-                        hoverable
-                        style={{width: "auto-fit"}}
-                        cover={<img alt={`{d.product}'s pohto`} src={d.photoURL[0]} />}
-                    >
-                        <Meta title={d.product} />
-                    </Card>
+                    <Link to={`/product/${d.$id}`} key={d.$id}>
+                        <Card 
+                            hoverable
+                            cover={
+                                <div>
+                                    <img alt={`{d.product}'s pohto`} src={d.photoURL[0]} style={{width: "100%", height: "100px", objectFit: "contain"}} />
+                                </div>
+                            }
+                        >
+                            <Meta title={d.product} />
+                        </Card>
+                    </Link>
                 ))}
             </div>
         </div>

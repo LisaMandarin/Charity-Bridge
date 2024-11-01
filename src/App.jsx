@@ -34,7 +34,7 @@ function App() {
             <Route path="/" element={<Home />}/>
             
             {/* protected components */}
-            <Route path="/product/:category" element={<ProtectedRoute><ProductByCategory /></ProtectedRoute>}/>
+            <Route path="/category/:category" element={<ProtectedRoute><ProductByCategory /></ProtectedRoute>}/>
             <Route path="/dashboard" element={<ProtectedRoute><Dashboard /></ProtectedRoute>} />
             <Route path="product/:productId" element={<ProtectedRoute><ProductDetail /></ProtectedRoute>} />
             <Route path="/verification" element={<Verification />} />
