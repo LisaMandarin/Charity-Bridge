@@ -8,8 +8,8 @@ export function useProductInfo() {
     return useContext(ProductInfoContext) 
 }
 
-const DATABASE_ID = "66f6ab28003078219c0a"
-const COLLECTION_ID = "66f6ab380018a24eb353"
+const DATABASE_ID = import.meta.env.VITE_DATABASE_PRODUCT_INFO_ID
+const COLLECTION_ID = import.meta.env.VITE_COLLECTION_PRODUCT_INFO_ID
 
 export function ProductInfoProvider(props) {
     const [ loading, setLoading ] = useState(false)

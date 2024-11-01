@@ -8,8 +8,8 @@ export function useUserProfile() {
     return useContext(UserProfileContext)
 }
 
-const DATABASE_ID = "66f6ab28003078219c0a"
-const COLLECTION_ID = "66f83903001b4178441e"
+const DATABASE_ID = import.meta.env.VITE_DATABASE_USER_PROFILE_ID
+const COLLECTION_ID = import.meta.env.VITE_COLLECTION_USER_PROFILE_ID
 
 export function UserProfileProvider(props) {
     const [ success, setSuccess ] = useState(null)

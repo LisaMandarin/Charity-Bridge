@@ -3,7 +3,7 @@ import { storage } from "../appwrite"
 import { ID } from "appwrite"
 import { message } from "antd"
 
-export const BUCKET_AVATAR_ID = "66e14204003a70a632ed"
+export const BUCKET_AVATAR_ID =import.meta.env.VITE_BUCKET_AVATAR_STORAGE_ID
 
 const StorageContext = createContext()
 
