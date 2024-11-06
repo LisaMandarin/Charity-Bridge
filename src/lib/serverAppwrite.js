@@ -1,6 +1,7 @@
 import {Client, Users} from 'node-appwrite'
 
 const endpoint = import.meta.env.VITE_APPWRITE_ENDPOINT
+console.log('endpoint: ', endpoint)
 const projectId = import.meta.env.VITE_APPWRITE_PROJECT
 const apiKey = import.meta.env.VITE_APPWRITE_API_KEY
 
