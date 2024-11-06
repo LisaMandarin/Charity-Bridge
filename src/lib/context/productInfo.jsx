@@ -12,7 +12,7 @@ const DATABASE_ID = import.meta.env.VITE_DATABASE_PRODUCT_INFO_ID
 const COLLECTION_ID = import.meta.env.VITE_COLLECTION_PRODUCT_INFO_ID
 
 export function ProductInfoProvider(props) {
-    const [ loading, setLoading ] = useState(false)
+    const [ loading, setLoading ] = useState(null)
 
     async function createForm(form) {
         setLoading(true)
