@@ -8,7 +8,7 @@ export function Layout() {
             <div className="bg-pink-200 h-24">
                 <Header />
             </div>
-            <div className="flex flex-col flex-grow justify-center items-center">
+            <div className="flex flex-col flex-grow items-center">
                 <Outlet />
             </div>
             <div className="bg-pink-200 h-14">

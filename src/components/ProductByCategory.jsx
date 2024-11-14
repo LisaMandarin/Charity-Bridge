@@ -26,25 +26,22 @@ export function ProductByCategory() {
     }, [query])
 
     return (
-        <div className="m-8">
+        <div className="p-8 text-center">
             <Title>{category}</Title>
-            {/* <div className="grid grid-cols-auto-fit gap-4"> */}
-            <div style={{
-                display: "grid",
-                gridTemplateColumns: "repeat(auto-fit, minmax(100px, 1fr))",
-                gap: "1rem",
-            }}>
+            <div className="flex flex-wrap bg-white gap-4 justify-center">
                 {documents && documents.map(d => (
                     <Link to={`/product/${d.$id}`} key={d.$id}>
                         <Card 
                             hoverable
                             cover={
                                 <div>
-                                    <img alt={`{d.product}'s pohto`} src={d.photoURL[0]} style={{width: "100%", height: "100px", objectFit: "contain"}} />
+                                    <img alt={`{d.product}'s photo`} src={d.photoURL[0]} style={{width: "100%", height: "100px", objectFit: "contain"}} />
                                 </div>
                             }
+                            className="w-[150px] h-[200px]"
                         >
-                            <Meta title={d.product} />
+                            <Meta title={<div className="text-wrap">{d.product}</div>} />
+                            
                         </Card>
                     </Link>
                 ))}
