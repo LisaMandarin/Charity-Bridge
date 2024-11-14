@@ -8,7 +8,7 @@ export function ProductCard() {
     const productInfo = useProductInfo()
     const [ data, setData ] = useState([])
     const [ currentPage, setCurrentPage ] = useState(1)
-    const itemsPerPage = 1
+    const [itemsPerPage , setItemsPerPage ] = useState(1)
     const startIndex = (currentPage-1) * itemsPerPage
     const currentItems = data.slice(startIndex, startIndex + itemsPerPage)
 
@@ -21,11 +21,28 @@ export function ProductCard() {
         fetchData()
     }, [])
 
+    useEffect(() => {
+        function handleScreen() {
+            if (window.innerWidth > 768) {
+                setItemsPerPage(2)
+            } else {
+                setItemsPerPage(1)
+            }
+        }
+        
+        handleScreen()
+
+        window.addEventListener("resize", handleScreen)
+
+        return () => window.removeEventListener("resize", handleScreen)
+    }, [])
+
     return (
         <div className="w-full bg-white">
-            <div className="w-full sm:w-[360px] p-4 m-auto">
+            <div className="p-4 m-auto flex flex-row gap-4 flex-wrap">
                 { currentItems && currentItems.map(item => (
                     <Card 
+                        className="w-full sm:w-[360px]"
                         key={item.$id} 
                         hoverable
                         loading = {productInfo.loading}
