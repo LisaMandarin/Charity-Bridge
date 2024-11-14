@@ -23,7 +23,7 @@ export function ProductByCategory() {
             setDocuments(result)
         }
         fetchProducts()
-    }, [])
+    }, [query])
 
     return (
         <div className="m-8">
