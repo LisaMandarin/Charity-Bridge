@@ -32,13 +32,13 @@ export function ProductByCategory() {
                 {documents && documents.map(d => (
                     <Link to={`/product/${d.$id}`} key={d.$id}>
                         <Card 
+                            className="w-full md:w-[360px]"
                             hoverable
                             cover={
-                                <div>
-                                    <img alt={`{d.product}'s photo`} src={d.photoURL[0]} style={{width: "100%", height: "100px", objectFit: "contain"}} />
+                                <div className="w-full aspect-square">
+                                    <img alt={`{d.product}'s photo`} src={d.photoURL[0]} style={{width: "100%", height: "100%", objectFit: "contain"}} />
                                 </div>
                             }
-                            className="w-[150px] h-[200px]"
                         >
                             <Meta title={<div className="text-wrap">{d.product}</div>} />
                             
