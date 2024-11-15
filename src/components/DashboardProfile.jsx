@@ -16,12 +16,15 @@ export function DashboardProfile({user}) {
             
             if (result.$id){
                 message.success("Your profile is created.")
-                await user.updatePrefs({ profileId: result.$id})
-                
+                const result = await user.updatePrefs({ profileId: result.$id})
+                if (!result) {
+                    throw new Error("Unable to update user preference")
+                }
             }
             form.resetFields()
 
         } catch (error) {
+            console.error(error.message)
             message.error("Unable to update your profile")
         }
     }
@@ -43,7 +46,26 @@ export function DashboardProfile({user}) {
                 avatar: user?.current?.prefs.avatarUrl
             })
         }
+
+        async function fetchProfile() {
+            if (user?.current?.prefs?.profileId) {
+                const documentId = user.current.prefs.profileId
+                const result = await userProfile.getProfile(documentId)
+                if (result) {
+                    form.setFieldsValue({
+                        birthday: dayjs(result.birthday),
+                        gender: result.gender,
+                        introduction: result.introduction,
+                        phone: result.phone,
+                        address: result.address,
+                    })
+                }
+            }
+        }
+        fetchProfile()
+
     }, [user])
+
 
     return (
         <div className="flex flex-col items-center md:w-[600px] mx-auto">
