@@ -2,26 +2,35 @@ import { Button, DatePicker, Form, Input, message, Radio, Space, Typography } fr
 import dayjs from "dayjs"
 import { useUserProfile } from "../lib/context/userProfile"
 import { useEffect } from "react"
+import { Navigate, useNavigate } from "react-router-dom"
 
 const { Title } = Typography
 
 export function DashboardProfile({user}) {
     const [ form ] = Form.useForm()
     const userProfile = useUserProfile()
+    const navigate = useNavigate()
     
     const onFinish = async(values) => {
-        console.log("values: ", values)
         try {
-            const result = await userProfile.createProfile(values)
-            
-            if (result.$id){
-                message.success("Your profile is created.")
-                const result = await user.updatePrefs({ profileId: result.$id})
-                if (!result) {
+            let profileResult
+            if (user?.current?.prefs?.profileId) {
+                const documentId = user.current.prefs.profileId
+                profileResult = await userProfile.updateProfile(documentId, values)
+            } else {
+                profileResult = await userProfile.createProfile(values)
+            }
+
+            if (profileResult?.$id){
+                message.success(user?.current?.prefs?.profileId ? "Your profile is updated" : "Your profile is created")
+                const updateResult = await user.updatePrefs({ profileId: profileResult.$id})
+                if (updateResult) {
+                    navigate("/")
+                } else {
                     throw new Error("Unable to update user preference")
                 }
+                
             }
-            form.resetFields()
 
         } catch (error) {
             console.error(error.message)
@@ -47,6 +56,9 @@ export function DashboardProfile({user}) {
             })
         }
 
+    }, [user])
+
+    useEffect(() => {
         async function fetchProfile() {
             if (user?.current?.prefs?.profileId) {
                 const documentId = user.current.prefs.profileId
@@ -63,8 +75,7 @@ export function DashboardProfile({user}) {
             }
         }
         fetchProfile()
-
-    }, [user])
+    }, [user?.current?.prefs?.profileId, userProfile])
 
 
     return (
@@ -94,7 +105,7 @@ export function DashboardProfile({user}) {
                     </Radio.Group>
                 </Form.Item>
                 <Form.Item label="Introduction" name="introduction">
-                    <Input.TextArea autoSize />
+                    <Input.TextArea maxLength={1000} showCount autoSize />
                 </Form.Item>
                 <Form.Item label="phone" name="phone">
                     <Input />
