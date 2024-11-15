@@ -7,8 +7,8 @@ import dayjs from "dayjs"
 import { getUser } from "../lib/serverAppwrite"
 import {Typography} from "antd"
 import { useUserProfile } from "../lib/context/userProfile"
+import { StarOutlined } from "@ant-design/icons"
 const { Title } = Typography
-
 
 export function ProductDetail() {
     const { productId } = useParams()
@@ -86,20 +86,20 @@ export function ProductDetail() {
         if (profile) {
             setContentList({
                 contact: 
-                <ul>
-                    <li><strong>Email: </strong>{profile.email ? profile.email : "N/A"}</li>
-                    <li><strong>Phone: </strong>{profile.phone ? profile.phone : "N/A"}</li>
-                    <li><strong>Address: </strong>{profile.address ? profile.address : "N/A"}</li>
-                </ul>,
+                    <ul>
+                        <li><strong>Email: </strong>{profile.email ? profile.email : "N/A"}</li>
+                        <li><strong>Phone: </strong>{profile.phone ? profile.phone : "N/A"}</li>
+                        <li><strong>Address: </strong>{profile.address ? profile.address : "N/A"}</li>
+                    </ul>,
                 about: 
-                <ul className="max-w-[360px] whitespace-normal overflow-hidden">
-                    <li><strong>Name: </strong>{profile.name ? profile.name : "N/A"}</li>
-                    <li><strong>birthday: </strong>{profile.birthday ? dayjs(profile.birthday).format("MM/DD/YYYY") : "N/A"}</li>
-                    <li><strong>Gender: </strong>{profile.gender ? profile.gender : "N/A"}</li>
-                    <li><strong>Introduction: </strong>{profile.introduction ? profile.introduction : "N/A"}</li>
-                </ul>,
-                review: <div>Review Section</div>,
-                posts: <div>Other Posts by {profile?.name}</div>
+                    <ul className="max-w-[360px] whitespace-normal overflow-hidden">
+                        <li><strong>Name: </strong>{profile.name ? profile.name : "N/A"}</li>
+                        <li><strong>birthday: </strong>{profile.birthday ? dayjs(profile.birthday).format("MM/DD/YYYY") : "N/A"}</li>
+                        <li><strong>Gender: </strong>{profile.gender ? profile.gender : "N/A"}</li>
+                        <li><strong>Introduction: </strong>{profile.introduction ? profile.introduction : "N/A"}</li>
+                    </ul>,
+                // review: <div>Review Section</div>,
+                // posts: <div>Other Posts by {profile?.name}</div>
             })
         }
     }, [profile])
@@ -128,12 +128,13 @@ export function ProductDetail() {
                             { profile && (
                                 <Card 
                                     style={{ width: "100%"}}
-                                    title={profile.name}
+                                    title={<div>{profile.name} <StarOutlined /><StarOutlined /><StarOutlined /></div>}
+                                    extra={<a>more posts</a>}
                                     tabList={[
                                         { key: "contact", tab: "Contact" },
                                         { key: "about", tab: `About ${profile.name}` },
-                                        { key: "review", tab: "Review" },
-                                        { key: "posts", tab: "Other posts"}
+                                        // { key: "review", tab: "Review" },
+                                        // { key: "posts", tab: "Other posts"}
                                     ]}
                                     activeTabKey={activeTabKey}
                                     onTabChange={onTabChange}
