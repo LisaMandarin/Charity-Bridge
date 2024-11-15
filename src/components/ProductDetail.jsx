@@ -8,6 +8,7 @@ import { getUser } from "../lib/serverAppwrite"
 import {Typography} from "antd"
 import { useUserProfile } from "../lib/context/userProfile"
 import { StarOutlined } from "@ant-design/icons"
+import { Icon } from "@iconify/react/dist/iconify.js"
 const { Title } = Typography
 
 export function ProductDetail() {
@@ -86,20 +87,24 @@ export function ProductDetail() {
         if (profile) {
             setContentList({
                 contact: 
-                    <ul>
-                        <li><strong>Email: </strong>{profile.email ? profile.email : "N/A"}</li>
-                        <li><strong>Phone: </strong>{profile.phone ? profile.phone : "N/A"}</li>
-                        <li><strong>Address: </strong>{profile.address ? profile.address : "N/A"}</li>
+                    <ul className="leading-8">
+                        <li><Icon icon="ic:outline-email" width="1.5rem" height="1.5rem" className="inline"/> {profile.email ? profile.email : "N/A"}</li>
+                        <li><Icon icon="ic:outline-phone" width="1.5rem" height="1.5rem" className="inline" /> {profile.phone ? profile.phone : "N/A"}</li>
+                        <li><Icon icon="lsicon:house-outline" width="1.5rem" height="1.5rem" className="inline" /> {profile.address ? profile.address : "N/A"}</li>
                     </ul>,
                 about: 
-                    <ul className="max-w-[360px] whitespace-normal overflow-hidden">
+                    <ul className="max-w-[360px] whitespace-normal overflow-hidden leading-8">
                         <li><strong>Name: </strong>{profile.name ? profile.name : "N/A"}</li>
-                        <li><strong>birthday: </strong>{profile.birthday ? dayjs(profile.birthday).format("MM/DD/YYYY") : "N/A"}</li>
-                        <li><strong>Gender: </strong>{profile.gender ? profile.gender : "N/A"}</li>
+                        <li><strong>Birthday: </strong>{profile.birthday ? dayjs(profile.birthday).format("MM/DD/YYYY") : "N/A"}</li>
+                        <li><strong>Gender: </strong>{profile.gender ? 
+                            <>
+                                {profile.gender === "male" && <Icon icon="tabler:gender-male" width="1.5rem" height="1.5rem" className="inline"/>}
+                                {profile.gender === "female" && <Icon icon="tabler:gender-female" width="1.5rem" height="1.5rem" className="inline"/>}
+                                {profile.gender === "LGBTQ" && <Icon icon="tabler:gender-bigender" width="1.5rem" height="1.5rem" className="inline"/>}
+                            </>
+                            : "N/A"}</li>
                         <li><strong>Introduction: </strong>{profile.introduction ? profile.introduction : "N/A"}</li>
                     </ul>,
-                // review: <div>Review Section</div>,
-                // posts: <div>Other Posts by {profile?.name}</div>
             })
         }
     }, [profile])
@@ -133,8 +138,6 @@ export function ProductDetail() {
                                     tabList={[
                                         { key: "contact", tab: "Contact" },
                                         { key: "about", tab: `About ${profile.name}` },
-                                        // { key: "review", tab: "Review" },
-                                        // { key: "posts", tab: "Other posts"}
                                     ]}
                                     activeTabKey={activeTabKey}
                                     onTabChange={onTabChange}
