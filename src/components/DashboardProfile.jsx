@@ -2,14 +2,12 @@ import { Button, DatePicker, Form, Input, message, Radio, Space, Typography } fr
 import dayjs from "dayjs"
 import { useUserProfile } from "../lib/context/userProfile"
 import { useEffect } from "react"
-import { Navigate, useNavigate } from "react-router-dom"
 
 const { Title } = Typography
 
-export function DashboardProfile({user}) {
+export function DashboardProfile({user, setDiv}) {
     const [ form ] = Form.useForm()
     const userProfile = useUserProfile()
-    const navigate = useNavigate()
     
     const onFinish = async(values) => {
         try {
@@ -25,16 +23,15 @@ export function DashboardProfile({user}) {
                 message.success(user?.current?.prefs?.profileId ? "Your profile is updated" : "Your profile is created")
                 const updateResult = await user.updatePrefs({ profileId: profileResult.$id})
                 if (updateResult) {
-                    navigate("/")
+                    setDiv(null)
                 } else {
                     throw new Error("Unable to update user preference")
                 }
-                
             }
 
         } catch (error) {
             console.error(error.message)
-            message.error("Unable to update your profile")
+            message.error("Error while submitting the form")
         }
     }
 

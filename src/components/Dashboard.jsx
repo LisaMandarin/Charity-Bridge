@@ -118,8 +118,8 @@ export function Dashboard() {
                 <div ref={avatarRef}>{div === "avatar" && <DashboardAvatar user={user}/>}</div>
                 <div ref={nameRef}>{div === "name" && <DashboardName user={user} />}</div>
                 <div ref={passwordRef}>{div === "password" && <DashboardPassword user={user} />}</div>
-                <div ref={profileRef}>{div === "profile" && <DashboardProfile user={user} />}</div>
-                <div ref={postRef}>{div === "post" && <DashboardPost user={user}/>}</div>
+                <div ref={profileRef}>{div === "profile" && <DashboardProfile user={user} setDiv={setDiv}/>}</div>
+                <div ref={postRef}>{div === "post" && <DashboardPost user={user} />}</div>
             </div>
         </>
     )
