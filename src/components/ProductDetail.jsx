@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react"
-import { Avatar, Card, message, Space } from "antd"
+import { Avatar, Button, Card, message, Space } from "antd"
 import { useParams } from "react-router-dom"
 import { useProductInfo } from "../lib/context/productInfo"
 import { ProductSlideShow } from "./ProductSlideShow"
@@ -20,10 +20,16 @@ export function ProductDetail() {
     const [ profile, setProfile ] = useState()
     
     // --------Profile Card-------
+    const [ open, setOpen ] = useState(false)
     const [ contentList, setContentList ] = useState({})
     const [ activeTabKey, setActiveTabKey ] = useState("contact")
+    
     const onTabChange = (key) => {
         setActiveTabKey(key)
+    }
+
+    const toggleOpen = () => {
+        setOpen(current => !current)
     }
     //--------Profile Card-------
 
@@ -127,10 +133,15 @@ export function ProductDetail() {
                                     <li><span className="font-extrabold">Location: </span>{product.location}</li>
                                     <li><span className="font-extrabold">Description: </span>{product.description}</li>
                                     <li><span className="font-extrabold">Post time: </span>{product?.time ? dayjs(product.time).format('MM/DD/YYYY') : "N/A"}</li>
-                                    <li><span className="font-extrabold">Contributor: </span>{contributor?.avatarUrl && <Avatar src={contributor.avatarUrl}/>} {contributor ? contributor.name : "N/A"}</li>
+                                    <li>
+                                        <span className="font-extrabold">Contributor: </span> 
+                                        <Button variant="link" color="default" onClick={toggleOpen}>
+                                            {contributor?.avatarUrl && <Avatar src={contributor.avatarUrl}/>} {contributor ? contributor.name : "N/A"}
+                                        </Button>
+                                    </li>
                                 </Space>
                             </ul>
-                            { profile && (
+                            { profile && open && (
                                 <Card 
                                     style={{ width: "100%"}}
                                     title={<div>{profile.name} <StarOutlined /><StarOutlined /><StarOutlined /></div>}
