@@ -23,7 +23,7 @@ export function ProductCard() {
 
     useEffect(() => {
         function handleScreen() {
-            if (window.innerWidth > 768) {
+            if (window.innerWidth > 1400) {
                 setItemsPerPage(2)
             } else {
                 setItemsPerPage(1)
@@ -39,10 +39,10 @@ export function ProductCard() {
 
     return (
         <div className="w-full bg-white">
-            <div className="p-4 m-auto flex flex-row gap-4 flex-wrap">
+            <div className="p-4 flex flex-row gap-4 flex-wrap justify-center">
                 { currentItems && currentItems.map(item => (
                     <Card 
-                        className="w-full sm:w-[360px]"
+                        className="w-full md:w-[360px]"
                         key={item.$id} 
                         hoverable
                         loading = {productInfo.loading}
