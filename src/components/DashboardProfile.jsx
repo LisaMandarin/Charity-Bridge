@@ -1,6 +1,8 @@
-import { Button, DatePicker, Form, Input, Radio, Space, Typography } from "antd"
+import { Button, DatePicker, Form, Input, message, Radio, Space, Typography } from "antd"
 import dayjs from "dayjs"
 import { useUserProfile } from "../lib/context/userProfile"
+import { useEffect } from "react"
+
 const { Title } = Typography
 
 export function DashboardProfile({user}) {
@@ -8,8 +10,20 @@ export function DashboardProfile({user}) {
     const userProfile = useUserProfile()
     
     const onFinish = async(values) => {
-        await userProfile.createForm(values)
-        form.resetFields()
+        console.log("values: ", values)
+        try {
+            const result = await userProfile.createProfile(values)
+            
+            if (result.$id){
+                message.success("Your profile is created.")
+                await user.updatePrefs({ profileId: result.$id})
+                
+            }
+            form.resetFields()
+
+        } catch (error) {
+            message.error("Unable to update your profile")
+        }
     }
 
     const onFinishFailed = (errorInfo) => {
@@ -20,24 +34,33 @@ export function DashboardProfile({user}) {
         form.resetFields()
     }
 
+    useEffect(() => {
+        if (user?.current) {
+            form.setFieldsValue({
+                userId: user?.current?.$id,
+                name: user?.current?.name,
+                email: user?.current?.email,
+                avatar: user?.current?.prefs.avatarUrl
+            })
+        }
+    }, [user])
+
     return (
         <div className="flex flex-col items-center md:w-[600px] mx-auto">
             <Title className="text-center">Manage Profile</Title>
             <Form
                 name="profile-form"
                 form={form}
-                initialValues={{
-                    userId: user?.current?.$id,
-                    name: user?.current?.name,
-                    email: user?.current?.email,
-                    avatar: user?.current?.prefs.avatarId
-                }}
                 onFinish={onFinish}
                 onFinishFailed={onFinishFailed}
                 labelCol={{span: 8}}
                 wrapperCol={{span: 16}}
                 className="w-full md:w-[600px] mx-auto"
             >
+                <Form.Item label="userId" name="userId" hidden><Input type="hidden"/></Form.Item>
+                <Form.Item label="name" name="name" hidden><Input type="hidden"/></Form.Item>
+                <Form.Item label="email" name="email" hidden><Input type="hidden"/></Form.Item>
+                <Form.Item label="avatar" name="avatar" hidden><Input type="hidden"/></Form.Item>
                 <Form.Item label="Birthday" name="birthday">
                     <DatePicker maxDate={dayjs()}/>
                 </Form.Item>

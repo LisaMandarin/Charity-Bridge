@@ -242,7 +242,22 @@ export function UserProvider(props) {
     }
 
   return (
-    <UserContext.Provider value={{ current: user, isSession, loading, fetchSession, fetchUser, login, logout, register, updateName, updatePassword, googleLogin, updatePrefs, emailVerification, passwordRecovery }}>
+    <UserContext.Provider value={{ 
+        current: user, 
+        isSession, 
+        loading, 
+        fetchSession, 
+        fetchUser, 
+        login, 
+        logout, 
+        register, 
+        updateName, 
+        updatePassword, 
+        googleLogin, 
+        updatePrefs, 
+        emailVerification, 
+        passwordRecovery 
+      }}>
       {props.children}
     </UserContext.Provider>
   );

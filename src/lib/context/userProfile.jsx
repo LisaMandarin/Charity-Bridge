@@ -12,12 +12,8 @@ const DATABASE_ID = import.meta.env.VITE_DATABASE_USER_PROFILE_ID
 const COLLECTION_ID = import.meta.env.VITE_COLLECTION_USER_PROFILE_ID
 
 export function UserProfileProvider(props) {
-    const [ success, setSuccess ] = useState(null)
-    const [ error, setError ] = useState(null)
     
-    async function createForm(form) {
-        setError(null)
-        setSuccess(null)
+    async function createProfile(form) {
         try {
             const result = await userProfileDatabase.createDocument(
                 DATABASE_ID,
@@ -25,16 +21,54 @@ export function UserProfileProvider(props) {
                 ID.unique(),
                 form
             )
-            setSuccess('Your profile is updated')
             return result
         } catch (err) {
-            console.error('Failed to create form: ', err.message)
-            setError('Failed to update your profile')
+            console.error('Failed to create profile: ', err.message)
+        }
+    }
+
+    async function updateProfile(documentId, data) {
+        try {
+            if (!documentId) {
+                throw new Error("Document ID is missing")
+            }
+            if (!data) {
+                throw new Error("Please provide data to update")
+            }
+            const result = await userProfileDatabase.updateDocument(
+                DATABASE_ID,
+                COLLECTION_ID,
+                documentId,
+                data
+            )
+            return result
+
+        } catch (error) {
+            console.error("Failed to update profile: ", error.message)
+            return null
+        }
+    }
+
+    async function getProfile(documentId) {
+        try {
+            if (!documentId) {
+                throw new Error("Document ID is missing")
+            }
+            const result = await userProfileDatabase.getDocument(
+                DATABASE_ID,
+                COLLECTION_ID,
+                documentId
+            )
+            return result
+
+        } catch (error) {
+            console.error("Failed to get the user profile: ", error.message)
+            return null
         }
     }
 
     return (
-        <UserProfileContext.Provider value={{ error, success, createForm }}>
+        <UserProfileContext.Provider value={{ createProfile, updateProfile, getProfile }}>
             {props.children}
         </UserProfileContext.Provider>
     )
