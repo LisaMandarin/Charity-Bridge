@@ -14,7 +14,7 @@ import { ProtectedRoute } from "./lib/protectedRoute";
 import { OauthSuccess } from "./components/OAuthSuccess";
 import { Layout } from "./components/Layout";
 import { ProductByCategory } from "./components/ProductByCategory";
-
+import { ProductByUser } from "./components/ProductByUser";
 
 
 function App() {
@@ -35,6 +35,7 @@ function App() {
             
             {/* protected components */}
             <Route path="/category/:category" element={<ProtectedRoute><ProductByCategory /></ProtectedRoute>}/>
+            <Route path="/userProduct/:userId" element={<ProtectedRoute><ProductByUser /></ProtectedRoute>} />
             <Route path="/dashboard" element={<ProtectedRoute><Dashboard /></ProtectedRoute>} />
             <Route path="product/:productId" element={<ProtectedRoute><ProductDetail /></ProtectedRoute>} />
             <Route path="/verification" element={<Verification />} />

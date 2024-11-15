@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react"
 import { Avatar, Button, Card, message, Space } from "antd"
-import { useParams } from "react-router-dom"
+import { Link, useParams } from "react-router-dom"
 import { useProductInfo } from "../lib/context/productInfo"
 import { ProductSlideShow } from "./ProductSlideShow"
 import dayjs from "dayjs"
@@ -145,7 +145,7 @@ export function ProductDetail() {
                                 <Card 
                                     style={{ width: "100%"}}
                                     title={<div>{profile.name} <StarOutlined /><StarOutlined /><StarOutlined /></div>}
-                                    extra={<a>more posts</a>}
+                                    extra={<Link to={`/userProduct/${profile.userId}`}>more posts</Link>}
                                     tabList={[
                                         { key: "contact", tab: "Contact" },
                                         { key: "about", tab: `About ${profile.name}` },
