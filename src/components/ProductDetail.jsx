@@ -17,18 +17,14 @@ export function ProductDetail() {
     const [ product, setProduct ] = useState(null)
     const [ contributor, setContributor ] = useState()
     const [ profile, setProfile ] = useState()
+    
     // --------Profile Card-------
-    const contentList = {
-        contact: <div>Contact Information</div>,
-        about: <div> About {profile?.name}</div>,
-        review: <div>Review Section</div>,
-        posts: <div>Other Posts by {profile?.name}</div>
-    }
+    const [ contentList, setContentList ] = useState({})
     const [ activeTabKey, setActiveTabKey ] = useState("contact")
     const onTabChange = (key) => {
         setActiveTabKey(key)
     }
-    //--------Profile Card-------//
+    //--------Profile Card-------
 
     useEffect(() => {
         if (!productId) {
@@ -85,6 +81,28 @@ export function ProductDetail() {
         fetchProfile()
 
     }, [contributor?.profileId])
+
+    useEffect(() => {
+        if (profile) {
+            setContentList({
+                contact: 
+                <ul>
+                    <li><strong>Email: </strong>{profile.email ? profile.email : "N/A"}</li>
+                    <li><strong>Phone: </strong>{profile.phone ? profile.phone : "N/A"}</li>
+                    <li><strong>Address: </strong>{profile.address ? profile.address : "N/A"}</li>
+                </ul>,
+                about: 
+                <ul className="max-w-[360px] whitespace-normal overflow-hidden">
+                    <li><strong>Name: </strong>{profile.name ? profile.name : "N/A"}</li>
+                    <li><strong>birthday: </strong>{profile.birthday ? dayjs(profile.birthday).format("MM/DD/YYYY") : "N/A"}</li>
+                    <li><strong>Gender: </strong>{profile.gender ? profile.gender : "N/A"}</li>
+                    <li><strong>Introduction: </strong>{profile.introduction ? profile.introduction : "N/A"}</li>
+                </ul>,
+                review: <div>Review Section</div>,
+                posts: <div>Other Posts by {profile?.name}</div>
+            })
+        }
+    }, [profile])
 
     return (
         <>

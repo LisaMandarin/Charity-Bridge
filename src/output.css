@@ -728,6 +728,14 @@ video {
   max-width: fit-content;
 }
 
+.max-w-\[360\] {
+  max-width: 360;
+}
+
+.max-w-\[360px\] {
+  max-width: 360px;
+}
+
 .flex-grow {
   flex-grow: 1;
 }
@@ -782,6 +790,18 @@ video {
 
 .overflow-hidden {
   overflow: hidden;
+}
+
+.text-ellipsis {
+  text-overflow: ellipsis;
+}
+
+.whitespace-normal {
+  white-space: normal;
+}
+
+.whitespace-nowrap {
+  white-space: nowrap;
 }
 
 .text-wrap {
