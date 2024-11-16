@@ -25,7 +25,7 @@ export function DashboardProfile({user, setDiv}) {
                 if (updateResult) {
                     setDiv(null)
                 } else {
-                    throw new Error("Unable to update user preference")
+                    throw new Error("Unable to update user preference ID")
                 }
             }
 

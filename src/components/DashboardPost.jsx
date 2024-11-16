@@ -1,4 +1,4 @@
-import { Button, Form, Image, Input, InputNumber, message, Radio, Select, Space, Spin, Typography } from "antd"
+import { Button, Checkbox, Form, Image, Input, InputNumber, message, Radio, Select, Space, Spin, Typography } from "antd"
 import Upload from "antd/es/upload/Upload"
 import { categoryItems } from "./HeaderCategory"
 import { Icon } from '@iconify/react';
@@ -7,6 +7,7 @@ import { useEffect, useState } from "react";
 import { useProductStorage } from "../lib/context/productStorage";
 import { useProductInfo } from "../lib/context/productInfo";
 import { useNavigate } from "react-router-dom";
+import { useUserProfile } from "../lib/context/userProfile";
 const { Title } = Typography
 
 export function DashboardPost({user}) {
@@ -14,6 +15,7 @@ export function DashboardPost({user}) {
     const [ form ] = Form.useForm()
     const product = useProductStorage()
     const productInfo = useProductInfo()
+    const userProfile = useUserProfile()
     const [ userId, setUserId ] = useState('')
     const [ fileIds, setFileIds ] = useState([])
     const [ previewImage, setPreviewImage ] = useState('')
@@ -21,6 +23,7 @@ export function DashboardPost({user}) {
     const [ uploadBtnVisible, setUploadBtnVisible ] = useState(true)
     const [ isSubmitted, setIsSubmitted ] = useState(false)
     const [ hasChanges, setHasChanges ] = useState(false)
+    const [ profileValues, setProfileValues ]= useState({})
     const navigate = useNavigate()
 
     const onFinish = async() => {
@@ -30,6 +33,28 @@ export function DashboardPost({user}) {
         }
 
         try {
+            /*  ********** beginning of handling profile ********** */
+            let profileResult
+            
+            if (user?.current?.prefs?.profileId) {
+                const documentId = user.current.prefs.profileId
+                profileResult = await userProfile.updateProfile(documentId, profileValues)
+            } else {
+                profileResult = await userProfile.createProfile(profileValues)
+            }
+
+            if (profileResult?.$id) {
+                message.success(user?.current?.prefs?.profileId ? "Your profile is updated" : "Your profile is created")
+                const updateResult = await user.updatePrefs({
+                    profileId: profileResult.$id
+                })
+                if (!updateResult) {
+                    console.error("Unable to update user profile ID ")
+                }
+            }
+            /*  ********** end of handling profile ********** */
+
+            // fileIds are the uploaded photos
             if (fileIds && fileIds.length > 0) {
                 const photoURL = await getPhotoURL(fileIds)
                 form.setFieldsValue({
@@ -40,6 +65,7 @@ export function DashboardPost({user}) {
             }
 
             const updatedValues = form.getFieldsValue(true)
+            delete updatedValues.openProfile
             await productInfo.createForm(updatedValues)
 
             message.success("Your product is posted.", 2, ()=> {
@@ -231,6 +257,12 @@ export function DashboardPost({user}) {
     useEffect(() => {
         if (user?.current?.$id) {
             setUserId(user.current.$id)
+            setProfileValues({
+                userId: user.current.$id,
+                name: user.current.name,
+                email: user.current.email,
+                avatar: user.current.prefs.avatarUrl
+            })
         }
     }, [user?.current?.$id])
 
@@ -374,6 +406,11 @@ export function DashboardPost({user}) {
                             />
                         )}
                     </div>
+                </Form.Item>
+                <Form.Item name="openProfile" label=" " colon={false} valuePropName="checked" rules={[
+                    {required: true, message: "You must agree to show your profile"}
+                ]}>
+                        <Checkbox>Show your profile</Checkbox>
                 </Form.Item>
                 <Form.Item
                     wrapperCol={{
