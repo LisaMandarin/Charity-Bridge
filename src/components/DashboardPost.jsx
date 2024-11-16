@@ -1,5 +1,6 @@
-import { useEffect, useState } from "react"
+import { useState } from "react"
 import { DashboardPostAdd } from "./DashboardPostAdd"
+import { DashboardPostList } from "./DashboardPostList"
 import { Segmented, Space } from "antd"
     const options = ['My Posts', 'Add Post']
 export function DashboardPost({user}) {
@@ -14,7 +15,7 @@ export function DashboardPost({user}) {
                 options={options}
                 onChange={onChange}    
             />
-            {selectedOption === 'My Posts' && <div>Content for My Posts</div>}
+            {selectedOption === 'My Posts' && <DashboardPostList user={user}/>}
             {selectedOption === 'Add Post' && <DashboardPostAdd user={user}/>}
             
             
