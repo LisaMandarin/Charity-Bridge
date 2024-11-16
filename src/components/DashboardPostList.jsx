@@ -2,7 +2,9 @@ import { useEffect, useState } from "react"
 import { useProductInfo } from "../lib/context/productInfo"
 import { Query } from "appwrite"
 import dayjs from "dayjs"
-import { Table } from "antd"
+import { Table, Typography } from "antd"
+import { Link } from "react-router-dom"
+const { Title } = Typography
 
 export function DashboardPostList({user}) {
     const productInfo = useProductInfo()
@@ -50,7 +52,7 @@ export function DashboardPostList({user}) {
         if (posts) {
             const data = posts.map(post => ({
                 key: post.$id,
-                product: post.product,
+                product: <Link to={`../product/${post.$id}`} target="_blank">{post.product}</Link>,
                 time: dayjs(post.time).format('MM/DD/YYYY')
             }))
             setDataSource(data)
@@ -58,6 +60,9 @@ export function DashboardPostList({user}) {
     }, [posts])
 
     return (
-        <Table dataSource={dataSource} columns={columns} />
+        <>
+            <Title className="text-center">{user?.current?.name ? `${user.current.name}'s` : "My"} Posts</Title>
+            <Table dataSource={dataSource} columns={columns} />
+        </>
     )
 }
