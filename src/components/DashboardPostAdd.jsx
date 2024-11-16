@@ -10,7 +10,7 @@ import { useNavigate } from "react-router-dom";
 import { useUserProfile } from "../lib/context/userProfile";
 const { Title } = Typography
 
-export function DashboardPostNew({user}) {
+export function DashboardPostAdd({user}) {
     const now = new Date()
     const [ form ] = Form.useForm()
     const product = useProductStorage()

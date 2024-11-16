@@ -780,10 +780,6 @@ video {
   gap: 1rem;
 }
 
-.gap-8 {
-  gap: 2rem;
-}
-
 .overflow-hidden {
   overflow: hidden;
 }
@@ -891,16 +887,16 @@ video {
   line-height: 2.5rem;
 }
 
-.leading-4 {
-  line-height: 1rem;
-}
-
 .leading-8 {
   line-height: 2rem;
 }
 
 .underline {
   text-decoration-line: underline;
+}
+
+.outline {
+  outline-style: solid;
 }
 
 .filter {
