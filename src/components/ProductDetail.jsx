@@ -129,7 +129,7 @@ export function ProductDetail() {
                                     <li><Title>{product.product}</Title><br /></li>
                                     <li><span className="font-extrabold">Quantity: </span>{product.quantity}</li>
                                     <li><span className="font-extrabold">Condition: </span>{product.condition}</li>
-                                    <li><span className="font-extrabold">Category: </span>{product.category}</li>
+                                    <li><span className="font-extrabold">Category: </span><Link to={`/category/${product.category}`}>{product.category}</Link></li>
                                     <li><span className="font-extrabold">Location: </span>{product.location}</li>
                                     <li><span className="font-extrabold">Description: </span>{product.description}</li>
                                     <li><span className="font-extrabold">Post time: </span>{product?.time ? dayjs(product.time).format('MM/DD/YYYY') : "N/A"}</li>
