@@ -18,12 +18,12 @@ export function Header() {
   );
 
   return (
-    <div className="h-full flex justify-around">
+    <div className="flex justify-around">
       {headerLogo}
       <div className="block md:hidden">
         <HeaderNavV items={categoryItems} />
       </div>
-      <div className="hidden md:block">
+      <div className="hidden md:flex items-center">
         <HeaderNavH items={categoryItems} />
       </div>
       <HeaderUser />
