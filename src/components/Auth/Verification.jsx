@@ -1,5 +1,5 @@
 import { useLocation } from "react-router-dom"
-import { account } from "../lib/appwrite"
+import { account } from "../../lib/appwrite"
 import { useEffect, useState } from "react"
 
 export function Verification() {

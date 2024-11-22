@@ -1,4 +1,4 @@
-import { ProductCard } from "./ProductCard"
+import { ProductCard } from "../Product/ProductCard"
 import { Space, Typography } from "antd"
 
 const { Title } = Typography

@@ -1,5 +1,5 @@
-import { useUser } from "./context/user";
-import { SessionFailure } from "../components/SessionFailure";
+import { useUser } from "../../lib/context/user";
+import { SessionFailure } from "../Auth/SessionFailure";
 import { Spin } from "antd";
 
 export function ProtectedRoute({children}) {

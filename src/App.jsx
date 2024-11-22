@@ -1,20 +1,20 @@
 import { Route, Routes } from "react-router-dom";
-import { Register } from "./components/Register";
-import { Login } from "./components/Login";
-import { Home } from "./components/Home";
-import { SessionFailure } from "./components/SessionFailure";
-import { OAuthFailure } from "./components/OAuthFailure";
-import { FBdelete } from "./components/FBdelete";
-import { Dashboard } from "./components/Dashboard";
-import { ProductDetail } from "./components/ProductDetail";
-import { Verification } from "./components/Verification";
-import { PasswordRecovery } from "./components/PasswordRecovery";
-import { PasswordForgot } from "./components/PasswordForgot";
-import { ProtectedRoute } from "./lib/protectedRoute";
-import { OauthSuccess } from "./components/OAuthSuccess";
+import { Register } from "./components/Auth/Register";
+import { Login } from "./components/Auth/Login";
+import { Home } from "./components/Home/Home";
+import { SessionFailure } from "./components/Auth/SessionFailure";
+import { OAuthFailure } from "./components/Auth/OAuthFailure";
+import { FBdelete } from "./components/Auth/FBdelete";
+import { Dashboard } from "./components/Dashboard/Dashboard";
+import { ProductDetail } from "./components/Product/ProductDetail";
+import { Verification } from "./components/Auth/Verification";
+import { PasswordRecovery } from "./components/Auth/PasswordRecovery";
+import { PasswordForgot } from "./components/Auth/PasswordForgot";
+import { ProtectedRoute } from "./components/utils/protectedRoute";
+import { OauthSuccess } from "./components/Auth/OAuthSuccess";
 import { Layout } from "./components/Layout";
-import { ProductByCategory } from "./components/ProductByCategory";
-import { ProductByUser } from "./components/ProductByUser";
+import { ProductByCategory } from "./components/Product/ProductByCategory";
+import { ProductByUser } from "./components/Product/ProductByUser";
 
 
 function App() {

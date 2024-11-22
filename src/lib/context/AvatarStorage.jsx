@@ -1,17 +1,17 @@
 import { createContext, useContext, useState } from "react"
-import { storage } from "../appwrite"
+import { avatarStorage } from "../appwrite"
 import { ID } from "appwrite"
 import { message } from "antd"
 
 export const BUCKET_AVATAR_ID =import.meta.env.VITE_BUCKET_AVATAR_STORAGE_ID
 
-const StorageContext = createContext()
+const AvatarStorageContext = createContext()
 
-export function useStorage() {
-    return useContext(StorageContext)
+export function useAvatarStorage() {
+    return useContext(AvatarStorageContext)
 }
 
-export function StorageProvider(props) {
+export function AvatarStorageProvider(props) {
     const [ fileId, setFileId ] = useState(null) 
     const [ loading, setLoading ] = useState(false)
 
@@ -19,7 +19,7 @@ export function StorageProvider(props) {
         setLoading(true)
 
         try {
-            const result = await storage.createFile(
+            const result = await avatarStorage.createFile(
                 BUCKET_AVATAR_ID,
                 ID.unique(),
                 file
@@ -44,7 +44,7 @@ export function StorageProvider(props) {
         setLoading(true)
 
         try {
-            await storage.deleteFile(BUCKET_AVATAR_ID, id)
+            await avatarStorage.deleteFile(BUCKET_AVATAR_ID, id)
 
             message.success('Avatar deleted successfully')
             setFileId(null)
@@ -59,7 +59,7 @@ export function StorageProvider(props) {
 
     async function getPreviewURL(id) {
         try {
-            const response = storage.getFilePreview(
+            const response = avatarStorage.getFilePreview(
                 BUCKET_AVATAR_ID,
                 id
             )
@@ -73,8 +73,8 @@ export function StorageProvider(props) {
     }
 
     return (
-        <StorageContext.Provider value={{fileId, loading, createAvatar, deleteAvatar, getPreviewURL}}>
+        <AvatarStorageContext.Provider value={{fileId, loading, createAvatar, deleteAvatar, getPreviewURL}}>
             {props.children}
-        </StorageContext.Provider>
+        </AvatarStorageContext.Provider>
     )
 }

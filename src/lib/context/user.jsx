@@ -174,7 +174,7 @@ export function UserProvider(props) {
     setLoading(true)
 
     const redirectURL = window.location.hostname === 'localhost'
-      ? 'http://localhost:5173/oauthsuccess' : 'https://main--charitybridge.netlify.app/';
+      ? 'http://localhost:5173/oauthsuccess' : 'https://main--charitybridge.netlify.app/oauthsuccess';
     
     const failURL = window.location.hostname === 'localhost'
       ? 'http://localhost:5173/oauthfailure' : 'https://main--charitybridge.netlify.app/oauthfailure'
