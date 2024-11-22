@@ -36,6 +36,7 @@ export function HomeReview() {
                     pageSize={1}
                     current={currentPage}
                     onChange={(page) => setCurrentPage(page)}
+                    align="center"
             />
         </div>
     )

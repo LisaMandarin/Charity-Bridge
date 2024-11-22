@@ -8,7 +8,7 @@ export function Home() {
             <div className="order-2 sm:order-1">
                 <HomeReview />
             </div>
-            <div className="order-1 sm:order-2">
+            <div className="order-1 sm:order-2 flex flex-col justify-center">
                 <HomePost />
             </div>
             <div className="order-3">
