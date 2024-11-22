@@ -1,7 +1,7 @@
 import { StarTwoTone } from "@ant-design/icons"
 import { reviewList } from "../../data/fake-review"
 import { Avatar, Pagination, Space, Typography } from "antd"
-import { useEffect, useState } from "react"
+import { useState } from "react"
 const { Title } = Typography
 
 export function HomeReview() {
@@ -13,7 +13,6 @@ export function HomeReview() {
         return Array.from ({ length: starsNumber }, (_, index) => (
             <StarTwoTone key={index} twoToneColor="#eb2f96" />
         ))
-        
     }
     return (
         <div className="flex flex-col justify-between h-full">
@@ -21,7 +20,7 @@ export function HomeReview() {
             <Space size="large" direction="vertical" className="text-xs flex-grow">
                 {currentItems.map((review, i) => (
                     <div key={i}>
-                        <p><Avatar icon="U" /> {review.receiver} said,</p>
+                        <p><Avatar icon="U" /> <span>{review.receiver} said</span>,</p>
                         <p className="indent-8">Thank you, {review.donor},</p>
                         <p>I give you {showStars(review.stars)} for the donation of the {review.product.toLocaleLowerCase()}.</p>
                         <p>{review.review}</p>
@@ -33,7 +32,7 @@ export function HomeReview() {
                     simple={{readOnly: true}} 
                     defaultCurrent={1} 
                     total={reviewList.length} 
-                    pageSize={1}
+                    pageSize={3}
                     current={currentPage}
                     onChange={(page) => setCurrentPage(page)}
                     align="center"
