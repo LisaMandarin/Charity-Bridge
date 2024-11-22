@@ -10,7 +10,7 @@ export function HeaderUser() {
   return (
     <>
       {user?.current ? (
-        <div className="w-fit flex flex-row justify-around p-1 h-full border-4 border-pink-200">
+        <div className="w-fit flex flex-row justify-around p-1 h-24 border-4 border-pink-200">
           <Avatar
             size={60}
             icon={<UserOutlined />}
