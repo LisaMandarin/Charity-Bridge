@@ -38,7 +38,7 @@ export function ProductCard() {
   }, []);
 
   return (
-    <div className="w-full bg-white">
+    <div className="w-full">
       <div className="p-4 flex flex-row gap-4 flex-wrap justify-center">
         {currentItems &&
           currentItems.map((item) => (
