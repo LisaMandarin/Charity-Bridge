@@ -1,8 +1,7 @@
 import { useEffect, useState } from "react";
-import { Avatar, Button, Card, message, Space } from "antd";
+import { Avatar, Button, Card, Carousel, Image, message, Space } from "antd";
 import { Link, useParams } from "react-router-dom";
 import { useProductInfo } from "../../lib/context/productInfo";
-import { ProductSlideShow } from "./ProductSlideShow";
 import dayjs from "dayjs";
 import { getUser } from "../../lib/serverAppwrite";
 import { Typography } from "antd";
@@ -177,49 +176,47 @@ export function ProductDetail() {
   }, [profile]);
 
   return (
-    <>
+    <div>
       {product && (
-        <>
-          <div className="flex flex-col sm:flex-row justify-center bg-slate-100">
-            <div className="p-8 bg-gray-900">
-              <ProductSlideShow photoURL={product.photoURL} />
-            </div>
-            <div>
-              <ul className="p-8">
+        <div>
+          <Title className="text-center pt-8">{product.product}</Title>
+          <div className="flex flex-col sm:flex-row justify-center">
+            <Carousel dotPosition="bottom" autoplay={true} className=" w-[300px] p-12">
+              {product.photoURL && product.photoURL.map((url, i) => (
+                <Image key={i} src={url} width={200} alt={`picture ${i+1} of ${product.product}`}/>
+              ))}
+            </Carousel>
+              <div className="p-8">
                 <Space direction="vertical">
-                  <li>
-                    <Title>{product.product}</Title>
-                    <br />
-                  </li>
-                  <li>
+                  <p>
                     <span className="font-extrabold">Quantity: </span>
                     {product.quantity}
-                  </li>
-                  <li>
+                  </p>
+                  <p>
                     <span className="font-extrabold">Condition: </span>
                     {product.condition}
-                  </li>
-                  <li>
+                  </p>
+                  <p>
                     <span className="font-extrabold">Category: </span>
                     <Link to={`/category/${product.category}`}>
                       {product.category}
                     </Link>
-                  </li>
-                  <li>
+                  </p>
+                  <p>
                     <span className="font-extrabold">Location: </span>
                     {product.location}
-                  </li>
-                  <li>
+                  </p>
+                  <p>
                     <span className="font-extrabold">Description: </span>
                     {product.description}
-                  </li>
-                  <li>
+                  </p>
+                  <p>
                     <span className="font-extrabold">Post time: </span>
                     {product?.time
                       ? dayjs(product.time).format("MM/DD/YYYY")
                       : "N/A"}
-                  </li>
-                  <li>
+                  </p>
+                  <p>
                     <span className="font-extrabold">Contributor: </span>
                     <Button variant="link" color="default" onClick={toggleOpen}>
                       {contributor?.avatarUrl && (
@@ -227,38 +224,38 @@ export function ProductDetail() {
                       )}{" "}
                       {contributor ? contributor.name : "N/A"}
                     </Button>
-                  </li>
+                  </p>
                 </Space>
-              </ul>
-              {profile && open && (
-                <Card
-                  style={{ width: "100%" }}
-                  title={
-                    <div>
-                      {profile.name} <StarOutlined />
-                      <StarOutlined />
-                      <StarOutlined />
-                    </div>
-                  }
-                  extra={
-                    <Link to={`/userProduct/${profile.userId}`}>
-                      more posts
-                    </Link>
-                  }
-                  tabList={[
-                    { key: "contact", tab: "Contact" },
-                    { key: "about", tab: `About ${profile.name}` },
-                  ]}
-                  activeTabKey={activeTabKey}
-                  onTabChange={onTabChange}
-                >
-                  {contentList[activeTabKey]}
-                </Card>
-              )}
-            </div>
+                {profile && open && (
+                  <Card
+                    style={{ width: "100%" }}
+                    title={
+                      <div>
+                        {profile.name} <StarOutlined />
+                        <StarOutlined />
+                        <StarOutlined />
+                      </div>
+                    }
+                    extra={
+                      <Link to={`/userProduct/${profile.userId}`}>
+                        more posts
+                      </Link>
+                    }
+                    tabList={[
+                      { key: "contact", tab: "Contact" },
+                      { key: "about", tab: `About ${profile.name}` },
+                    ]}
+                    activeTabKey={activeTabKey}
+                    onTabChange={onTabChange}
+                  >
+                    {contentList[activeTabKey]}
+                  </Card>
+                )}
+              </div>
           </div>
-        </>
+        </div>
+        
       )}
-    </>
+    </div>
   );
 }
