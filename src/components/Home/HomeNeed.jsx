@@ -6,14 +6,11 @@ import { Icon } from "@iconify/react/dist/iconify.js"
 
 const { Title } = Typography
 export function HomeNeed() {
-    const onChange = (currentSlide) => {
-        console.log(currentSlide);
-      };
 
     return (
         <div className="flex flex-col justify-start h-full ">
             <Title level={2} className="text-center pt-4">Help Needed</Title>
-            <Carousel afterChange={onChange} dotPosition="right" autoplay={true} dots={false} speed={1000}>
+            <Carousel dotPosition="right" autoplay={true} dots={false} speed={1000}>
                 {needList.map((need, i) => (
                     <div key={i} className="h-[400px]">
                         <Space>
