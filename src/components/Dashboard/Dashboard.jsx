@@ -1,13 +1,11 @@
 import { useUser } from "../../lib/context/user";
-import { Button, Space, ConfigProvider, Collapse } from "antd";
-import { createStyles } from "antd-style";
+import { Space, Collapse } from "antd";
 import { DashboardName } from "./DashboardName";
 import { DashboardPassword } from "./DashboardPassword";
 import { DashboardAvatar } from "./DashboardAvatar";
 import { DashboardEmail } from "./DashboardEmail";
 import { DashboardPost } from "./DashboardPost";
 import { DashboardProfile } from "./DashboardProfile";
-import { useEffect, useRef, useState } from "react";
 
 export function Dashboard() {
   const user = useUser();
