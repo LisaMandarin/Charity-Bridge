@@ -9,11 +9,13 @@ import { Link } from "react-router-dom";
 export function Header() {
   const headerLogo = (
     <div>
-      <img
-        src={smallLogo}
-        alt="logo image: Charity Bridge"
-        className="h-24 w-auto mx-auto"
-      />
+      <Link to="/">
+        <img
+          src={smallLogo}
+          alt="logo image: Charity Bridge"
+          className="h-24 w-auto mx-auto"
+        />
+      </Link>
     </div>
   );
 
