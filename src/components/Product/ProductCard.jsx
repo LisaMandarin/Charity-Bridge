@@ -23,7 +23,7 @@ export function ProductCard() {
 
   useEffect(() => {
     function handleScreen() {
-      if (window.innerWidth > 1400) {
+      if (window.innerWidth > 1600) {
         setItemsPerPage(2);
       } else {
         setItemsPerPage(1);
