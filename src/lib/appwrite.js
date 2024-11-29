@@ -13,3 +13,4 @@ export const avatarStorage = new Storage(client)
 export const productInfoDatabase = new Databases(client);
 export const productStorage = new Storage(client);
 export const userProfileDatabase = new Databases(client);
+export const messageDatabase = new Databases(client)

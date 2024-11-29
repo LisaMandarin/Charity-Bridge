@@ -6,6 +6,7 @@ import { AvatarStorageProvider } from './lib/context/AvatarStorage.jsx'
 import { UserProfileProvider } from './lib/context/userProfile.jsx'
 import { ProductStorageProvider } from './lib/context/productStorage.jsx'
 import { ProductInfoProvider } from './lib/context/productInfo.jsx'
+import { MessageProvider } from './lib/context/messages.jsx'
 import App from './App.jsx'
 import "./styles/main.css"
 
@@ -17,7 +18,9 @@ ReactDOM.createRoot(document.getElementById('root')).render(
           <UserProfileProvider>
             <ProductStorageProvider>
               <ProductInfoProvider>
-                <App />
+                <MessageProvider>
+                  <App />
+                </MessageProvider>
               </ProductInfoProvider>
             </ProductStorageProvider>
           </UserProfileProvider>
