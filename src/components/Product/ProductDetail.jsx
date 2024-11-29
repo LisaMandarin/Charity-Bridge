@@ -8,12 +8,14 @@ import { Typography } from "antd";
 import { useUserProfile } from "../../lib/context/userProfile";
 import { StarOutlined } from "@ant-design/icons";
 import { Icon } from "@iconify/react/dist/iconify.js";
+import { useUser } from "../../lib/context/user";
 const { Title } = Typography;
 
 export function ProductDetail() {
   const { productId } = useParams();
   const productInfo = useProductInfo();
   const userProfile = useUserProfile();
+  const user = useUser()
   const [product, setProduct] = useState(null);
   const [contributor, setContributor] = useState();
   const [profile, setProfile] = useState();
@@ -22,6 +24,8 @@ export function ProductDetail() {
   const [open, setOpen] = useState(false);
   const [contentList, setContentList] = useState({});
   const [activeTabKey, setActiveTabKey] = useState("contact");
+  const [ sender, setSender ] = useState()
+  const [ receiver, setReceiver ] = useState()
 
   const onTabChange = (key) => {
     setActiveTabKey(key);
@@ -58,6 +62,7 @@ export function ProductDetail() {
   useEffect(() => {
     async function fetchContributor() {
       if (product?.userId) {
+        setReceiver(product.userId)
         const result = await getUser(product.userId);
         setContributor({
           name: result.name,
@@ -85,6 +90,12 @@ export function ProductDetail() {
     }
     fetchProfile();
   }, [contributor?.profileId]);
+
+  useEffect(() => {
+    if (user?.current) {
+      setSender(user.current.$id)
+    }
+  }, [user?.current])
 
   useEffect(() => {
     if (profile) {
@@ -124,7 +135,7 @@ export function ProductDetail() {
                 width="1.5rem" 
                 height="1.5rem"
                 className="inline" 
-              />{<Link to="/messageboard">Talk to me on Charity Bridge</Link>}
+              />{<Link to={`/messageboard/:${sender}/:${receiver}`}>Talk to me on Charity Bridge</Link>}
             </li>
           </ul>
         ),
