@@ -84,7 +84,11 @@ export function Login() {
                 className="cursor-pointer"
                 onClick={() => user.googleLogin()}
               />
-              <FaFacebook size="1.5em" />
+              <FaFacebook 
+                size="1.5em"
+                className="cursor-pointer"
+                onClick={() => user.facebookLogin()}
+                />
             </Space>
           </div>
           <div>

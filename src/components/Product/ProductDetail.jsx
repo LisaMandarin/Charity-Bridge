@@ -176,7 +176,7 @@ export function ProductDetail() {
   }, [profile]);
 
   return (
-    <div>
+    <>
       {product && (
         <div>
           <Title className="text-center pt-8">{product.product}</Title>
@@ -186,76 +186,75 @@ export function ProductDetail() {
                 <Image key={i} src={url} width={200} alt={`picture ${i+1} of ${product.product}`}/>
               ))}
             </Carousel>
-              <div className="p-8">
-                <Space direction="vertical">
-                  <p>
-                    <span className="font-extrabold">Quantity: </span>
-                    {product.quantity}
-                  </p>
-                  <p>
-                    <span className="font-extrabold">Condition: </span>
-                    {product.condition}
-                  </p>
-                  <p>
-                    <span className="font-extrabold">Category: </span>
-                    <Link to={`/category/${product.category}`}>
-                      {product.category}
+            <div className="p-8">
+              <Space direction="vertical">
+                <p>
+                  <span className="font-extrabold">Quantity: </span>
+                  {product.quantity}
+                </p>
+                <p>
+                  <span className="font-extrabold">Condition: </span>
+                  {product.condition}
+                </p>
+                <p>
+                  <span className="font-extrabold">Category: </span>
+                  <Link to={`/category/${product.category}`}>
+                    {product.category}
+                  </Link>
+                </p>
+                <p>
+                  <span className="font-extrabold">Location: </span>
+                  {product.location}
+                </p>
+                <p>
+                  <span className="font-extrabold">Description: </span>
+                  {product.description}
+                </p>
+                <p>
+                  <span className="font-extrabold">Post time: </span>
+                  {product?.time
+                    ? dayjs(product.time).format("MM/DD/YYYY")
+                    : "N/A"}
+                </p>
+                <p>
+                  <span className="font-extrabold">Contributor: </span>
+                  <Button variant="link" color="default" onClick={toggleOpen}>
+                    {contributor?.avatarUrl && (
+                      <Avatar src={contributor.avatarUrl} />
+                    )}{" "}
+                    {contributor ? contributor.name : "N/A"}
+                  </Button>
+                </p>
+              </Space>
+              {profile && open && (
+                <Card
+                  style={{ width: "400px" }}
+                  title={
+                    <div>
+                      {profile.name} <StarOutlined />
+                      <StarOutlined />
+                      <StarOutlined />
+                    </div>
+                  }
+                  extra={
+                    <Link to={`/userProduct/${profile.userId}`}>
+                      more posts
                     </Link>
-                  </p>
-                  <p>
-                    <span className="font-extrabold">Location: </span>
-                    {product.location}
-                  </p>
-                  <p>
-                    <span className="font-extrabold">Description: </span>
-                    {product.description}
-                  </p>
-                  <p>
-                    <span className="font-extrabold">Post time: </span>
-                    {product?.time
-                      ? dayjs(product.time).format("MM/DD/YYYY")
-                      : "N/A"}
-                  </p>
-                  <p>
-                    <span className="font-extrabold">Contributor: </span>
-                    <Button variant="link" color="default" onClick={toggleOpen}>
-                      {contributor?.avatarUrl && (
-                        <Avatar src={contributor.avatarUrl} />
-                      )}{" "}
-                      {contributor ? contributor.name : "N/A"}
-                    </Button>
-                  </p>
-                </Space>
-                {profile && open && (
-                  <Card
-                    style={{ width: "100%" }}
-                    title={
-                      <div>
-                        {profile.name} <StarOutlined />
-                        <StarOutlined />
-                        <StarOutlined />
-                      </div>
-                    }
-                    extra={
-                      <Link to={`/userProduct/${profile.userId}`}>
-                        more posts
-                      </Link>
-                    }
-                    tabList={[
-                      { key: "contact", tab: "Contact" },
-                      { key: "about", tab: `About ${profile.name}` },
-                    ]}
-                    activeTabKey={activeTabKey}
-                    onTabChange={onTabChange}
-                  >
-                    {contentList[activeTabKey]}
-                  </Card>
-                )}
-              </div>
+                  }
+                  tabList={[
+                    { key: "contact", tab: "Contact" },
+                    { key: "about", tab: `About ${profile.name}` },
+                  ]}
+                  activeTabKey={activeTabKey}
+                  onTabChange={onTabChange}
+                >
+                  {contentList[activeTabKey]}
+                </Card>
+              )}
+            </div>
           </div>
         </div>
-        
       )}
-    </div>
+    </>
   );
 }

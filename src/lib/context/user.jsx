@@ -193,6 +193,29 @@ export function UserProvider(props) {
     }
   }
 
+  async function facebookLogin () {
+    setLoading(true)
+
+    const redirectURL = window.location.hostname === 'localhost'
+      ? 'http://localhost:5173/oauthsuccess' : 'https://main--charitybridge.netlify.app/oauthsuccess';
+    
+    const failURL = window.location.hostname === 'localhost'
+      ? 'http://localhost:5173/oauthfailure' : 'https://main--charitybridge.netlify.app/oauthfailure'
+    try {
+      account.createOAuth2Session(
+        OAuthProvider.Facebook,
+        redirectURL,
+        failURL
+      )
+      message.success('Facebook Login successful')
+    } catch (err) {
+      message.error('Failed to use Facebook login')
+      console.error('Fail to use Facebook login', err.message)
+    } finally {
+      setLoading(false)
+    }
+  }
+
   async function updatePrefs(newPrefs) {
     try {
       const updatePrefs = {
@@ -253,7 +276,8 @@ export function UserProvider(props) {
         register, 
         updateName, 
         updatePassword, 
-        googleLogin, 
+        googleLogin,
+        facebookLogin, 
         updatePrefs, 
         emailVerification, 
         passwordRecovery 
