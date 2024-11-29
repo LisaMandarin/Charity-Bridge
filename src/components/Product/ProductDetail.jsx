@@ -118,6 +118,14 @@ export function ProductDetail() {
               />{" "}
               {profile.address ? profile.address : "N/A"}
             </li>
+            <li>
+              <Icon 
+                icon="eva:message-circle-outline" 
+                width="1.5rem" 
+                height="1.5rem"
+                className="inline" 
+              />{<Link to="/messageboard">Talk to me on Charity Bridge</Link>}
+            </li>
           </ul>
         ),
         about: (

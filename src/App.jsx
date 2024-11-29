@@ -15,7 +15,7 @@ import { OauthSuccess } from "./components/Auth/OAuthSuccess";
 import { Layout } from "./components/Layout";
 import { ProductByCategory } from "./components/Product/ProductByCategory";
 import { ProductByUser } from "./components/Product/ProductByUser";
-
+import { MessageBoard } from "./components/Message/messageBoard";
 
 function App() {
   
@@ -40,6 +40,7 @@ function App() {
             <Route path="product/:productId" element={<ProtectedRoute><ProductDetail /></ProtectedRoute>} />
             <Route path="/verification" element={<Verification />} />
             <Route path="/oauthsuccess" element={<ProtectedRoute><OauthSuccess /></ProtectedRoute>}></Route>
+            <Route path="/messageboard" element={<ProtectedRoute><MessageBoard /></ProtectedRoute>}></Route>
           </Route>
         </Routes>  
       </main>
