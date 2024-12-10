@@ -50,8 +50,8 @@ export function DashboardPostList({ user }) {
       }
       const fileResult = await Promise.all(
         record.photos.map(
-          async (photo) => await productStorage.deleteFile(photo)
-        )
+          async (photo) => await productStorage.deleteFile(photo),
+        ),
       );
 
       const allFilesDeleted = fileResult.every((result) => result === true);
@@ -66,7 +66,7 @@ export function DashboardPostList({ user }) {
     } catch (error) {
       console.error(
         "An error occurred while deleting the post: ",
-        error.message
+        error.message,
       );
       message.error("An error occurred while deleting the post");
     }

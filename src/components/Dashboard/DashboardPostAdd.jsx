@@ -53,7 +53,7 @@ export function DashboardPostAdd({ user }) {
         const documentId = user.current.prefs.profileId;
         profileResult = await userProfile.updateProfile(
           documentId,
-          profileValues
+          profileValues,
         );
       } else {
         profileResult = await userProfile.createProfile(profileValues);
@@ -63,7 +63,7 @@ export function DashboardPostAdd({ user }) {
         message.success(
           user?.current?.prefs?.profileId
             ? "Your profile is updated"
-            : "Your profile is created"
+            : "Your profile is created",
         );
         const updateResult = await user.updatePrefs({
           profileId: profileResult.$id,
@@ -129,7 +129,7 @@ export function DashboardPostAdd({ user }) {
       const photoURL = await Promise.all(
         fileIds.map(async (id) => {
           return await product.getPreviewURL(id);
-        })
+        }),
       );
 
       return photoURL;
@@ -152,7 +152,7 @@ export function DashboardPostAdd({ user }) {
           if (!result) {
             throw new Error(`Can't delete file with ID: ${id}`);
           }
-        })
+        }),
       );
       return true;
     } catch (error) {
@@ -219,7 +219,7 @@ export function DashboardPostAdd({ user }) {
           ...options.file,
           uid: result.$id,
           url: productUrl,
-        }
+        },
       );
       message.success(`${options.file.name} uploaded successfully.`);
     } catch (error) {

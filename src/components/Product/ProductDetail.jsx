@@ -15,7 +15,7 @@ export function ProductDetail() {
   const { productId } = useParams();
   const productInfo = useProductInfo();
   const userProfile = useUserProfile();
-  const user = useUser()
+  const user = useUser();
   const [product, setProduct] = useState(null);
   const [contributor, setContributor] = useState();
   const [profile, setProfile] = useState();
@@ -24,8 +24,8 @@ export function ProductDetail() {
   const [open, setOpen] = useState(false);
   const [contentList, setContentList] = useState({});
   const [activeTabKey, setActiveTabKey] = useState("contact");
-  const [ sender, setSender ] = useState()
-  const [ receiver, setReceiver ] = useState()
+  const [sender, setSender] = useState();
+  const [receiver, setReceiver] = useState();
 
   const onTabChange = (key) => {
     setActiveTabKey(key);
@@ -62,7 +62,7 @@ export function ProductDetail() {
   useEffect(() => {
     async function fetchContributor() {
       if (product?.userId) {
-        setReceiver(product.userId)
+        setReceiver(product.userId);
         const result = await getUser(product.userId);
         setContributor({
           name: result.name,
@@ -93,9 +93,9 @@ export function ProductDetail() {
 
   useEffect(() => {
     if (user?.current) {
-      setSender(user.current.$id)
+      setSender(user.current.$id);
     }
-  }, [user?.current])
+  }, [user?.current]);
 
   useEffect(() => {
     if (profile) {
@@ -130,12 +130,17 @@ export function ProductDetail() {
               {profile.address ? profile.address : "N/A"}
             </li>
             <li>
-              <Icon 
-                icon="eva:message-circle-outline" 
-                width="1.5rem" 
+              <Icon
+                icon="eva:message-circle-outline"
+                width="1.5rem"
                 height="1.5rem"
-                className="inline" 
-              />{<Link to={`/messageboard/:${sender}/:${receiver}`}>Talk to me on Charity Bridge</Link>}
+                className="inline"
+              />
+              {
+                <Link to={`/messageboard/:${sender}/:${receiver}`}>
+                  Talk to me on Charity Bridge
+                </Link>
+              }
             </li>
           </ul>
         ),
@@ -200,10 +205,20 @@ export function ProductDetail() {
         <div>
           <Title className="text-center pt-8">{product.product}</Title>
           <div className="flex flex-col sm:flex-row justify-center">
-            <Carousel dotPosition="bottom" autoplay={true} className=" w-[300px] p-12">
-              {product.photoURL && product.photoURL.map((url, i) => (
-                <Image key={i} src={url} width={200} alt={`picture ${i+1} of ${product.product}`}/>
-              ))}
+            <Carousel
+              dotPosition="bottom"
+              autoplay={true}
+              className=" w-[300px] p-12"
+            >
+              {product.photoURL &&
+                product.photoURL.map((url, i) => (
+                  <Image
+                    key={i}
+                    src={url}
+                    width={200}
+                    alt={`picture ${i + 1} of ${product.product}`}
+                  />
+                ))}
             </Carousel>
             <div className="p-8">
               <Space direction="vertical">

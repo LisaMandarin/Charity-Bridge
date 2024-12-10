@@ -37,7 +37,7 @@ export function PasswordRecovery() {
         userId,
         secret,
         values.newPassword,
-        values.confirmPassword
+        values.confirmPassword,
       );
       setSuccess("New password updated successfully");
       setTimeout(() => {

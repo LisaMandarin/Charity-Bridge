@@ -6,42 +6,39 @@ import { Icon } from "@iconify/react/dist/iconify.js";
 import { useEffect, useState } from "react";
 
 export function HeaderUser() {
-  const user = useUser()
-  const [ profileId, setProfileId ] = useState(null)
-  const [ openToolTip, setOpenToolTip ] = useState("") 
+  const user = useUser();
+  const [profileId, setProfileId] = useState(null);
+  const [openToolTip, setOpenToolTip] = useState("");
 
   useEffect(() => {
     if (user?.current?.prefs?.profileId) {
-      setProfileId(user.current.prefs.profileId)
+      setProfileId(user.current.prefs.profileId);
     }
-  }, [user?.current?.prefs?.profileId])
+  }, [user?.current?.prefs?.profileId]);
 
   useEffect(() => {
     if (profileId === null) {
-      setOpenToolTip(<Tooltip
-        title="You haven't created your profile"
-        color="gold"
-      >
-        <Icon
-          icon="noto:warning"
-          width="1rem"
-          height="1rem"
-          className="inline"
-        />
-      </Tooltip>)
+      setOpenToolTip(
+        <Tooltip title="You haven't created your profile" color="gold">
+          <Icon
+            icon="noto:warning"
+            width="1rem"
+            height="1rem"
+            className="inline"
+          />
+        </Tooltip>,
+      );
     } else {
-      setOpenToolTip(null)
+      setOpenToolTip(null);
     }
-  }, [profileId])
+  }, [profileId]);
 
   return (
     <>
       {user?.current ? (
         <div className="w-fit flex flex-row justify-around items-end gap-4 p-1 h-24 border-4 border-pink-200">
           <Link to="/dashboard">
-            <Badge 
-              count={openToolTip}
-              className="flex items-end h-fit">
+            <Badge count={openToolTip} className="flex items-end h-fit">
               <Avatar
                 size={60}
                 icon={<UserOutlined />}
@@ -52,9 +49,7 @@ export function HeaderUser() {
           </Link>
           <div className="flex flex-col gap-4 my-auto">
             <p>
-              <Link to="/dashboard">
-                Hello, {user.current.name}
-              </Link>
+              <Link to="/dashboard">Hello, {user.current.name}</Link>
             </p>
             <p>
               <Link to="#" onClick={() => user.logout()}>

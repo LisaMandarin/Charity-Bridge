@@ -11,36 +11,40 @@ export function Dashboard() {
   const user = useUser();
   const items = [
     {
-      key: '1',
+      key: "1",
       label: <p className="text-center">Edit Avatar</p>,
-      children: <DashboardAvatar user={user} />
+      children: <DashboardAvatar user={user} />,
     },
     {
-      key: '2',
+      key: "2",
       label: <p className="text-center">Edit Name</p>,
-      children: <DashboardName user={user} />
+      children: <DashboardName user={user} />,
     },
     {
-      key: '3',
+      key: "3",
       label: <p className="text-center">Edit Password</p>,
-      children: <DashboardPassword user={user} />
+      children: <DashboardPassword user={user} />,
     },
     {
-      key: '4',
+      key: "4",
       label: <p className="text-center">Edit Porfile</p>,
-      children: <DashboardProfile user={user} />
+      children: <DashboardProfile user={user} />,
     },
     {
-      key: '5',
+      key: "5",
       label: <p className="text-center">Edit Post</p>,
-      children: <DashboardPost user={user} />
-    }
-  ]
+      children: <DashboardPost user={user} />,
+    },
+  ];
 
   return (
-      <Space direction="vertical" className="w-full p-4 bg-white">
-        <DashboardEmail user={user} />
-        <Collapse items={items} accordion={true} className="md:w-[700px] mx-auto"/>
-      </Space>
+    <Space direction="vertical" className="w-full p-4 bg-white">
+      <DashboardEmail user={user} />
+      <Collapse
+        items={items}
+        accordion={true}
+        className="md:w-[700px] mx-auto"
+      />
+    </Space>
   );
 }

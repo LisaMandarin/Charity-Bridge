@@ -1,16 +1,16 @@
-import React from 'react'
-import ReactDOM from 'react-dom/client'
-import { BrowserRouter } from 'react-router-dom'
-import { UserProvider } from './lib/context/user.jsx'
-import { AvatarStorageProvider } from './lib/context/AvatarStorage.jsx'
-import { UserProfileProvider } from './lib/context/userProfile.jsx'
-import { ProductStorageProvider } from './lib/context/productStorage.jsx'
-import { ProductInfoProvider } from './lib/context/productInfo.jsx'
-import { MessageProvider } from './lib/context/messages.jsx'
-import App from './App.jsx'
-import "./styles/main.css"
+import React from "react";
+import ReactDOM from "react-dom/client";
+import { BrowserRouter } from "react-router-dom";
+import { UserProvider } from "./lib/context/user.jsx";
+import { AvatarStorageProvider } from "./lib/context/AvatarStorage.jsx";
+import { UserProfileProvider } from "./lib/context/userProfile.jsx";
+import { ProductStorageProvider } from "./lib/context/productStorage.jsx";
+import { ProductInfoProvider } from "./lib/context/productInfo.jsx";
+import { MessageProvider } from "./lib/context/messages.jsx";
+import App from "./App.jsx";
+import "./styles/main.css";
 
-ReactDOM.createRoot(document.getElementById('root')).render(
+ReactDOM.createRoot(document.getElementById("root")).render(
   <React.StrictMode>
     <BrowserRouter>
       <UserProvider>
@@ -28,6 +28,4 @@ ReactDOM.createRoot(document.getElementById('root')).render(
       </UserProvider>
     </BrowserRouter>
   </React.StrictMode>,
-)
-
-
+);

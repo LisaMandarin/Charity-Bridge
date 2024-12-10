@@ -32,7 +32,7 @@ export function DashboardProfile({ user, setDiv }) {
         message.success(
           user?.current?.prefs?.profileId
             ? "Your profile is updated"
-            : "Your profile is created"
+            : "Your profile is created",
         );
         const updateResult = await user.updatePrefs({
           profileId: profileResult.$id,

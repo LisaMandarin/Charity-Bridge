@@ -18,33 +18,74 @@ import { ProductByUser } from "./components/Product/ProductByUser";
 import { MessageBoard } from "./components/Message/messageBoard";
 
 function App() {
-  
   return (
-    <div >
-      <main >
+    <div>
+      <main>
         <Routes>
-          <Route element={<Layout />}>  
+          <Route element={<Layout />}>
             <Route path="/login" element={<Login />} />
-            <Route path="/register" element={<Register />}/>
-            <Route path="/sessionfailure" element={<SessionFailure />} />       
+            <Route path="/register" element={<Register />} />
+            <Route path="/sessionfailure" element={<SessionFailure />} />
             <Route path="passwordrecovery" element={<PasswordRecovery />} />
             <Route path="/passwordforgot" element={<PasswordForgot />} />
             <Route path="/oauthfailure" element={<OAuthFailure />} />
             <Route path="/fbdelete" element={<FBdelete />} />
-            <Route path="/" element={<Home />}/>
-            
+            <Route path="/" element={<Home />} />
+
             {/* protected components */}
-            <Route path="/category/:category" element={<ProtectedRoute><ProductByCategory /></ProtectedRoute>}/>
-            <Route path="/userProduct/:userId" element={<ProtectedRoute><ProductByUser /></ProtectedRoute>} />
-            <Route path="/dashboard" element={<ProtectedRoute><Dashboard /></ProtectedRoute>} />
-            <Route path="product/:productId" element={<ProtectedRoute><ProductDetail /></ProtectedRoute>} />
+            <Route
+              path="/category/:category"
+              element={
+                <ProtectedRoute>
+                  <ProductByCategory />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/userProduct/:userId"
+              element={
+                <ProtectedRoute>
+                  <ProductByUser />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/dashboard"
+              element={
+                <ProtectedRoute>
+                  <Dashboard />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="product/:productId"
+              element={
+                <ProtectedRoute>
+                  <ProductDetail />
+                </ProtectedRoute>
+              }
+            />
             <Route path="/verification" element={<Verification />} />
-            <Route path="/oauthsuccess" element={<ProtectedRoute><OauthSuccess /></ProtectedRoute>}></Route>
-            <Route path="/messageboard/:sender/:receiver" element={<ProtectedRoute><MessageBoard /></ProtectedRoute>}></Route>
+            <Route
+              path="/oauthsuccess"
+              element={
+                <ProtectedRoute>
+                  <OauthSuccess />
+                </ProtectedRoute>
+              }
+            ></Route>
+            <Route
+              path="/messageboard/:sender/:receiver"
+              element={
+                <ProtectedRoute>
+                  <MessageBoard />
+                </ProtectedRoute>
+              }
+            ></Route>
           </Route>
-        </Routes>  
+        </Routes>
       </main>
     </div>
-  )
+  );
 }
 export default App;
