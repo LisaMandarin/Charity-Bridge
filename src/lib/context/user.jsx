@@ -103,8 +103,6 @@ export function UserProvider(props) {
   }
 
   async function register(email, password, username) {
-    setError(null);
-    setSuccess(null);
     setLoading(true);
 
     try {
@@ -116,17 +114,17 @@ export function UserProvider(props) {
       );
 
       if (!result?.$id) {
-        setError("Unable to register");
+        message.error("Unable to register");
         return;
       }
 
-      setSuccess(
+      message.success(
         "You have successfully registered with Charity Bridge.\nLogging in...",
       );
 
       await login(email, password);
     } catch (error) {
-      setError("Failed to register");
+      message.error("Failed to register");
       console.error("Register error: ", error.message);
     } finally {
       setLoading(false);

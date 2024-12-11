@@ -20,18 +20,6 @@ export function Register() {
     form.resetFields();
   };
 
-  useEffect(() => {
-    if (user.error) {
-      message.error(user.error, 3);
-      onReset();
-      user.setError(null);
-    }
-    if (user.success) {
-      message.success(user.success, 3);
-      user.setSuccess(null);
-    }
-  }, [user.error, user.success, user.setError, user.setSuccess]);
-
   if (user.loading) {
     return <Spin size="large" spinning={user.loading} fullscreen />;
   }
