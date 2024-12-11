@@ -8,7 +8,7 @@ export function useUserProfile() {
   return useContext(UserProfileContext);
 }
 
-const DATABASE_ID = import.meta.env.VITE_DATABASE_USER_PROFILE_ID;
+const DATABASE_ID = import.meta.env.VITE_DATABASE_ID;
 const COLLECTION_ID = import.meta.env.VITE_COLLECTION_USER_PROFILE_ID;
 
 export function UserProfileProvider(props) {
