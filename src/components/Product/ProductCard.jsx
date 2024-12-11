@@ -40,7 +40,24 @@ export function ProductCard() {
   return (
     <div className="w-full">
       <div className="p-4 flex flex-row gap-4 flex-wrap justify-center">
-        {currentItems &&
+        {productInfo.loading && currentItems.length === 0 ? (
+          <Card
+            className="w-full md:w-[360px]"
+            hoverable
+            cover={
+              <Skeleton.Image
+                className="w-full h-ful md:w-[360px] md:h-[360px]"
+                active={true}
+              />
+            }
+          >
+            <Meta
+              title={
+                <Skeleton active={true} paragraph={{ rows: 1 }} title={false} />
+              }
+            />
+          </Card>
+        ) : (
           currentItems.map((item) => (
             <Card
               className="w-full md:w-[360px]"
@@ -48,7 +65,7 @@ export function ProductCard() {
               hoverable
               loading={productInfo.loading}
               cover={
-                <div className="w-full aspect-square">
+                <div className="w-full h-full aspect-square">
                   <Image.PreviewGroup
                     items={item.photoURL.map((photo) => ({ src: photo }))}
                   >
@@ -75,9 +92,10 @@ export function ProductCard() {
                 <Meta title={`${item.product}`} />
               </Link>
             </Card>
-          ))}
+          ))
+        )}
       </div>
-      <div>
+      <div className="mb-4">
         <Pagination
           defaultCurrent={1}
           total={data.length}
@@ -85,7 +103,6 @@ export function ProductCard() {
           current={currentPage}
           onChange={(page) => setCurrentPage(page)}
           align="center"
-          className="mb-4"
         />
       </div>
     </div>
