@@ -15,7 +15,7 @@ import { OauthSuccess } from "./components/Auth/OAuthSuccess";
 import { Layout } from "./components/Layout";
 import { ProductByCategory } from "./components/Product/ProductByCategory";
 import { ProductByUser } from "./components/Product/ProductByUser";
-import { MessageBoard } from "./components/Message/messageBoard";
+import { MessageBoard } from "./components/Message/MessageBoard";
 
 function App() {
   return (
