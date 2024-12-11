@@ -189,7 +189,7 @@ export function UserProvider(props) {
     const redirectURL =
       window.location.hostname === "localhost"
         ? "http://localhost:5173/oauthsuccess"
-        : "https://main--charitybridge.netlify.app/auth/callback";
+        : "https://main--charitybridge.netlify.app/oauthsuccess";
 
     const failURL =
       window.location.hostname === "localhost"
