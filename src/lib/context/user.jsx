@@ -1,7 +1,7 @@
 import { ID, OAuthProvider } from "appwrite";
 import { createContext, useContext, useEffect, useState } from "react";
 import { account } from "../appwrite";
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import { message } from "antd";
 
 const UserContext = createContext();
@@ -15,6 +15,8 @@ export function UserProvider(props) {
   const [loading, setLoading] = useState(true);
   const [isSession, setIsSession] = useState(null);
   const navigate = useNavigate();
+  const location = useLocation();
+  const from = location.state?.from || "/";
 
   useEffect(() => {
     fetchSession();
@@ -75,7 +77,7 @@ export function UserProvider(props) {
       }
 
       message.success("You have logged in");
-      setTimeout(() => navigate("/"), 1500);
+      setTimeout(() => navigate(from, { replace: true }), 1500);
     } catch (error) {
       message.error("Failed to login");
       console.error("Login error: ", error.message);
@@ -165,13 +167,13 @@ export function UserProvider(props) {
 
     const redirectURL =
       window.location.hostname === "localhost"
-        ? "http://localhost:5173/oauthsuccess"
-        : "https://main--charitybridge.netlify.app/oauthsuccess";
+        ? `http://localhost:5173/oauthsuccess?from=${encodeURIComponent(from)}`
+        : `https://main--charitybridge.netlify.app/oauthsuccess?from=${encodeURIComponent(from)}`;
 
     const failURL =
       window.location.hostname === "localhost"
         ? "http://localhost:5173/oauthfailure"
-        : "https://main--charitybridge.netlify.app/oauthfailure";
+        : "https://main--charitybridge.netlify.app/oauthfailure?from=${encodeURIComponent(from)}";
     try {
       account.createOAuth2Session(OAuthProvider.Google, redirectURL, failURL);
       message.success("Google Login successful");
@@ -188,8 +190,8 @@ export function UserProvider(props) {
 
     const redirectURL =
       window.location.hostname === "localhost"
-        ? "http://localhost:5173/oauthsuccess"
-        : "https://main--charitybridge.netlify.app/oauthsuccess";
+        ? `http://localhost:5173/oauthsuccess?from=${encodeURIComponent(from)}`
+        : `https://main--charitybridge.netlify.app/oauthsuccess?from=${encodeURIComponent(from)}`;
 
     const failURL =
       window.location.hostname === "localhost"

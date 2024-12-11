@@ -136,11 +136,18 @@ export function ProductDetail() {
                 height="1.5rem"
                 className="inline"
               />
-              {
+              {sender && receiver ? (
                 <Link to={`/messageboard/:${sender}/:${receiver}`}>
                   Talk to me on Charity Bridge
                 </Link>
-              }
+              ) : (
+                <Link
+                  to={`/SessionFailure`}
+                  state={{ from: window.location.pathname }}
+                >
+                  Talk to me on Charity Bridge
+                </Link>
+              )}
             </li>
           </ul>
         ),

@@ -1,11 +1,15 @@
 import { useEffect } from "react";
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 
 export function OauthSuccess() {
   const navigate = useNavigate();
+  const location = useLocation();
 
   useEffect(() => {
-    setTimeout(() => navigate("/"), 3000);
+    const params = new URLSearchParams(location.search);
+    const from = params.get("from") || "/";
+
+    setTimeout(() => navigate(from, { replace: true }), 3000);
   }, []);
   return (
     <>

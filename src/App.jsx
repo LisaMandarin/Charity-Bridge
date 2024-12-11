@@ -31,37 +31,16 @@ function App() {
             <Route path="/oauthfailure" element={<OAuthFailure />} />
             <Route path="/fbdelete" element={<FBdelete />} />
             <Route path="/" element={<Home />} />
+            <Route path="/category/:category" element={<ProductByCategory />} />
+            <Route path="/userProduct/:userId" element={<ProductByUser />} />
+            <Route path="product/:productId" element={<ProductDetail />} />
 
             {/* protected components */}
-            <Route
-              path="/category/:category"
-              element={
-                <ProtectedRoute>
-                  <ProductByCategory />
-                </ProtectedRoute>
-              }
-            />
-            <Route
-              path="/userProduct/:userId"
-              element={
-                <ProtectedRoute>
-                  <ProductByUser />
-                </ProtectedRoute>
-              }
-            />
             <Route
               path="/dashboard"
               element={
                 <ProtectedRoute>
                   <Dashboard />
-                </ProtectedRoute>
-              }
-            />
-            <Route
-              path="product/:productId"
-              element={
-                <ProtectedRoute>
-                  <ProductDetail />
                 </ProtectedRoute>
               }
             />

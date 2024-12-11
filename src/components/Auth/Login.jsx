@@ -11,13 +11,16 @@ import {
 import { useUser } from "../../lib/context/user";
 import { FaGoogle, FaFacebook } from "react-icons/fa6";
 import { useCallback, useEffect } from "react";
-import { Link } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 
 const { Title } = Typography;
 
 export function Login() {
   const [form] = Form.useForm();
   const user = useUser();
+  const location = useLocation();
+  const from = location.state?.from;
+  const navigate = useNavigate();
 
   const onReset = useCallback(() => {
     form.resetFields();
@@ -25,6 +28,10 @@ export function Login() {
 
   const onFinish = async (values) => {
     await user.login(values.email, values.password);
+
+    if (user?.current) {
+      navigate(from || "/", { replace: true });
+    }
   };
 
   useEffect(() => {
