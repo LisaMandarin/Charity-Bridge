@@ -85,6 +85,7 @@ export function ProductCard() {
           current={currentPage}
           onChange={(page) => setCurrentPage(page)}
           align="center"
+          className="mb-4"
         />
       </div>
     </div>
