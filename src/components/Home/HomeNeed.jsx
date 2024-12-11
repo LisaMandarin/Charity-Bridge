@@ -6,7 +6,7 @@ import { Icon } from "@iconify/react/dist/iconify.js";
 const { Title } = Typography;
 export function HomeNeed() {
   return (
-    <div className="flex flex-col justify-start h-full ">
+    <div className="flex flex-col justify-start h-full px-4">
       <Title level={2} className="text-center pt-4">
         Help Needed
       </Title>

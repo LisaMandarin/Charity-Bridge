@@ -15,7 +15,7 @@ export function HomeReview() {
     ));
   };
   return (
-    <div className="flex flex-col justify-between h-full">
+    <div className="flex flex-col justify-between h-full px-4">
       <Title level={2} className="text-center pt-4">
         Reviews
       </Title>
