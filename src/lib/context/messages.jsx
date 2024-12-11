@@ -9,7 +9,7 @@ export function useMessage() {
 }
 
 const DATABASE_ID = import.meta.env.VITE_DATABASE_ID;
-const COLLECTION_ID = import.meta.env.VITE_COLLECTIOM_MESSAGE_ID;
+const COLLECTION_ID = import.meta.env.VITE_COLLECTION_MESSAGE_ID;
 
 export function MessageProvider(props) {
   const [loading, setLoading] = useState(null);
