@@ -5,17 +5,15 @@ import { HomeHero } from "./HomeHero";
 
 export function Home() {
   return (
-    <div className="relative">
+    <div className=" w-full relative">
       <HomeHero />
-      <div className="grid sm:grid-cols-[1fr_2fr_1fr] md:mx-4 lg:mx-8 relative z-0">
-        <div className="order-2 sm:order-1">
+      <div className="grid grid-cols-1 lg:grid-cols-4 md:mx-4 lg:mx-8 relative z-0">
+        <div className="flex flex-col order-2 lg:order-1 lg:col-span-1">
+          <HomeNeed />
           <HomeReview />
         </div>
-        <div className="order-1 sm:order-2 flex flex-col justify-start items-center">
+        <div className="order-1 lg:order-2 lg:col-span-3">
           <HomePost />
-        </div>
-        <div className="order-3">
-          <HomeNeed />
         </div>
       </div>
     </div>

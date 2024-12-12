@@ -5,9 +5,9 @@ const { Title } = Typography;
 
 export function HomePost() {
   return (
-    <Space direction="vertical">
+    <div className="flex flex-col">
       <Title className="text-center pt-4">Latest Charities</Title>
       <ProductCard />
-    </Space>
+    </div>
   );
 }
