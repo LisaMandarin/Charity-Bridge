@@ -14,7 +14,7 @@ export function DashboardName({ user }) {
         name: user.current.name,
       });
     }
-  }, [user]);
+  }, [user?.current]);
 
   return (
     <div>

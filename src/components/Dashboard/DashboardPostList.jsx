@@ -1,10 +1,12 @@
 import { useEffect, useState } from "react";
 import { useProductInfo } from "../../lib/context/productInfo";
 import { useProductStorage } from "../../lib/context/productStorage";
+import { DashboardPostEdit } from "./DashboardPostEdit";
 import { Query } from "appwrite";
 import dayjs from "dayjs";
-import { Button, message, Space, Spin, Table, Typography } from "antd";
+import { Button, message, Modal, Space, Spin, Table, Typography } from "antd";
 import { Link } from "react-router-dom";
+import { useForm } from "antd/es/form/Form";
 const { Title } = Typography;
 
 export function DashboardPostList({ user }) {
@@ -13,6 +15,13 @@ export function DashboardPostList({ user }) {
   const [userId, setUserId] = useState();
   const [posts, setPosts] = useState([]);
   const [dataSource, setDataSource] = useState([]);
+  const [form] = useForm();
+
+  /* *********** beginning of Modal *********** */
+  const [isModalOpen, setIsModalOpen] = useState(false); // open dialogue box when edit post is clicked
+  const [editedPost, setEditedPost] = useState(null); // fetch edited post when edit post is clicked
+  /* *********** end of Modal *********** */
+
   const columns = [
     {
       title: "Product",
@@ -37,12 +46,29 @@ export function DashboardPostList({ user }) {
     },
   ];
 
-  const editPost = async (record) => {
-    // do something
+  const editPost = (record) => {
+    if (!record) {
+      console.error("Record is missing.");
+      return;
+    }
+
+    const values = posts.filter((post) => post.$id === record.key);
+    if (values) {
+      setEditedPost(values);
+    } else {
+      console.error("No matching post found.");
+    }
   };
 
   const deletePost = async (record) => {
     try {
+      if (!record) {
+        console.error("Record is missing.");
+      }
+
+      if (record) {
+        console.log("record: ", record);
+      }
       const documentResult = await productInfo.deleteForm(record.key);
       if (!documentResult) {
         console.error("Failed to delete document");
@@ -71,6 +97,28 @@ export function DashboardPostList({ user }) {
       message.error("An error occurred while deleting the post");
     }
   };
+
+  /* *********** beginning of Modal *********** */
+  const showModal = () => {
+    setIsModalOpen(true);
+  };
+
+  const handleModalOk = () => {
+    setIsModalOpen(false);
+    setEditedPost(null);
+  };
+
+  const handleModalCancel = () => {
+    setIsModalOpen(false);
+    setEditedPost(null);
+  };
+
+  useEffect(() => {
+    if (editedPost) {
+      showModal();
+    }
+  }, [editedPost]);
+  /* *********** beginning of Modal *********** */
 
   useEffect(() => {
     if (user?.current?.$id) {
@@ -114,6 +162,16 @@ export function DashboardPostList({ user }) {
         </Title>
         <Table dataSource={dataSource} columns={columns} />
       </Spin>
+      {editedPost && (
+        <Modal
+          title="Edit Post"
+          open={isModalOpen}
+          onOk={handleModalOk}
+          onCancel={handleModalCancel}
+        >
+          <DashboardPostEdit editedPost={editedPost} form={form} />
+        </Modal>
+      )}
     </>
   );
 }

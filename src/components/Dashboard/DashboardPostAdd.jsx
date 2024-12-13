@@ -184,7 +184,7 @@ export function DashboardPostAdd({ user }) {
     });
   };
 
-  // **************** Handle imagge upload ****************
+  // **************** Handle image upload ****************
   const beforeUpload = (file, fileList) => {
     const isOver3M = file.size / 1024 / 1024 > 3;
     if (isOver3M) {
