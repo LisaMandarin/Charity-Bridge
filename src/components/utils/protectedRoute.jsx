@@ -1,8 +1,9 @@
 import { useUser } from "../../lib/context/user";
 import { SessionFailure } from "../Auth/SessionFailure";
 import { Spin } from "antd";
+import { Outlet } from "react-router-dom";
 
-export function ProtectedRoute({ children }) {
+export function ProtectedRoute() {
   const user = useUser();
 
   if (user.loading) {
@@ -13,5 +14,5 @@ export function ProtectedRoute({ children }) {
     return <SessionFailure />;
   }
 
-  return children;
+  return <Outlet />;
 }

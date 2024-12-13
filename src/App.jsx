@@ -33,34 +33,15 @@ function App() {
             <Route path="/" element={<Home />} />
             <Route path="/category/:category" element={<ProductByCategory />} />
             <Route path="/userProduct/:userId" element={<ProductByUser />} />
-            <Route path="product/:productId" element={<ProductDetail />} />
+            <Route path="/product/:productId" element={<ProductDetail />} />
 
+            <Route element={<ProtectedRoute />}>
+              <Route path="/dashboard" element={<Dashboard />} />
+              <Route path="/verification" element={<Verification />} />
+              <Route path="/oauthSuccess" element={<OauthSuccess />} />
+              <Route path="/messageboard" element={<MessageBoard />} />
+            </Route>
             {/* protected components */}
-            <Route
-              path="/dashboard"
-              element={
-                <ProtectedRoute>
-                  <Dashboard />
-                </ProtectedRoute>
-              }
-            />
-            <Route path="/verification" element={<Verification />} />
-            <Route
-              path="/oauthsuccess"
-              element={
-                <ProtectedRoute>
-                  <OauthSuccess />
-                </ProtectedRoute>
-              }
-            ></Route>
-            <Route
-              path="/messageboard/:sender/:receiver"
-              element={
-                <ProtectedRoute>
-                  <MessageBoard />
-                </ProtectedRoute>
-              }
-            ></Route>
           </Route>
         </Routes>
       </main>
