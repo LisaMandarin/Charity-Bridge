@@ -23,6 +23,7 @@ function App() {
       <main>
         <Routes>
           <Route element={<Layout />}>
+            {/* Public Routes */}
             <Route path="/login" element={<Login />} />
             <Route path="/register" element={<Register />} />
             <Route path="/sessionfailure" element={<SessionFailure />} />
@@ -35,11 +36,15 @@ function App() {
             <Route path="/userProduct/:userId" element={<ProductByUser />} />
             <Route path="/product/:productId" element={<ProductDetail />} />
 
+            {/* Protected Routes */}
             <Route element={<ProtectedRoute />}>
               <Route path="/dashboard" element={<Dashboard />} />
               <Route path="/verification" element={<Verification />} />
               <Route path="/oauthSuccess" element={<OauthSuccess />} />
-              <Route path="/messageboard" element={<MessageBoard />} />
+              <Route
+                path="/messageboard/:sender/:receiver"
+                element={<MessageBoard />}
+              />
             </Route>
             {/* protected components */}
           </Route>
