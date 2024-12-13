@@ -6,6 +6,7 @@ import { DashboardAvatar } from "./DashboardAvatar";
 import { DashboardEmail } from "./DashboardEmail";
 import { DashboardPost } from "./DashboardPost";
 import { DashboardProfile } from "./DashboardProfile";
+import { DashboardReview } from "./DashboardReview";
 
 export function Dashboard() {
   const user = useUser();
@@ -27,13 +28,18 @@ export function Dashboard() {
     },
     {
       key: "4",
-      label: <p className="text-center">Edit Porfile</p>,
+      label: <p className="text-center">Edit Profile</p>,
       children: <DashboardProfile user={user} />,
     },
     {
       key: "5",
-      label: <p className="text-center">Edit Post</p>,
+      label: <p className="text-center">Manage Posts</p>,
       children: <DashboardPost user={user} />,
+    },
+    {
+      key: "6",
+      label: <p className="text-center">Manage Review</p>,
+      children: <DashboardReview />,
     },
   ];
 
