@@ -134,6 +134,29 @@ export function ProductInfoProvider(props) {
     }
   }
 
+  async function updateDocument(id, data) {
+    setLoading(true);
+    try {
+      const result = await productInfoDatabase.updateDocument(
+        DATABASE_ID,
+        COLLECTION_ID,
+        id,
+        data,
+      );
+
+      if (!result) {
+        throw new Error("No documents updated");
+      }
+      message.success("Product information updated successfully");
+      return result;
+    } catch (error) {
+      console.error("Failed to update product information", error.message);
+      message.error("Failed to update product information");
+    } finally {
+      setLoading(false);
+    }
+  }
+
   return (
     <ProductInfoContext.Provider
       value={{
@@ -143,6 +166,7 @@ export function ProductInfoProvider(props) {
         deleteForm,
         getDocument,
         listDocumentsByQuery,
+        updateDocument,
       }}
     >
       {props.children}

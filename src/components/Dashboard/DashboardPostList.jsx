@@ -15,11 +15,11 @@ export function DashboardPostList({ user }) {
   const [userId, setUserId] = useState();
   const [posts, setPosts] = useState([]);
   const [dataSource, setDataSource] = useState([]);
-  const [form] = useForm();
+  const [form] = useForm(); // used in Modal
 
   /* *********** beginning of Modal *********** */
   const [isModalOpen, setIsModalOpen] = useState(false); // open dialogue box when edit post is clicked
-  const [editedPost, setEditedPost] = useState(null); // fetch edited post when edit post is clicked
+  const [editedPost, setEditedPost] = useState(null); // used in Modal
   /* *********** end of Modal *********** */
 
   const columns = [
@@ -39,7 +39,13 @@ export function DashboardPostList({ user }) {
       key: "action",
       render: (_, record) => (
         <Space direction="horizontal" size="middle">
-          <Button onClick={() => editPost(record)}>Edit</Button>
+          <Button
+            onClick={() => {
+              editPost(record);
+            }}
+          >
+            Edit
+          </Button>
           <Button onClick={() => deletePost(record)}>Delete</Button>
         </Space>
       ),
@@ -52,12 +58,7 @@ export function DashboardPostList({ user }) {
       return;
     }
 
-    const values = posts.filter((post) => post.$id === record.key);
-    if (values) {
-      setEditedPost(values);
-    } else {
-      console.error("No matching post found.");
-    }
+    setEditedPost(record);
   };
 
   const deletePost = async (record) => {
@@ -66,9 +67,6 @@ export function DashboardPostList({ user }) {
         console.error("Record is missing.");
       }
 
-      if (record) {
-        console.log("record: ", record);
-      }
       const documentResult = await productInfo.deleteForm(record.key);
       if (!documentResult) {
         console.error("Failed to delete document");
@@ -105,6 +103,21 @@ export function DashboardPostList({ user }) {
 
   const handleModalOk = () => {
     setIsModalOpen(false);
+
+    form
+      .validateFields()
+      .then(async (values) => {
+        const result = await productInfo.updateDocument(editedPost.id, values);
+        console.log("result: ", result);
+
+        setPosts((current) =>
+          current.map((post) =>
+            post.$id === result.$id ? { ...post, ...result } : post,
+          ),
+        );
+      })
+      .catch((errorInfo) => console.error("Form errors: ", errorInfo));
+
     setEditedPost(null);
   };
 
@@ -118,7 +131,7 @@ export function DashboardPostList({ user }) {
       showModal();
     }
   }, [editedPost]);
-  /* *********** beginning of Modal *********** */
+  /* *********** end of Modal *********** */
 
   useEffect(() => {
     if (user?.current?.$id) {
@@ -128,6 +141,7 @@ export function DashboardPostList({ user }) {
 
   useEffect(() => {
     async function fetchPosts() {
+      // fetch posts belonging to this user ID
       const query = Query.equal("userId", [userId]);
       const result = await productInfo.listDocumentsByQuery(query);
       if (!result) return;
@@ -142,17 +156,22 @@ export function DashboardPostList({ user }) {
     if (posts) {
       const data = posts.map((post) => ({
         key: post.$id,
-        product: (
-          <Link to={`../product/${post.$id}`} target="_blank">
-            {post.product}
-          </Link>
-        ),
+        product: post.product,
         time: dayjs(post.time).format("MM/DD/YYYY"),
+        id: post.$id,
+        category: post.category,
+        condition: post.condition,
+        description: post.description,
+        location: post.location,
+        photoURL: post.photoURL,
         photos: post.photos,
+        quantity: post.quantity,
+        userId: post.userId,
       }));
       setDataSource(data);
     }
   }, [posts]);
+  /* *********** end of Modal *********** */
 
   return (
     <>
@@ -163,6 +182,7 @@ export function DashboardPostList({ user }) {
         <Table dataSource={dataSource} columns={columns} />
       </Spin>
       {editedPost && (
+        /* *********** beginning of Modal *********** */
         <Modal
           title="Edit Post"
           open={isModalOpen}
@@ -171,6 +191,7 @@ export function DashboardPostList({ user }) {
         >
           <DashboardPostEdit editedPost={editedPost} form={form} />
         </Modal>
+        /* *********** end of Modal *********** */
       )}
     </>
   );
