@@ -273,7 +273,7 @@ export function DashboardPostEdit({ editedPost, form }) {
                 fileList={fileIds.map((id, index) => ({
                   uid: id,
                   name: `Photo ${index + 1}`,
-                  url: editedPost.photoURL[index],
+                  url: photoURL[index],
                   status: "done",
                 }))}
               >
