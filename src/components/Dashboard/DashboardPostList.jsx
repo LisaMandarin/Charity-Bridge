@@ -39,14 +39,9 @@ export function DashboardPostList({ user }) {
       key: "action",
       render: (_, record) => (
         <Space direction="horizontal" size="middle">
-          <Button
-            onClick={() => {
-              editPost(record);
-            }}
-          >
-            Edit
-          </Button>
+          <Button onClick={() => editPost(record)}>Edit</Button>
           <Button onClick={() => deletePost(record)}>Delete</Button>
+          <Button onClick={() => viewPost(record)}>View</Button>
         </Space>
       ),
     },
@@ -96,6 +91,15 @@ export function DashboardPostList({ user }) {
     }
   };
 
+  const viewPost = (record) => {
+    if (!record || !record.id) {
+      console.error("Invalid record: ID missing");
+      return;
+    }
+
+    const url = `/product/${record.id}`;
+    window.open(url, "_blank");
+  };
   /* *********** beginning of Modal *********** */
   const showModal = () => {
     setIsModalOpen(true);
