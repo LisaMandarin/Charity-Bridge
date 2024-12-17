@@ -1,5 +1,5 @@
 import { createContext, useContext, useState } from "react";
-import { productInfoDatabase } from "../appwrite";
+import { charityDatabase } from "../appwrite";
 import { ID, Query } from "appwrite";
 import { message } from "antd";
 
@@ -17,7 +17,7 @@ export function ProductInfoProvider(props) {
   async function createForm(form) {
     setLoading(true);
     try {
-      const result = await productInfoDatabase.createDocument(
+      const result = await charityDatabase.createDocument(
         DATABASE_ID,
         COLLECTION_ID,
         ID.unique(),
@@ -36,7 +36,7 @@ export function ProductInfoProvider(props) {
   async function listDocuments() {
     setLoading(true);
     try {
-      const result = await productInfoDatabase.listDocuments(
+      const result = await charityDatabase.listDocuments(
         DATABASE_ID,
         COLLECTION_ID,
         [Query.orderDesc("time")],
@@ -65,7 +65,7 @@ export function ProductInfoProvider(props) {
     setLoading(true);
 
     try {
-      const result = await productInfoDatabase.deleteDocument(
+      const result = await charityDatabase.deleteDocument(
         DATABASE_ID,
         COLLECTION_ID,
         id,
@@ -90,7 +90,7 @@ export function ProductInfoProvider(props) {
       message.error("Invalid product ID");
     }
     try {
-      const result = await productInfoDatabase.getDocument(
+      const result = await charityDatabase.getDocument(
         DATABASE_ID,
         COLLECTION_ID,
         id,
@@ -111,7 +111,7 @@ export function ProductInfoProvider(props) {
   async function listDocumentsByQuery(query) {
     setLoading(true);
     try {
-      const result = await productInfoDatabase.listDocuments(
+      const result = await charityDatabase.listDocuments(
         DATABASE_ID,
         COLLECTION_ID,
         [Query.orderDesc("time"), query],
@@ -137,7 +137,7 @@ export function ProductInfoProvider(props) {
   async function updateDocument(id, data) {
     setLoading(true);
     try {
-      const result = await productInfoDatabase.updateDocument(
+      const result = await charityDatabase.updateDocument(
         DATABASE_ID,
         COLLECTION_ID,
         id,

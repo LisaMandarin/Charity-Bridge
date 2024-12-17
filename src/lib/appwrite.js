@@ -8,7 +8,5 @@ client.setEndpoint(endpoint).setProject(projectId);
 export const account = new Account(client);
 export { OAuthProvider };
 export const avatarStorage = new Storage(client);
-export const productInfoDatabase = new Databases(client);
 export const productStorage = new Storage(client);
-export const userProfileDatabase = new Databases(client);
-export const messageDatabase = new Databases(client);
+export const charityDatabase = new Databases(client);

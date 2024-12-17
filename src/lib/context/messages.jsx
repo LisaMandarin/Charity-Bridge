@@ -1,6 +1,6 @@
 import { message } from "antd";
 import { createContext, useContext, useState } from "react";
-import { messageDatabase } from "../appwrite";
+import { charityDatabase } from "../appwrite";
 import { ID } from "appwrite";
 
 const MessageContext = createContext();
@@ -18,7 +18,7 @@ export function MessageProvider(props) {
     setLoading(false);
 
     try {
-      const result = await messageDatabase.createDocument(
+      const result = await charityDatabase.createDocument(
         DATABASE_ID,
         COLLECTION_ID,
         ID.unique(),

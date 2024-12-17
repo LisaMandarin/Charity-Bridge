@@ -1,6 +1,6 @@
 import { createContext, useContext, useState } from "react";
 import { ID } from "appwrite";
-import { userProfileDatabase } from "../appwrite";
+import { charityDatabase } from "../appwrite";
 
 const UserProfileContext = createContext();
 
@@ -14,7 +14,7 @@ const COLLECTION_ID = import.meta.env.VITE_COLLECTION_USER_PROFILE_ID;
 export function UserProfileProvider(props) {
   async function createProfile(form) {
     try {
-      const result = await userProfileDatabase.createDocument(
+      const result = await charityDatabase.createDocument(
         DATABASE_ID,
         COLLECTION_ID,
         ID.unique(),
@@ -34,7 +34,7 @@ export function UserProfileProvider(props) {
       if (!data) {
         throw new Error("Please provide data to update");
       }
-      const result = await userProfileDatabase.updateDocument(
+      const result = await charityDatabase.updateDocument(
         DATABASE_ID,
         COLLECTION_ID,
         documentId,
@@ -52,7 +52,7 @@ export function UserProfileProvider(props) {
       if (!documentId) {
         throw new Error("Document ID is missing");
       }
-      const result = await userProfileDatabase.getDocument(
+      const result = await charityDatabase.getDocument(
         DATABASE_ID,
         COLLECTION_ID,
         documentId,
