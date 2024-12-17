@@ -87,76 +87,78 @@ export function HomeReview() {
       <Title level={2} className="text-center pt-4">
         Words of Thanks
       </Title>
+      {/* <Spin spinning={reviews.loading}> */}
+
       <Space size="large" direction="vertical" className="text-xs flex-grow">
-        <Spin spinning={reviews.loading}>
-          {donorList.length > 0 &&
-            receiverList.length > 0 &&
-            productList.length > 0 &&
-            currentItems.map((review, i) => (
-              <div key={i}>
-                <p>
-                  <Avatar icon="U" />{" "}
-                  <span>
-                    <Link
-                      to={`/userProduct/${review.receiverId}`}
-                      className="text-blue-500"
-                    >
-                      {receiverList[i].name}
-                    </Link>{" "}
-                    said
-                  </span>
-                  ,
-                </p>
-                <p className="indent-8">
-                  Thank you,{" "}
+        {donorList.length > 0 &&
+          receiverList.length > 0 &&
+          productList.length > 0 &&
+          currentItems.map((review, i) => (
+            <div key={i}>
+              <p>
+                <Avatar icon="U" />{" "}
+                <span>
                   <Link
-                    to={`/userProduct/${review.donorId}`}
+                    to={`/userProduct/${review.receiverId}`}
                     className="text-blue-500"
                   >
-                    {donorList[i].name}
-                  </Link>
-                  ,
-                </p>
-                <p>
-                  I give you{" "}
-                  <Rate
-                    count={5}
-                    defaultValue={review.stars}
-                    disabled
-                    className="text-sm"
-                  />{" "}
-                  for the donation of the{" "}
-                  <Link
-                    to={`/product/${review.productId}`}
-                    className="text-blue-500"
-                  >
-                    {productList[i].product.toLocaleLowerCase()}
-                  </Link>
-                  .
-                </p>
-                <p className={`${!expandedItems[i] ? "truncate" : ""}`}>
-                  {review.reviewContent}
-                </p>
-                {!expandedItems[i] && (
-                  <span
-                    className="text-blue-500 cursor-pointer"
-                    onClick={() => toggleContent(i)}
-                  >
-                    ...more
-                  </span>
-                )}
-                {expandedItems[i] && (
-                  <span
-                    className="text-blue-500 cursor-pointer"
-                    onClick={() => toggleContent(i)}
-                  >
-                    Show less
-                  </span>
-                )}
-              </div>
-            ))}
-        </Spin>
+                    {receiverList[i].name}
+                  </Link>{" "}
+                  said
+                </span>
+                ,
+              </p>
+              <p className="indent-8">
+                Thank you,{" "}
+                <Link
+                  to={`/userProduct/${review.donorId}`}
+                  className="text-blue-500"
+                >
+                  {donorList[i].name}
+                </Link>
+                ,
+              </p>
+              <p>
+                I give you{" "}
+                <Rate
+                  count={5}
+                  defaultValue={review.stars}
+                  disabled
+                  className="text-sm"
+                />{" "}
+                for the donation of the{" "}
+                <Link
+                  to={`/product/${review.productId}`}
+                  className="text-blue-500"
+                >
+                  {productList[i].product.toLocaleLowerCase()}
+                </Link>
+                .
+              </p>
+              <p className={`${!expandedItems[i] ? "truncate" : ""}`}>
+                {review.reviewContent}
+              </p>
+              {!expandedItems[i] && (
+                <span
+                  className="text-blue-500 cursor-pointer"
+                  onClick={() => toggleContent(i)}
+                >
+                  ...more
+                </span>
+              )}
+              {expandedItems[i] && (
+                <span
+                  className="text-blue-500 cursor-pointer"
+                  onClick={() => toggleContent(i)}
+                >
+                  Show less
+                </span>
+              )}
+            </div>
+          ))}
       </Space>
+
+      {/* </Spin> */}
       <Pagination
         simple={{ readOnly: true }}
         defaultCurrent={1}
