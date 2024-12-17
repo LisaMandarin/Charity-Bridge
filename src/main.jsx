@@ -9,6 +9,7 @@ import { ProductInfoProvider } from "./lib/context/productInfo.jsx";
 import { MessageProvider } from "./lib/context/messages.jsx";
 import App from "./App.jsx";
 import "./styles/main.css";
+import { ReviewsProvider } from "./lib/context/reviews.jsx";
 
 ReactDOM.createRoot(document.getElementById("root")).render(
   <React.StrictMode>
@@ -19,7 +20,9 @@ ReactDOM.createRoot(document.getElementById("root")).render(
             <ProductStorageProvider>
               <ProductInfoProvider>
                 <MessageProvider>
-                  <App />
+                  <ReviewsProvider>
+                    <App />
+                  </ReviewsProvider>
                 </MessageProvider>
               </ProductInfoProvider>
             </ProductStorageProvider>

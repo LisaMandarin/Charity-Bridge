@@ -112,7 +112,6 @@ export function DashboardPostList({ user }) {
       .validateFields()
       .then(async (values) => {
         const result = await productInfo.updateDocument(editedPost.id, values);
-        console.log("result: ", result);
 
         setPosts((current) =>
           current.map((post) =>

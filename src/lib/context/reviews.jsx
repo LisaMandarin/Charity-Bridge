@@ -35,16 +35,16 @@ export function ReviewsProvider(props) {
     }
   }
 
-  async function listReviews(form) {
+  async function listReviews() {
     setLoading(true);
     try {
       const result = await charityDatabase.listDocuments(
         DATABASE_ID,
         COLLECTION_ID,
-        [Query.orderDesc("created")],
+        [Query.orderDesc("$createdAt")],
       );
 
-      if (!result || result.length === 0) {
+      if (!result || result.documents.length === 0) {
         throw new Error("No reviews found");
       }
 

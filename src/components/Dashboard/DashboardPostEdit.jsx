@@ -146,7 +146,6 @@ export function DashboardPostEdit({ editedPost, form }) {
 
   useEffect(() => {
     if (editedPost) {
-      console.log("editedPost: ", editedPost);
       setFileIds(editedPost.photos || []);
       setPhotoURL(editedPost.photoURL || []);
 
