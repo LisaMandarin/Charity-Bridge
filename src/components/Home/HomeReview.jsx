@@ -4,6 +4,7 @@ import { getUser } from "../../lib/serverAppwrite";
 import { useProductInfo } from "../../lib/context/productInfo";
 import { Avatar, Pagination, Space, Typography } from "antd";
 import { useEffect, useState } from "react";
+import { Link } from "react-router-dom";
 const { Title } = Typography;
 
 export function HomeReview() {
@@ -87,12 +88,37 @@ export function HomeReview() {
           currentItems.map((review, i) => (
             <div key={i}>
               <p>
-                <Avatar icon="U" /> <span>{receiverList[i].name} said</span>,
+                <Avatar icon="U" />{" "}
+                <span>
+                  <Link
+                    to={`/userProduct/${review.receiverId}`}
+                    className="text-blue-500"
+                  >
+                    {receiverList[i].name}
+                  </Link>{" "}
+                  said
+                </span>
+                ,
               </p>
-              <p className="indent-8">Thank you, {donorList[i].name},</p>
+              <p className="indent-8">
+                Thank you,{" "}
+                <Link
+                  to={`/userProduct/${review.donorId}`}
+                  className="text-blue-500"
+                >
+                  {donorList[i].name}
+                </Link>
+                ,
+              </p>
               <p>
                 I give you {showStars(review.stars)} for the donation of the{" "}
-                {productList[i].product.toLocaleLowerCase()}.
+                <Link
+                  to={`/product/${review.productId}`}
+                  className="text-blue-500"
+                >
+                  {productList[i].product.toLocaleLowerCase()}
+                </Link>
+                .
               </p>
               <p>{review.reviewContent}</p>
             </div>
