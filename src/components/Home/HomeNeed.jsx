@@ -8,7 +8,7 @@ export function HomeNeed() {
   return (
     <div className="flex flex-col justify-start px-4 shadow-md rounded-lg mt-4">
       <Title level={2} className="text-center pt-4">
-        Help Needed
+        People in Need
       </Title>
       <Carousel autoplay draggable dots={false} speed={1000}>
         {needList.map((need, i) => (

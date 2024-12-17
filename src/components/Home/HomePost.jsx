@@ -6,7 +6,7 @@ const { Title } = Typography;
 export function HomePost() {
   return (
     <div className="flex flex-col">
-      <Title className="text-center pt-4">Latest Charities</Title>
+      <Title className="text-center pt-4">Available Donations</Title>
       <ProductCard />
     </div>
   );

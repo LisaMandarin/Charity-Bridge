@@ -79,7 +79,7 @@ export function HomeReview() {
   return (
     <div className="flex flex-col justify-between h-full px-4">
       <Title level={2} className="text-center pt-4">
-        Reviews
+        Words of Thanks
       </Title>
       <Space size="large" direction="vertical" className="text-xs flex-grow">
         {donorList.length > 0 &&
