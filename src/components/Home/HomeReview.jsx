@@ -78,10 +78,6 @@ export function HomeReview() {
     fetchNames();
   }, [currentItems]);
 
-  useEffect(() => {
-    console.log("expandedItems: ", expandedItems);
-  }, [expandedItems]);
-
   return (
     <div className="flex flex-col justify-between h-full px-4">
       <Title level={2} className="text-center pt-4">
@@ -95,7 +91,7 @@ export function HomeReview() {
           productList.length > 0 &&
           currentItems.map((review, i) => (
             <div key={i}>
-              <p>
+              <div>
                 <Avatar icon="U" />{" "}
                 <span>
                   <Link
@@ -107,8 +103,8 @@ export function HomeReview() {
                   said
                 </span>
                 ,
-              </p>
-              <p className="indent-8">
+              </div>
+              <div className="indent-8">
                 Thank you,{" "}
                 <Link
                   to={`/userProduct/${review.donorId}`}
@@ -117,8 +113,8 @@ export function HomeReview() {
                   {donorList[i].name}
                 </Link>
                 ,
-              </p>
-              <p>
+              </div>
+              <div>
                 I give you{" "}
                 <Rate
                   count={5}
@@ -134,10 +130,10 @@ export function HomeReview() {
                   {productList[i].product.toLocaleLowerCase()}
                 </Link>
                 .
-              </p>
-              <p className={`${!expandedItems[i] ? "truncate" : ""}`}>
+              </div>
+              <div className={`${!expandedItems[i] ? "truncate" : ""}`}>
                 {review.reviewContent}
-              </p>
+              </div>
               {!expandedItems[i] && (
                 <span
                   className="text-blue-500 cursor-pointer"
