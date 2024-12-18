@@ -9,11 +9,9 @@ const { Title } = Typography;
 export function HomeReview() {
   const reviews = useReviews();
   const productInfo = useProductInfo();
-  const [reviewList, setReviewList] = useState([]);
-  const [donorList, setDonorList] = useState([]);
-  const [receiverList, setReceiverList] = useState([]);
-  const [productList, setProductList] = useState([]);
-  const [expandedItems, setExpandedItems] = useState({});
+  const [combinedData, setCombinedData] = useState([]);
+  const [expandedItems, setExpandedItems] = useState({}); // used to toggle review content more/less
+  const [loading, setLoading] = useState(true);
 
   const toggleContent = (i) =>
     setExpandedItems((current) => ({ ...current, [i]: !current[i] }));
@@ -22,23 +20,53 @@ export function HomeReview() {
      Handle items per page
   ************************ */
   const [currentPage, setCurrentPage] = useState(1);
-  const [itemsPerPage, setItemsPerPage] = useState(3);
+  const [itemsPerPage, setItemsPerPage] = useState(2);
   const startIndex = (currentPage - 1) * itemsPerPage;
-  const currentItems = reviewList.slice(startIndex, startIndex + itemsPerPage);
+  const currentItems = combinedData.slice(
+    startIndex,
+    startIndex + itemsPerPage,
+  );
 
   /* ******************************
-  Fetch reviews in initial render
+  Fetch reviews data and convert ids to names in initial render
   ****************************** */
   useEffect(() => {
     let isMounted = true;
+
     async function fetchReviews() {
+      setLoading(true);
+
       try {
-        const result = await reviews.listReviews();
-        if (result && isMounted) {
-          setReviewList(result);
+        const reviewsResult = await reviews.listReviews();
+
+        if (!isMounted) return;
+
+        const donors = await Promise.all(
+          reviewsResult.map((review) => getUser(review.donorId)),
+        );
+        const receivers = await Promise.all(
+          reviewsResult.map((review) => getUser(review.receiverId)),
+        );
+        const products = await Promise.all(
+          reviewsResult.map((review) =>
+            productInfo.getDocument(review.productId),
+          ),
+        );
+
+        if (isMounted) {
+          const data = reviewsResult.map((review, index) => ({
+            ...review,
+            donor: donors[index],
+            receiver: receivers[index],
+            product: products[index],
+          }));
+
+          setCombinedData(data);
         }
       } catch (error) {
         console.error(error.message);
+      } finally {
+        if (isMounted) setLoading(false);
       }
     }
 
@@ -49,47 +77,14 @@ export function HomeReview() {
     };
   }, []);
 
-  /* ********************************************
-  Store donors', receivers', and products' names
-  *********************************************** */
-  useEffect(() => {
-    async function fetchNames() {
-      if (currentItems.length > 0) {
-        const donors = await Promise.all(
-          currentItems.map((review) => getUser(review.donorId)),
-        );
-
-        const receivers = await Promise.all(
-          currentItems.map((review) => getUser(review.receiverId)),
-        );
-
-        const products = await Promise.all(
-          currentItems.map((review) =>
-            productInfo.getDocument(review.productId),
-          ),
-        );
-
-        setDonorList(donors);
-        setReceiverList(receivers);
-        setProductList(products);
-      }
-    }
-
-    fetchNames();
-  }, [currentItems]);
-
   return (
     <div className="flex flex-col justify-between h-full px-4">
       <Title level={2} className="text-center pt-4">
         Words of Thanks
       </Title>
-      {/* <Spin spinning={reviews.loading}> */}
-
-      <Space size="large" direction="vertical" className="text-xs flex-grow">
-        {donorList.length > 0 &&
-          receiverList.length > 0 &&
-          productList.length > 0 &&
-          currentItems.map((review, i) => (
+      <Spin spinning={loading}>
+        <Space size="large" direction="vertical" className="text-xs flex-grow">
+          {currentItems.map((review, i) => (
             <div key={i}>
               <div>
                 <Avatar icon="U" />{" "}
@@ -98,7 +93,7 @@ export function HomeReview() {
                     to={`/userProduct/${review.receiverId}`}
                     className="text-blue-500"
                   >
-                    {receiverList[i].name}
+                    {review.receiver?.name}
                   </Link>{" "}
                   said
                 </span>
@@ -110,7 +105,7 @@ export function HomeReview() {
                   to={`/userProduct/${review.donorId}`}
                   className="text-blue-500"
                 >
-                  {donorList[i].name}
+                  {review.donor?.name}
                 </Link>
                 ,
               </div>
@@ -127,7 +122,7 @@ export function HomeReview() {
                   to={`/product/${review.productId}`}
                   className="text-blue-500"
                 >
-                  {productList[i].product.toLocaleLowerCase()}
+                  {review.product?.product.toLocaleLowerCase()}
                 </Link>
                 .
               </div>
@@ -152,14 +147,13 @@ export function HomeReview() {
               )}
             </div>
           ))}
-      </Space>
-
-      {/* </Spin> */}
+        </Space>
+      </Spin>
       <Pagination
         simple={{ readOnly: true }}
         defaultCurrent={1}
-        total={reviewList.length}
-        pageSize={3}
+        total={combinedData.length}
+        pageSize={itemsPerPage}
         current={currentPage}
         onChange={(page) => setCurrentPage(page)}
         align="center"
