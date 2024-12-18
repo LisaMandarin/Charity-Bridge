@@ -87,7 +87,9 @@ export function HomeReview() {
           {currentItems.map((review, i) => (
             <div key={i}>
               <div>
-                <Avatar icon="U" />{" "}
+                <Avatar src={review.receiver?.prefs?.avatarUrl} alt="avatar">
+                  {review.receiver?.name[0] || "U"}
+                </Avatar>
                 <span>
                   <Link
                     to={`/userProduct/${review.receiverId}`}
