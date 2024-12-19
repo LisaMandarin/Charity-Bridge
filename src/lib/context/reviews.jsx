@@ -57,12 +57,34 @@ export function ReviewsProvider(props) {
     }
   }
 
+  async function listReviewsByQuery(query) {
+    setLoading(true);
+
+    try {
+      const result = await charityDatabase.listDocuments(
+        DATABASE_ID,
+        COLLECTION_ID,
+        [Query.orderDesc("$createdAt"), query],
+      );
+
+      if (!result || result.documents.length === 0) {
+        throw new Error("Reviews by query not found");
+      }
+
+      return result.documents;
+    } catch (error) {
+      console.error("Failed to list reviews by query: ", error.message);
+    } finally {
+      setLoading(false);
+    }
+  }
   return (
     <reviewsContext.Provider
       value={{
         loading,
         createReview,
         listReviews,
+        listReviewsByQuery,
       }}
     >
       {props.children}

@@ -1,40 +1,25 @@
 import { useEffect, useState } from "react";
-import { Avatar, Button, Card, Carousel, Image, message, Space } from "antd";
+import { Avatar, Button, Carousel, Image, message, Space } from "antd";
 import { Link, useParams } from "react-router-dom";
 import { useProductInfo } from "../../lib/context/productInfo";
-import dayjs from "dayjs";
 import { getUser } from "../../lib/serverAppwrite";
+
 import { Typography } from "antd";
-import { useUserProfile } from "../../lib/context/userProfile";
-import { StarOutlined } from "@ant-design/icons";
-import { Icon } from "@iconify/react/dist/iconify.js";
-import { useUser } from "../../lib/context/user";
+import dayjs from "dayjs";
+
+import { ProfileCard } from "./ProfileCard";
 const { Title } = Typography;
 
 export function ProductDetail() {
   const { productId } = useParams();
   const productInfo = useProductInfo();
-  const userProfile = useUserProfile();
-  const user = useUser();
   const [product, setProduct] = useState(null);
-  const [contributor, setContributor] = useState();
-  const [profile, setProfile] = useState();
-
-  // --------Profile Card-------
-  const [open, setOpen] = useState(false);
-  const [contentList, setContentList] = useState({});
-  const [activeTabKey, setActiveTabKey] = useState("contact");
-  const [sender, setSender] = useState();
-  const [receiver, setReceiver] = useState();
-
-  const onTabChange = (key) => {
-    setActiveTabKey(key);
+  const [contributor, setContributor] = useState(); // person who donates the product
+  const [receiver, setReceiver] = useState(); // person who receives the message
+  const [isOpen, setIsOpen] = useState(false);
+  const toggleProfileCard = () => {
+    setIsOpen((current) => !current);
   };
-
-  const toggleOpen = () => {
-    setOpen((current) => !current);
-  };
-  //--------Profile Card-------
 
   useEffect(() => {
     if (!productId) {
@@ -69,142 +54,13 @@ export function ProductDetail() {
           avatarId: result.prefs?.avatarId || null,
           avatarUrl: result.prefs?.avatarUrl || null,
           profileId: result.prefs?.profileId || null,
+          id: result.$id || null,
         });
       }
     }
 
     fetchContributor();
   }, [product?.userId]);
-
-  useEffect(() => {
-    async function fetchProfile() {
-      try {
-        if (contributor?.profileId) {
-          const result = await userProfile.getProfile(contributor.profileId);
-          setProfile(result);
-        }
-      } catch (error) {
-        console.error("Failed to fetch the user's profile: ", error.message);
-        message.error("Failed to fetch the user's profile: ");
-      }
-    }
-    fetchProfile();
-  }, [contributor?.profileId]);
-
-  useEffect(() => {
-    if (user?.current) {
-      setSender(user.current.$id);
-    }
-  }, [user?.current]);
-
-  useEffect(() => {
-    if (profile) {
-      setContentList({
-        contact: (
-          <ul className="leading-8">
-            <li>
-              <Icon
-                icon="ic:outline-email"
-                width="1.5rem"
-                height="1.5rem"
-                className="inline"
-              />{" "}
-              {profile.email ? profile.email : "N/A"}
-            </li>
-            <li>
-              <Icon
-                icon="ic:outline-phone"
-                width="1.5rem"
-                height="1.5rem"
-                className="inline"
-              />{" "}
-              {profile.phone ? profile.phone : "N/A"}
-            </li>
-            <li>
-              <Icon
-                icon="lsicon:house-outline"
-                width="1.5rem"
-                height="1.5rem"
-                className="inline"
-              />{" "}
-              {profile.address ? profile.address : "N/A"}
-            </li>
-            <li>
-              <Icon
-                icon="eva:message-circle-outline"
-                width="1.5rem"
-                height="1.5rem"
-                className="inline"
-              />
-              {sender && receiver ? (
-                <Link to={`/messageboard/:${sender}/:${receiver}`}>
-                  Talk to me on Charity Bridge
-                </Link>
-              ) : (
-                <Link
-                  to={`/SessionFailure`}
-                  state={{ from: window.location.pathname }}
-                >
-                  Talk to me on Charity Bridge
-                </Link>
-              )}
-            </li>
-          </ul>
-        ),
-        about: (
-          <ul className="max-w-[360px] whitespace-normal overflow-hidden leading-8">
-            <li>
-              <strong>Name: </strong>
-              {profile.name ? profile.name : "N/A"}
-            </li>
-            <li>
-              <strong>Birthday: </strong>
-              {profile.birthday
-                ? dayjs(profile.birthday).format("MM/DD/YYYY")
-                : "N/A"}
-            </li>
-            <li>
-              <strong>Gender: </strong>
-              {profile.gender ? (
-                <>
-                  {profile.gender === "male" && (
-                    <Icon
-                      icon="tabler:gender-male"
-                      width="1.5rem"
-                      height="1.5rem"
-                      className="inline"
-                    />
-                  )}
-                  {profile.gender === "female" && (
-                    <Icon
-                      icon="tabler:gender-female"
-                      width="1.5rem"
-                      height="1.5rem"
-                      className="inline"
-                    />
-                  )}
-                  {profile.gender === "LGBTQ" && (
-                    <Icon
-                      icon="tabler:gender-bigender"
-                      width="1.5rem"
-                      height="1.5rem"
-                      className="inline"
-                    />
-                  )}
-                </>
-              ) : (
-                "N/A"
-              )}
-            </li>
-            <li>
-              <strong>Introduction: </strong>
-              {profile.introduction ? profile.introduction : "N/A"}
-            </li>
-          </ul>
-        ),
-      });
-    }
-  }, [profile]);
 
   return (
     <>
@@ -259,7 +115,11 @@ export function ProductDetail() {
                 </p>
                 <p>
                   <span className="font-extrabold">Contributor: </span>
-                  <Button variant="link" color="default" onClick={toggleOpen}>
+                  <Button
+                    variant="link"
+                    color="blue"
+                    onClick={toggleProfileCard}
+                  >
                     {contributor?.avatarUrl && (
                       <Avatar src={contributor.avatarUrl} />
                     )}{" "}
@@ -267,31 +127,12 @@ export function ProductDetail() {
                   </Button>
                 </p>
               </Space>
-              {profile && open && (
-                <Card
-                  style={{ width: "400px" }}
-                  title={
-                    <div>
-                      {profile.name} <StarOutlined />
-                      <StarOutlined />
-                      <StarOutlined />
-                    </div>
-                  }
-                  extra={
-                    <Link to={`/userProduct/${profile.userId}`}>
-                      more posts
-                    </Link>
-                  }
-                  tabList={[
-                    { key: "contact", tab: "Contact" },
-                    { key: "about", tab: `About ${profile.name}` },
-                  ]}
-                  activeTabKey={activeTabKey}
-                  onTabChange={onTabChange}
-                >
-                  {contentList[activeTabKey]}
-                </Card>
-              )}
+
+              <ProfileCard
+                contributor={contributor}
+                isOpen={isOpen}
+                receiver={receiver}
+              />
             </div>
           </div>
         </div>
