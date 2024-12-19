@@ -1,24 +1,45 @@
 import { Query } from "appwrite";
 import { useEffect, useState } from "react";
 import { useProductInfo } from "../../lib/context/productInfo";
+import { getUser } from "../../lib/serverAppwrite";
+import { ProfileCard } from "./ProfileCard";
 import { Card, Typography } from "antd";
 import { Link, useParams } from "react-router-dom";
-import { getUser } from "../../lib/serverAppwrite";
 const { Title } = Typography;
 const { Meta } = Card;
 
 export function ProductByUser() {
   const { userId } = useParams();
-
   const productInfo = useProductInfo();
   const [documents, setDocuments] = useState([]);
   const [userName, setUserName] = useState();
+  const [contributor, setContributor] = useState();
+  const [receiver, setReceiver] = useState();
+  const [isOpen, setIsOpen] = useState(false); //
 
+  const toggleProfileCard = () => {
+    setIsOpen((current) => !current);
+  };
+
+  /* *************************************************
+  Retrieve the name of the person who posts donations
+  Set contributor and receiver for profile card
+  ************************************************* */
   useEffect(() => {
     async function fetchUser() {
-      const result = await getUser(userId);
-      if (result.name) {
-        setUserName(result.name);
+      if (userId) {
+        setReceiver(userId);
+        const result = await getUser(userId);
+        if (result.name) {
+          setUserName(result.name);
+          setContributor({
+            name: result.name,
+            avatarId: result.prefs?.avatarId || null,
+            avatarUrl: result.prefs?.avatarUrl || null,
+            profileId: result.prefs?.profileId || null,
+            id: result.$id,
+          });
+        }
       }
     }
     fetchUser();
@@ -42,7 +63,12 @@ export function ProductByUser() {
 
   return (
     <div className="p-8 text-center">
-      <Title>{userName}</Title>
+      <Title onClick={toggleProfileCard}>{userName}</Title>
+      <ProfileCard
+        contributor={contributor}
+        isOpen={isOpen}
+        receiver={receiver}
+      />
       <div className="flex flex-wrap bg-white gap-4 justify-center">
         {documents === undefined || documents === null ? (
           <div>No posts</div>

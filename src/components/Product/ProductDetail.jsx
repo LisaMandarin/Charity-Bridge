@@ -14,9 +14,9 @@ export function ProductDetail() {
   const { productId } = useParams();
   const productInfo = useProductInfo();
   const [product, setProduct] = useState(null);
-  const [contributor, setContributor] = useState(); // person who donates the product
-  const [receiver, setReceiver] = useState(); // person who receives the message
-  const [isOpen, setIsOpen] = useState(false);
+  const [contributor, setContributor] = useState(); // person who donates the product; contributor.id === receiver
+  const [receiver, setReceiver] = useState(); // person who receives the message; receiver === contributor.id
+  const [isOpen, setIsOpen] = useState(false); // toggle profile card
   const toggleProfileCard = () => {
     setIsOpen((current) => !current);
   };

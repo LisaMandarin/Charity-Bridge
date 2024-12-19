@@ -57,7 +57,6 @@ export function ProfileCard({ contributor, isOpen, receiver }) {
       setReviewLoading(true);
 
       try {
-        console.log("contributor ID: ", contributor?.id);
         const query = Query.equal("donorId", [contributor?.id]);
         const reviewResult = await reviews.listReviewsByQuery(query);
 
