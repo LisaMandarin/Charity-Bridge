@@ -16,8 +16,8 @@ export function ProductByCategory() {
     async function fetchProducts() {
       const result = await productInfo.listDocumentsByQuery(query);
       if (!result) {
-        console.error("No documents in food category is found");
-        message.error("No documents in food category is found");
+        console.error(`No documents in ${category} category found`);
+        message.error(`No documents in ${category} category found`);
       }
 
       setDocuments(result);

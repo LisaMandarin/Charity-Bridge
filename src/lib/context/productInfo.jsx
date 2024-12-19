@@ -49,7 +49,7 @@ export function ProductInfoProvider(props) {
       return result.documents;
     } catch (err) {
       console.error("Failed to list product information: ", err.message);
-      message.error("Failed to list product information");
+      // message.error("Failed to list product information");
       return null;
     } finally {
       setLoading(false);
@@ -110,6 +110,11 @@ export function ProductInfoProvider(props) {
 
   async function listDocumentsByQuery(query) {
     setLoading(true);
+    if (!query) {
+      console.error("Query is missing");
+      return;
+    }
+
     try {
       const result = await charityDatabase.listDocuments(
         DATABASE_ID,
@@ -127,7 +132,7 @@ export function ProductInfoProvider(props) {
         "Failed to list product information by query: ",
         err.message,
       );
-      message.error("Failed to list product information by query");
+      // message.error("Failed to list product information by query");
       return null;
     } finally {
       setLoading(false);
