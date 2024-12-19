@@ -60,6 +60,11 @@ export function ReviewsProvider(props) {
   async function listReviewsByQuery(query) {
     setLoading(true);
 
+    if (!query) {
+      console.error("Query is invalid");
+      return [];
+    }
+
     try {
       const result = await charityDatabase.listDocuments(
         DATABASE_ID,

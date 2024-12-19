@@ -16,7 +16,7 @@ export function ProfileCard({ contributor, isOpen, receiver }) {
   const productInfo = useProductInfo();
   const user = useUser();
   const reviews = useReviews();
-  const query = Query.equal("donorId", [contributor?.id]);
+
   const [profile, setProfile] = useState();
   const [combinedData, setCombinedData] = useState([]); // combine review collection with donor name, receiver name, and product name
   const [contentList, setContentList] = useState({}); // profile card content
@@ -43,13 +43,22 @@ export function ProfileCard({ contributor, isOpen, receiver }) {
     fetchProfile();
   }, [contributor?.profileId]);
 
+  /* ****************************
+  Handle Reviews in profile card
+  **************************** */
   useEffect(() => {
     let isMounted = true;
 
     async function fetchReviews() {
+      if (!contributor?.id) {
+        return;
+      }
+
       setReviewLoading(true);
 
       try {
+        console.log("contributor ID: ", contributor?.id);
+        const query = Query.equal("donorId", [contributor?.id]);
         const reviewResult = await reviews.listReviewsByQuery(query);
 
         if (!isMounted) return;
@@ -96,11 +105,7 @@ export function ProfileCard({ contributor, isOpen, receiver }) {
     return () => {
       isMounted = false;
     };
-  }, [query]);
-
-  useEffect(() => {
-    console.log("combinedData: ", combinedData);
-  }, [combinedData]);
+  }, [contributor?.id]);
 
   useEffect(() => {
     if (user?.current) {
@@ -108,20 +113,14 @@ export function ProfileCard({ contributor, isOpen, receiver }) {
     }
   }, [user?.current]);
 
+  /* *************************
+  Handle profile card content
+  **************************** */
   useEffect(() => {
     if (profile) {
       setContentList({
         contact: (
           <ul className="leading-8">
-            <li>
-              <Icon
-                icon="ic:outline-email"
-                width="1.5rem"
-                height="1.5rem"
-                className="inline"
-              />{" "}
-              {profile.email ? profile.email : "N/A"}
-            </li>
             <li>
               <Icon
                 icon="ic:outline-phone"
@@ -164,10 +163,6 @@ export function ProfileCard({ contributor, isOpen, receiver }) {
         ),
         about: (
           <ul className="max-w-[360px] whitespace-normal overflow-hidden leading-8">
-            <li>
-              <strong>Name: </strong>
-              {profile.name ? profile.name : "N/A"}
-            </li>
             <li>
               <strong>Birthday: </strong>
               {profile.birthday
@@ -253,7 +248,8 @@ export function ProfileCard({ contributor, isOpen, receiver }) {
         ),
       });
     }
-  }, [profile, combinedData, receiver, sender]);
+  }, [profile, combinedData, receiver, sender, reviewLoading]);
+
   return (
     profile &&
     isOpen && (
