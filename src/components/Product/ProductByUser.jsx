@@ -63,12 +63,19 @@ export function ProductByUser() {
 
   return (
     <div className="p-8 text-center">
-      <Title onClick={toggleProfileCard}>{userName}</Title>
-      <ProfileCard
-        contributor={contributor}
-        isOpen={isOpen}
-        receiver={receiver}
-      />
+      <Title
+        onClick={toggleProfileCard}
+        className="hover:text-blue-500 hover:underline cursor-pointer"
+      >
+        {userName}
+      </Title>
+      <div className="flex justify-center">
+        <ProfileCard
+          contributor={contributor}
+          isOpen={isOpen}
+          receiver={receiver}
+        />
+      </div>
       <div className="flex flex-wrap bg-white gap-4 justify-center">
         {documents === undefined || documents === null ? (
           <div>No posts</div>

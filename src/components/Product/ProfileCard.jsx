@@ -16,16 +16,26 @@ export function ProfileCard({ contributor, isOpen, receiver }) {
   const productInfo = useProductInfo();
   const user = useUser();
   const reviews = useReviews();
-
   const [profile, setProfile] = useState();
   const [combinedData, setCombinedData] = useState([]); // combine review collection with donor name, receiver name, and product name
   const [contentList, setContentList] = useState({}); // profile card content
-  const [activeTabKey, setActiveTabKey] = useState("contact");
+  const [activeTabKey, setActiveTabKey] = useState("contact"); // profile card tabs
   const [sender, setSender] = useState(); // person who sends the message
   const [reviewLoading, setReviewLoading] = useState(true);
+  const [areExpandedTabs, setAreExpandedTabs] = useState({
+    about: false,
+    reviews: false,
+  }); // keep track of expanded states of tabs
 
   const onTabChange = (key) => {
     setActiveTabKey(key);
+  };
+
+  const toggleExpand = (key) => {
+    setAreExpandedTabs((current) => ({
+      ...current,
+      [key]: !current[key],
+    }));
   };
 
   useEffect(() => {
@@ -119,7 +129,7 @@ export function ProfileCard({ contributor, isOpen, receiver }) {
     if (profile) {
       setContentList({
         contact: (
-          <ul className="leading-8">
+          <ul className="max-w-[360px] max-h-[250px] leading-8 flex flex-col items-start">
             <li>
               <Icon
                 icon="ic:outline-phone"
@@ -161,14 +171,16 @@ export function ProfileCard({ contributor, isOpen, receiver }) {
           </ul>
         ),
         about: (
-          <ul className="max-w-[360px] whitespace-normal overflow-hidden leading-8">
-            <li>
+          <div
+            className={`max-w-[360px] ${areExpandedTabs.about ? "max-h-full" : "max-h-[250px]"}  leading-8 flex flex-col items-start`}
+          >
+            <div>
               <strong>Birthday: </strong>
               {profile.birthday
                 ? dayjs(profile.birthday).format("MM/DD/YYYY")
                 : "N/A"}
-            </li>
-            <li>
+            </div>
+            <div>
               <strong>Gender: </strong>
               {profile.gender ? (
                 <>
@@ -200,67 +212,81 @@ export function ProfileCard({ contributor, isOpen, receiver }) {
               ) : (
                 "N/A"
               )}
-            </li>
-            <li>
+            </div>
+            <div className="text-left text-ellipsis overflow-hidden">
               <strong>Introduction: </strong>
               {profile.introduction ? profile.introduction : "N/A"}
-            </li>
-          </ul>
+            </div>
+            <button
+              onClick={() => toggleExpand("about")}
+              className="text-blue-500 cursor-pointer mt-2"
+            >
+              {areExpandedTabs.about ? "Less" : "More"}
+            </button>
+          </div>
         ),
         reviews: (
-          <Spin spinning={reviewLoading}>
-            {combinedData?.length > 0
-              ? combinedData.map((review, index) => (
-                  <div key={index} className="flex flex-col gap-4 py-2">
-                    <div className="flex flex-row gap-2">
-                      <div className="flex items-center">
-                        <Avatar
-                          src={review.receiver?.prefs?.avatarUrl}
-                          alt="avatar"
-                        >
-                          {review.receiver?.name[0] || "U"}
-                        </Avatar>
+          <div>
+            <div
+              className={`max-w-[360px] ${areExpandedTabs.reviews ? "max-h-full" : "max-h-[200px]"} overflow-hidden`}
+            >
+              <Spin spinning={reviewLoading}>
+                {combinedData?.length > 0 ? (
+                  combinedData.map((review, index) => (
+                    <div key={index} className="flex flex-col gap-4 py-2">
+                      <div className="flex flex-row gap-2">
+                        <div className="flex items-center">
+                          <Avatar
+                            src={review.receiver?.prefs?.avatarUrl}
+                            alt="avatar"
+                          >
+                            {review.receiver?.name[0] || "U"}
+                          </Avatar>
+                        </div>
+                        <div>
+                          <ul className="text-left">
+                            <li className="text-xs">{review.receiver?.name}</li>
+                            <li className="text-xs">
+                              <Rate
+                                defaultValue={review.stars}
+                                count={5}
+                                disabled
+                              />
+                            </li>
+                            <li className="text-xs text-gray-400">
+                              {dayjs(review.$createdAt).format("YYYY-MM-DD")} |{" "}
+                              {review.product?.product}
+                            </li>
+                          </ul>
+                        </div>
                       </div>
-                      <div>
-                        <ul>
-                          <li className="text-xs">{review.receiver?.name}</li>
-                          <li className="text-xs">
-                            <Rate
-                              defaultValue={review.stars}
-                              count={5}
-                              disabled
-                            />
-                          </li>
-                          <li className="text-xs text-gray-400">
-                            {dayjs(review.$createdAt).format("YYYY-MM-DD")} |{" "}
-                            {review.product?.product}
-                          </li>
-                        </ul>
-                      </div>
-                      {}
+                      <div className="text-left">{review.reviewContent}</div>
+                      <hr />
                     </div>
-                    <div>{review.reviewContent}</div>
-                  </div>
-                ))
-              : ""}
-          </Spin>
+                  ))
+                ) : (
+                  <div>No reviews available</div>
+                )}
+              </Spin>
+            </div>
+            <button
+              onClick={() => toggleExpand("reviews")}
+              className="text-blue-500 mt-2"
+            >
+              {areExpandedTabs.reviews ? "Less" : "More"}
+            </button>
+          </div>
         ),
       });
     }
-  }, [profile, combinedData, receiver, sender, reviewLoading]);
+  }, [profile, combinedData, receiver, sender, reviewLoading, areExpandedTabs]);
 
   return (
     profile &&
     isOpen && (
       <Card
         style={{ width: "400px" }}
-        title={
-          <div>
-            {profile.name} <StarOutlined />
-            <StarOutlined />
-            <StarOutlined />
-          </div>
-        }
+        title={<div className="text-left">{profile.name}</div>}
         extra={<Link to={`/userProduct/${profile.userId}`}>more posts</Link>}
         tabList={[
           { key: "contact", tab: "Contact" },
