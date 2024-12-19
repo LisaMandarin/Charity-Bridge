@@ -17,6 +17,7 @@ export function ProductDetail() {
   const [contributor, setContributor] = useState(); // person who donates the product; contributor.id === receiver
   const [receiver, setReceiver] = useState(); // person who receives the message; receiver === contributor.id
   const [isOpen, setIsOpen] = useState(false); // toggle profile card
+
   const toggleProfileCard = () => {
     setIsOpen((current) => !current);
   };
@@ -44,6 +45,9 @@ export function ProductDetail() {
     fetchProduct(productId);
   }, [productId]);
 
+  /* ********************************************** 
+  set contributor and handle product closed status
+  ************************************************* */
   useEffect(() => {
     async function fetchContributor() {
       if (product?.userId) {
@@ -62,15 +66,20 @@ export function ProductDetail() {
     fetchContributor();
   }, [product?.userId]);
 
+  useEffect(() => {
+    console.log("closed: ", product?.closed);
+  }, [product?.closed]);
+
   return (
     <>
       {product && (
-        <div>
+        <div className={`${product?.closed ? "opacity-25" : ""}`}>
           <Title className="text-center pt-8">{product.product}</Title>
+          {product?.closed && <div className="text-center mt-0">(Closed)</div>}
           <div className="flex flex-col sm:flex-row justify-center">
             <Carousel
               dotPosition="bottom"
-              autoplay={true}
+              autoplay={!product?.closed}
               className=" w-[300px] p-12"
             >
               {product.photoURL &&
@@ -80,6 +89,7 @@ export function ProductDetail() {
                     src={url}
                     width={200}
                     alt={`picture ${i + 1} of ${product.product}`}
+                    preview={!product?.closed}
                   />
                 ))}
             </Carousel>
@@ -116,6 +126,7 @@ export function ProductDetail() {
                 <p>
                   <span className="font-extrabold">Contributor: </span>
                   <Button
+                    disabled={product?.closed}
                     variant="link"
                     color="blue"
                     onClick={toggleProfileCard}
