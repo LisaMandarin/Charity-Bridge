@@ -1,15 +1,15 @@
 import { useEffect, useState } from "react";
 import { useUserProfile } from "../../lib/context/userProfile";
 import { useUser } from "../../lib/context/user";
-import { message, Card } from "antd";
+import { getUser } from "../../lib/serverAppwrite";
+import { useProductInfo } from "../../lib/context/productInfo";
+import { message, Card, Avatar, Rate, Spin } from "antd";
 import { Icon } from "@iconify/react/dist/iconify.js";
 import { StarOutlined } from "@ant-design/icons";
 import { Link } from "react-router-dom";
 import dayjs from "dayjs";
 import { useReviews } from "../../lib/context/reviews";
 import { Query } from "appwrite";
-import { getUser } from "../../lib/serverAppwrite";
-import { useProductInfo } from "../../lib/context/productInfo";
 
 export function ProfileCard({ contributor, isOpen, receiver }) {
   const userProfile = useUserProfile();
@@ -213,12 +213,44 @@ export function ProfileCard({ contributor, isOpen, receiver }) {
             </li>
           </ul>
         ),
-        reviews:
-          combinedData?.length > 0
-            ? combinedData.map((review, index) => (
-                <div key={index}>{review.stars}</div>
-              ))
-            : "",
+        reviews: (
+          <Spin spinning={reviewLoading}>
+            {combinedData?.length > 0
+              ? combinedData.map((review, index) => (
+                  <div key={index} className="flex flex-col gap-4 py-2">
+                    <div className="flex flex-row gap-2">
+                      <div className="flex items-center">
+                        <Avatar
+                          src={review.receiver?.prefs?.avatarUrl}
+                          alt="avatar"
+                        >
+                          {review.receiver?.name[0] || "U"}
+                        </Avatar>
+                      </div>
+                      <div>
+                        <ul>
+                          <li className="text-xs">{review.receiver?.name}</li>
+                          <li className="text-xs">
+                            <Rate
+                              defaultValue={review.stars}
+                              count={5}
+                              disabled
+                            />
+                          </li>
+                          <li className="text-xs text-gray-400">
+                            {dayjs(review.$createdAt).format("YYYY-MM-DD")} |{" "}
+                            {review.product?.product}
+                          </li>
+                        </ul>
+                      </div>
+                      {}
+                    </div>
+                    <div>{review.reviewContent}</div>
+                  </div>
+                ))
+              : ""}
+          </Spin>
+        ),
       });
     }
   }, [profile, combinedData, receiver, sender]);
