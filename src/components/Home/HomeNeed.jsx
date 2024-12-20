@@ -5,6 +5,7 @@ import { useEffect, useState } from "react";
 import { useNeeds } from "../../lib/context/needs";
 import { getUser } from "../../lib/serverAppwrite";
 import { useUser } from "../../lib/context/user";
+import { useNavigate } from "react-router-dom";
 
 const { Title } = Typography;
 export function HomeNeed() {
@@ -13,6 +14,7 @@ export function HomeNeed() {
   const [combinedData, setCombinedData] = useState([]); // needs collection + helpSeeker info
   const [sender, setSender] = useState(); // person who send the message
   const [isOpenModals, setIsOpenModals] = useState({});
+  let navigate = useNavigate();
 
   const showModal = (index) => {
     setIsOpenModals((current) => ({
@@ -22,6 +24,7 @@ export function HomeNeed() {
   };
 
   const handleOk = (index) => {
+    navigate(`/messageboard/${sender}/${combinedData[index].helpSeeker.$id}`);
     setIsOpenModals((current) => ({
       ...current,
       [index]: false,
@@ -58,7 +61,7 @@ export function HomeNeed() {
 
   useEffect(() => {
     if (user?.current) {
-      setSender(user.current?.email);
+      setSender(user.current?.$id);
     }
   }, [user?.current?.email]);
 
@@ -110,8 +113,26 @@ export function HomeNeed() {
             open={isOpenModals[i]}
             onOk={() => handleOk(i)}
             onCancel={() => handleCandle(i)}
+            okText={`Message ${need.helpSeeker.name}`}
           >
-            {need.helpSeeker.name}
+            <ul>
+              <li className="text-sm">
+                <Avatar src={`${need.helpSeeker.prefs.avatarUrl}`} size={20}>
+                  {need.helpSeeker.name[0]}
+                </Avatar>
+                {need.helpSeeker.name}
+              </li>
+              <li className="text-sm">
+                <Icon
+                  icon="ion:location-outline"
+                  width="16"
+                  height="16"
+                  className="inline"
+                />
+                {need.location}
+              </li>
+            </ul>
+            <div className="mt-2 text-lg">{need.description}</div>
           </Modal>
         ))}
     </div>
