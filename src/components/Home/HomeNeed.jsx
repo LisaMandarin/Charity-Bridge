@@ -10,7 +10,13 @@ export function HomeNeed() {
       <Title level={2} className="text-center pt-4">
         People in Need
       </Title>
-      <Carousel autoplay draggable dots={false} speed={1000}>
+      <Carousel
+        autoplay
+        speed={1000}
+        arrows={true}
+        dots={true}
+        className="custom-carousel"
+      >
         {needList.map((need, i) => (
           <div key={i} className="p-4">
             <Space>
