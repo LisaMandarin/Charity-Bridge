@@ -1,4 +1,4 @@
-import { Avatar, Carousel, Space, Typography } from "antd";
+import { Avatar, Carousel, Modal, Space, Typography } from "antd";
 import { UserOutlined } from "@ant-design/icons";
 import { Icon } from "@iconify/react/dist/iconify.js";
 import { useEffect, useState } from "react";
@@ -10,8 +10,30 @@ const { Title } = Typography;
 export function HomeNeed() {
   const needs = useNeeds();
   const user = useUser();
-  const [combinedData, setCombinedData] = useState([]);
+  const [combinedData, setCombinedData] = useState([]); // needs collection + helpSeeker info
   const [sender, setSender] = useState(); // person who send the message
+  const [isOpenModals, setIsOpenModals] = useState({});
+
+  const showModal = (index) => {
+    setIsOpenModals((current) => ({
+      ...current,
+      [index]: true,
+    }));
+  };
+
+  const handleOk = (index) => {
+    setIsOpenModals((current) => ({
+      ...current,
+      [index]: false,
+    }));
+  };
+
+  const handleCandle = (index) => {
+    setIsOpenModals((current) => ({
+      ...current,
+      [index]: false,
+    }));
+  };
 
   useEffect(() => {
     async function fetchNeeds() {
@@ -40,8 +62,6 @@ export function HomeNeed() {
     }
   }, [user?.current?.email]);
 
-  useEffect(() => console.log("combinedData: ", combinedData));
-
   return (
     <div className="flex flex-col justify-start px-4 shadow-md rounded-lg mt-4">
       <Title level={2} className="text-center pt-4">
@@ -56,7 +76,11 @@ export function HomeNeed() {
       >
         {combinedData &&
           combinedData.map((need, i) => (
-            <div key={i} className="p-4 flex flex-col">
+            <div
+              key={i}
+              className="p-4 flex flex-col cursor-pointer"
+              onClick={() => showModal(i)}
+            >
               <ul>
                 <li className="text-xs">
                   <Avatar src={`${need.helpSeeker.prefs.avatarUrl}`} size={14}>
@@ -78,6 +102,18 @@ export function HomeNeed() {
             </div>
           ))}
       </Carousel>
+      {combinedData &&
+        combinedData.map((need, i) => (
+          <Modal
+            key={i}
+            title={`${need.helpSeeker.name} needs help`}
+            open={isOpenModals[i]}
+            onOk={() => handleOk(i)}
+            onCancel={() => handleCandle(i)}
+          >
+            {need.helpSeeker.name}
+          </Modal>
+        ))}
     </div>
   );
 }
