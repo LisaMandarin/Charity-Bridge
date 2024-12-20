@@ -1,36 +1,39 @@
 import { Query } from "appwrite";
 import { useEffect, useState } from "react";
 import { useProductInfo } from "../../lib/context/productInfo";
-import { Card, message, Spin, Typography } from "antd";
+import { Card, Spin, Typography } from "antd";
 import { Link, useParams } from "react-router-dom";
 const { Title } = Typography;
 const { Meta } = Card;
 
 export function ProductByCategory() {
   const { category } = useParams();
-  const query = Query.equal("category", [category]);
   const productInfo = useProductInfo();
   const [documents, setDocuments] = useState([]);
 
   useEffect(() => {
     async function fetchProducts() {
-      const result = await productInfo.listDocumentsByQuery(query);
+      const query = [
+        Query.equal("category", [category]),
+        Query.equal("closed", [false]),
+      ];
+      const result = await productInfo.listDocumentsByQuery(Query.and(query));
+
       if (!result) {
-        console.error(`No documents in ${category} category found`);
-        message.error(`No documents in ${category} category found`);
+        setDocuments([]);
       }
 
       setDocuments(result);
     }
     fetchProducts();
-  }, [query]);
+  }, [category]);
 
   return (
     <div className="p-8 text-center">
       <Spin spinning={productInfo.loading}>
         <Title>{category.toUpperCase()}</Title>
         <div className="flex flex-wrap bg-white gap-4 justify-center">
-          {documents &&
+          {documents ? (
             documents.map((d) => (
               <Link to={`/product/${d.$id}`} key={d.$id}>
                 <Card
@@ -53,7 +56,10 @@ export function ProductByCategory() {
                   <Meta title={<div className="text-wrap">{d.product}</div>} />
                 </Card>
               </Link>
-            ))}
+            ))
+          ) : (
+            <div>No data</div>
+          )}
         </div>
       </Spin>
     </div>

@@ -2,6 +2,7 @@ import { Card, Image, Pagination, Skeleton } from "antd";
 import { useProductInfo } from "../../lib/context/productInfo";
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
+import { Query } from "appwrite";
 const { Meta } = Card;
 
 export function ProductCard() {
@@ -11,10 +12,12 @@ export function ProductCard() {
   const [itemsPerPage, setItemsPerPage] = useState(1);
   const startIndex = (currentPage - 1) * itemsPerPage;
   const currentItems = data.slice(startIndex, startIndex + itemsPerPage);
+  const total = Math.ceil(data.length / itemsPerPage);
 
   useEffect(() => {
     async function fetchData() {
-      const documents = await productInfo.listDocuments();
+      const query = Query.equal("closed", [false]);
+      const documents = await productInfo.listDocumentsByQuery(query);
 
       setData(documents);
     }
@@ -99,7 +102,8 @@ export function ProductCard() {
       <div className="mb-4">
         <Pagination
           defaultCurrent={1}
-          total={data.length}
+          // total={data.length}
+          total={total}
           pageSize={1}
           current={currentPage}
           onChange={(page) => setCurrentPage(page)}

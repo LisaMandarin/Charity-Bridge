@@ -66,10 +66,6 @@ export function ProductDetail() {
     fetchContributor();
   }, [product?.userId]);
 
-  useEffect(() => {
-    console.log("closed: ", product?.closed);
-  }, [product?.closed]);
-
   return (
     <>
       {product && (
