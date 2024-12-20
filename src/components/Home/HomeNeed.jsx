@@ -1,4 +1,4 @@
-import { Avatar, Carousel, Modal, Space, Typography } from "antd";
+import { Avatar, Carousel, Modal, Space, Spin, Typography } from "antd";
 import { UserOutlined } from "@ant-design/icons";
 import { Icon } from "@iconify/react/dist/iconify.js";
 import { useEffect, useState } from "react";
@@ -13,6 +13,7 @@ export function HomeNeed() {
   const user = useUser();
   const [combinedData, setCombinedData] = useState([]); // needs collection + helpSeeker info
   const [sender, setSender] = useState(); // person who send the message
+  const [loading, setLoading] = useState(true); // loading status for carousel
   const [isOpenModals, setIsOpenModals] = useState({});
   let navigate = useNavigate();
 
@@ -39,21 +40,29 @@ export function HomeNeed() {
   };
 
   useEffect(() => {
+    setLoading(true);
+
     async function fetchNeeds() {
-      const result = await needs.listNeeds();
+      try {
+        const result = await needs.listNeeds();
 
-      if (!result) return;
+        if (!result) return;
 
-      const helpSeekers = await Promise.all(
-        result.map((r) => getUser(r.requestBy)),
-      );
-      if (helpSeekers.length > 0) {
-        const data = result.map((r, index) => ({
-          ...r,
-          helpSeeker: helpSeekers[index],
-        }));
+        const helpSeekers = await Promise.all(
+          result.map((r) => getUser(r.requestBy)),
+        );
+        if (helpSeekers.length > 0) {
+          const data = result.map((r, index) => ({
+            ...r,
+            helpSeeker: helpSeekers[index],
+          }));
 
-        setCombinedData(data);
+          setCombinedData(data);
+        }
+      } catch (error) {
+        console.error(error.message);
+      } finally {
+        setLoading(false);
       }
     }
     fetchNeeds();
@@ -70,41 +79,47 @@ export function HomeNeed() {
       <Title level={2} className="text-center pt-4">
         People in Need
       </Title>
-      <Carousel
-        autoplay
-        speed={1000}
-        arrows={true}
-        dots={true}
-        className="custom-carousel"
-      >
-        {combinedData &&
-          combinedData.map((need, i) => (
-            <div
-              key={i}
-              className="p-4 flex flex-col cursor-pointer"
-              onClick={() => showModal(i)}
-            >
-              <ul>
-                <li className="text-xs">
-                  <Avatar src={`${need.helpSeeker.prefs.avatarUrl}`} size={14}>
-                    {need.helpSeeker.name[0]}
-                  </Avatar>
-                  {need.helpSeeker.name}
-                </li>
-                <li className="text-xs">
-                  <Icon
-                    icon="ion:location-outline"
-                    width="16"
-                    height="16"
-                    className="inline"
-                  />
-                  {need.location}
-                </li>
-              </ul>
-              <div className="mt-2 line-clamp-3">{need.description}</div>
-            </div>
-          ))}
-      </Carousel>
+      <Spin spinning={loading}>
+        <Carousel
+          autoplay
+          speed={1000}
+          arrows={true}
+          dots={true}
+          className="custom-carousel lg:h-[140px]"
+        >
+          {combinedData &&
+            combinedData.map((need, i) => (
+              <div
+                key={i}
+                className="p-4 flex flex-col cursor-pointer"
+                onClick={() => showModal(i)}
+              >
+                <ul>
+                  <li className="text-xs">
+                    <Avatar
+                      src={`${need.helpSeeker.prefs.avatarUrl}`}
+                      size={14}
+                    >
+                      {need.helpSeeker.name[0]}
+                    </Avatar>
+                    {need.helpSeeker.name}
+                  </li>
+                  <li className="text-xs">
+                    <Icon
+                      icon="ion:location-outline"
+                      width="16"
+                      height="16"
+                      className="inline"
+                    />
+                    {need.location}
+                  </li>
+                </ul>
+                <div className="mt-2 line-clamp-3">{need.description}</div>
+              </div>
+            ))}
+        </Carousel>
+      </Spin>
+
       {combinedData &&
         combinedData.map((need, i) => (
           <Modal
