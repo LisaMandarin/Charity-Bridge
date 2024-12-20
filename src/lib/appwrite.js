@@ -10,3 +10,5 @@ export { OAuthProvider };
 export const avatarStorage = new Storage(client);
 export const productStorage = new Storage(client);
 export const charityDatabase = new Databases(client);
+
+export default client;

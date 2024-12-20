@@ -1,7 +1,8 @@
 import { message } from "antd";
 import { createContext, useContext, useState } from "react";
 import { charityDatabase } from "../appwrite";
-import { ID } from "appwrite";
+import { ID, Query } from "appwrite";
+import client from "../appwrite";
 
 const MessageContext = createContext();
 export function useMessage() {
@@ -12,10 +13,10 @@ const DATABASE_ID = import.meta.env.VITE_DATABASE_ID;
 const COLLECTION_ID = import.meta.env.VITE_COLLECTION_MESSAGE_ID;
 
 export function MessageProvider(props) {
-  const [loading, setLoading] = useState(null);
+  const [loading, setLoading] = useState(true);
 
   async function createMessage(msg) {
-    setLoading(false);
+    setLoading(true);
 
     try {
       const result = await charityDatabase.createDocument(
@@ -24,7 +25,7 @@ export function MessageProvider(props) {
         ID.unique(),
         msg,
       );
-      message.success("Message sent");
+
       return result;
     } catch (error) {
       console.error("Failed to create message: ", error.message);
@@ -33,8 +34,59 @@ export function MessageProvider(props) {
       setLoading(false);
     }
   }
+
+  async function listMessages(senderId, receiverId) {
+    setLoading(true);
+
+    try {
+      const result = await charityDatabase.listDocuments(
+        DATABASE_ID,
+        COLLECTION_ID,
+        [
+          Query.or([
+            Query.and([
+              Query.equal("ownId", senderId),
+              Query.equal("otherId", receiverId),
+            ]),
+            Query.and([
+              Query.equal("ownId", receiverId),
+              Query.equal("otherId", senderId),
+            ]),
+          ]),
+        ],
+      );
+
+      if (!result || result.documents.length === 0) {
+        console.error("No messages found");
+        return [];
+      }
+
+      return result.documents.sort(
+        (a, b) => new Date(a.$createdAt) - new Date(b.$createdAt),
+      ); // sort the messages from oldest to the latest
+    } catch (error) {
+      console.error("Failed to list messages: ", error.message);
+    } finally {
+      setLoading(false);
+    }
+  }
+
+  function subscribeToMessages(callback) {
+    return client.subscribe(
+      `databases.${DATABASE_ID}.collections.${COLLECTION_ID}.documents`,
+      (event) => {
+        if (
+          event.events.includes("databases.*.collections.*.documents.*.create")
+        ) {
+          callback(event.payload);
+        }
+      },
+    );
+  }
   return (
-    <MessageContext.Provider value={{ loading, createMessage }}>
+    <MessageContext.Provider
+      value={{ loading, createMessage, listMessages, subscribeToMessages }}
+    >
       {props.children}
     </MessageContext.Provider>
   );
