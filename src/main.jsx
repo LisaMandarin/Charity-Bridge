@@ -10,6 +10,7 @@ import { MessageProvider } from "./lib/context/messages.jsx";
 import App from "./App.jsx";
 import "./styles/main.css";
 import { ReviewsProvider } from "./lib/context/reviews.jsx";
+import { NeedsProvider } from "./lib/context/needs.jsx";
 
 ReactDOM.createRoot(document.getElementById("root")).render(
   <React.StrictMode>
@@ -21,7 +22,9 @@ ReactDOM.createRoot(document.getElementById("root")).render(
               <ProductInfoProvider>
                 <MessageProvider>
                   <ReviewsProvider>
-                    <App />
+                    <NeedsProvider>
+                      <App />
+                    </NeedsProvider>
                   </ReviewsProvider>
                 </MessageProvider>
               </ProductInfoProvider>
