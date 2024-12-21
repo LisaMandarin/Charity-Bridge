@@ -4,13 +4,24 @@ import { useUser } from "../../lib/context/user";
 import { useMessage } from "../../lib/context/messages";
 import { getUser } from "../../lib/serverAppwrite";
 import { formatTime } from "../utils/timeHandling";
+import { useNavigate } from "react-router-dom";
 
 export function MessageList() {
   const user = useUser();
   const messageContext = useMessage();
   const [ownMessages, setOwnMessages] = useState([]);
+  const [groupedMessages, setGroupedMessages] = useState([]);
   const [loading, setLoading] = useState(true);
+  const navigate = useNavigate();
 
+  const handleNavigate = (senderId, receiverId) => {
+    navigate(`/messageboard/${senderId}/${receiverId}`);
+  };
+
+  /* *******************************************************************
+  Fetch messages that involve the current user.
+  Get the names of others who have conversations with the current user.
+  ********************************************************************* */
   useEffect(() => {
     const userId = user?.current?.$id;
 
@@ -38,20 +49,42 @@ export function MessageList() {
     fetchOwnMessages();
   }, [user?.current]);
 
+  /* *************************************
+  Group messages and keep the latest ones
+  *************************************** */
   useEffect(() => {
-    console.log("ownMessages: ", ownMessages[0]);
-  }, [ownMessages]);
+    const grouped = Object.values(
+      ownMessages.reduce((acc, msg) => {
+        const isSentByYou = msg.ownId === user?.current?.$id;
+        const otherPersonId = isSentByYou ? msg.otherId : msg.ownId;
+
+        if (
+          !acc[otherPersonId] ||
+          new Date(msg.$createdAt) > new Date(acc[otherPersonId].$createdAt)
+        ) {
+          acc[otherPersonId] = msg;
+        }
+        return acc;
+      }, {}),
+    );
+
+    setGroupedMessages(grouped);
+  }, [ownMessages, user?.current?.$id]);
 
   return (
     <>
       <Spin spinning={loading}>
-        {ownMessages.length > 0 && user?.current?.$id ? (
-          ownMessages.map((msg, i) => {
+        {groupedMessages.length > 0 && user?.current?.$id ? (
+          groupedMessages.map((msg, i) => {
             const isSentByYou = msg.ownId === user.current.$id;
             const otherPerson = isSentByYou ? msg.other : msg.own;
 
             return (
-              <div key={i} className="flex flex-row gap-2 p-4 border-b-2">
+              <div
+                key={i}
+                className="flex flex-row gap-2 p-4 border-b-2"
+                onClick={() => handleNavigate(msg.ownId, msg.otherId)}
+              >
                 <div className="self-center">
                   <Avatar src={otherPerson?.prefs?.avatarUrl}>U</Avatar>
                 </div>
