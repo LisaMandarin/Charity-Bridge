@@ -14,6 +14,11 @@ export function MessageDialogue({ sender, receiver }) {
   const [userOwn, setUserOwn] = useState();
   const [userOther, setUserOther] = useState();
 
+  /* *********************************
+  Get messages from collection
+  Get user names
+  Set Realtime for messages collection
+  ********************************* */
   useEffect(() => {
     async function fetchMessages() {
       setLoading(true);
