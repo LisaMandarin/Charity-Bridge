@@ -1,4 +1,5 @@
 import { Avatar } from "antd";
+import { formatTime } from "../utils/timeHandling";
 
 export function MessageBubbleOther({ userOther, message }) {
   /* **************
@@ -10,12 +11,12 @@ export function MessageBubbleOther({ userOther, message }) {
         <Avatar src={userOther?.prefs?.avatarUrl} className="self-end">
           {userOther?.name[0]}
         </Avatar>
-        <div className="min-w-[60px] max-w-[700px] px-3 py-4 mx-1 my-2 border border-1 border-solid bg-pink-900 text-white rounded-chat-bubble">
+        <div className="min-w-[60px] max-w-[700px] px-3 py-4 mx-1 my-2 border border-1 border-solid bg-pink-900 text-white rounded-chat-bubble-other">
           {message.messageContent}
         </div>
       </div>
       <span className="text-gray-400 text-xs self-start">
-        {message.$createdAt}
+        {formatTime(message.$createdAt)}
       </span>
     </div>
   );

@@ -4,7 +4,8 @@ export default {
   theme: {
     extend: {
       borderRadius: {
-        "chat-bubble": "16px 16px 16px 0",
+        "chat-bubble-other": "16px 16px 16px 0",
+        "chat-bubble-own": "16px 16px 0 16px",
       },
     },
   },
