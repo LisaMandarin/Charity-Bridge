@@ -1,10 +1,13 @@
 import { Button, Form, Input } from "antd";
 import { Icon } from "@iconify/react/dist/iconify.js";
 import { useMessage } from "../../lib/context/messages";
+import { useEffect, useState } from "react";
+import { getUser } from "../../lib/serverAppwrite";
 
 export function MessageForm({ sender, receiver }) {
   const [form] = Form.useForm();
   const message = useMessage();
+  const [receiverName, setReceiverName] = useState();
 
   const onFinish = (values) => {
     sendMsg(values);
@@ -17,6 +20,15 @@ export function MessageForm({ sender, receiver }) {
       console.error(error.message);
     }
   };
+
+  useEffect(() => {
+    async function fetchName() {
+      const name = await getUser(receiver);
+      setReceiverName(name);
+    }
+
+    fetchName();
+  }, [receiver]);
   return (
     <div>
       <Form
@@ -47,7 +59,12 @@ export function MessageForm({ sender, receiver }) {
             },
           ]}
         >
-          <Input.TextArea size="large" allowClear autoSize />
+          <Input.TextArea
+            size="large"
+            allowClear
+            autoSize
+            placeholder={`Say something to ${receiverName?.name}`}
+          />
         </Form.Item>
         <Form.Item className="mb-0">
           <Button

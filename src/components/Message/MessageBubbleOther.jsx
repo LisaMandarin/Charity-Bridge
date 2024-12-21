@@ -11,7 +11,7 @@ export function MessageBubbleOther({ userOther, message }) {
         <Avatar src={userOther?.prefs?.avatarUrl} className="self-end">
           {userOther?.name[0]}
         </Avatar>
-        <div className="min-w-[60px] max-w-[700px] px-3 py-4 mx-1 my-2 border border-1 border-solid bg-pink-900 text-white rounded-chat-bubble-other">
+        <div className="min-w-[60px] max-w-[700px] px-3 py-4 mx-1 my-2 border border-1 border-solid bg-pink-900 text-white rounded-chat-bubble-other whitespace-pre-wrap">
           {message.messageContent}
         </div>
       </div>
