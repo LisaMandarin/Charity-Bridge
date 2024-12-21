@@ -71,6 +71,40 @@ export function MessageProvider(props) {
     }
   }
 
+  async function listOwnMessages(userId) {
+    setLoading(true);
+
+    try {
+      if (!userId) {
+        throw new Error("User ID is missing or invalid");
+      }
+
+      const result = await charityDatabase.listDocuments(
+        DATABASE_ID,
+        COLLECTION_ID,
+        [
+          Query.or([
+            Query.equal("ownId", [userId]),
+            Query.equal("otherId", [userId]),
+          ]),
+        ],
+      );
+
+      if (!result || result.documents.length === 0) {
+        return [];
+      }
+
+      return result.documents.sort(
+        (a, b) => new Date(b.$createdAt) - new Date(a.$createdAt),
+      );
+    } catch (error) {
+      console.error("Failed to list messages related to you: ", error.message);
+      return [];
+    } finally {
+      setLoading(false);
+    }
+  }
+
   function subscribeToMessages(callback) {
     return client.subscribe(
       `databases.${DATABASE_ID}.collections.${COLLECTION_ID}.documents`,
@@ -85,7 +119,13 @@ export function MessageProvider(props) {
   }
   return (
     <MessageContext.Provider
-      value={{ loading, createMessage, listMessages, subscribeToMessages }}
+      value={{
+        loading,
+        createMessage,
+        listMessages,
+        listOwnMessages,
+        subscribeToMessages,
+      }}
     >
       {props.children}
     </MessageContext.Provider>
