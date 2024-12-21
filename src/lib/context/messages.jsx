@@ -63,7 +63,7 @@ export function MessageProvider(props) {
 
       return result.documents.sort(
         (a, b) => new Date(a.$createdAt) - new Date(b.$createdAt),
-      ); // sort the messages from oldest to the latest
+      ); // sort the messages from the oldest to the latest
     } catch (error) {
       console.error("Failed to list messages: ", error.message);
     } finally {
@@ -82,6 +82,42 @@ export function MessageProvider(props) {
         }
       },
     );
+  }
+
+  async function listOwnMessages(userId) {
+    setLoading(true);
+
+    try {
+      if (!userId) {
+        throw new Error("User ID is missing.");
+      }
+
+      const result = await charityDatabase.listDocuments(
+        DATABASE_ID,
+        COLLECTION_ID,
+        [
+          Query.or([
+            Query.equal("ownId", [userId]),
+            Query.equal("otherId", [userId]),
+          ]),
+        ],
+      );
+
+      if (!result) {
+        throw new Error("No messages found");
+      }
+
+      return result.documents.sort(
+        (a, b) => new Date(b.$createdAt) - new Date(a.$createdAt),
+      ); // sort the messages from the latest to the oldest
+    } catch (error) {
+      console.error(
+        "Failed to list the messages sent to the user: ",
+        error.message,
+      );
+    } finally {
+      setLoading(false);
+    }
   }
   return (
     <MessageContext.Provider
