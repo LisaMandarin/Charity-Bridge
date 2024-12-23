@@ -1,42 +1,26 @@
-import { Segmented } from "antd";
+import { Card } from "antd";
 import { EditOutlined, ReadOutlined } from "@ant-design/icons";
 import { useState } from "react";
-import { MessageList } from "./DashboardMessageList";
-import { MessageNew } from "./DashboardMessageNew";
+
+import { useNavigate } from "react-router-dom";
 
 export function DashboardMessage() {
-  const [selectedOption, setSelectedOption] = useState("Read Messages");
+  let navigate = useNavigate();
 
-  const onChange = (value) => {
-    setSelectedOption(value);
-  };
   return (
-    <>
-      <Segmented
-        options={[
-          {
-            label: (
-              <>
-                <ReadOutlined /> Read Messages
-              </>
-            ),
-            value: "Read Messages",
-          },
-          {
-            label: (
-              <>
-                <EditOutlined /> Create Message
-              </>
-            ),
-            value: "Create Messages",
-          },
-        ]}
-        defaultValue="Read Messages"
-        onChange={onChange}
-        block
-      />
-      {selectedOption === "Read Messages" && <MessageList />}
-      {selectedOption === "Create Messages" && <MessageNew />}
-    </>
+    <div className="flex flex-row gap-4 justify-center">
+      <Card title="Read Messages">
+        <ReadOutlined
+          className="text-3xl flex justify-center hover:text-blue-400 hover:cursor-pointer"
+          onClick={() => navigate("/messagelist")}
+        />
+      </Card>
+      <Card title="Write Messages">
+        <EditOutlined
+          className="text-3xl flex justify-center hover:text-blue-400 hover:cursor-pointer"
+          onClick={() => navigate("/messagenew")}
+        />
+      </Card>
+    </div>
   );
 }
