@@ -89,7 +89,7 @@ export function ProductDetail() {
                   />
                 ))}
             </Carousel>
-            <div className="p-8">
+            <div className="p-8 w-[400px]">
               <Space direction="vertical">
                 <p>
                   <span className="font-extrabold">Quantity: </span>
