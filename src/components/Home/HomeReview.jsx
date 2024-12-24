@@ -83,7 +83,11 @@ export function HomeReview() {
         Words of Thanks
       </Title>
       <Spin spinning={loading}>
-        <Space size="large" direction="vertical" className="text-xs flex-grow">
+        <Space
+          size="large"
+          direction="vertical"
+          className="text-xs flex-grow w-full"
+        >
           {currentItems.map((review, i) => (
             <div key={i}>
               <div>
