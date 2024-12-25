@@ -5,13 +5,13 @@ import { getUser } from "../../lib/serverAppwrite";
 import { useProductInfo } from "../../lib/context/productInfo";
 import { message, Card, Avatar, Rate, Spin } from "antd";
 import { Icon } from "@iconify/react/dist/iconify.js";
-import { StarOutlined } from "@ant-design/icons";
-import { Link } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 import dayjs from "dayjs";
 import { useReviews } from "../../lib/context/reviews";
 import { Query } from "appwrite";
 
 export function ProfileCard({ contributor, isOpen, receiver }) {
+  const location = useLocation();
   const userProfile = useUserProfile();
   const productInfo = useProductInfo();
   const user = useUser();
@@ -287,7 +287,13 @@ export function ProfileCard({ contributor, isOpen, receiver }) {
       <Card
         style={{ maxWidth: "400px" }}
         title={<div className="text-left">{profile.name}</div>}
-        extra={<Link to={`/userProduct/${profile.userId}`}>more posts</Link>}
+        extra={
+          location.pathname.startsWith(
+            `/userProduct/${profile.userId}`,
+          ) ? null : (
+            <Link to={`/userProduct/${profile.userId}`}>more posts</Link>
+          )
+        }
         tabList={[
           { key: "contact", tab: "Contact" },
           { key: "about", tab: `About ${profile.name}` },
