@@ -12,6 +12,7 @@ export function HomeReview() {
   const [combinedData, setCombinedData] = useState([]);
   const [expandedItems, setExpandedItems] = useState({}); // used to toggle review content more/less
   const [loading, setLoading] = useState(true);
+  const [hasMore, setHasMore] = useState(true); // see if there are more reviews items to be fetched
 
   const toggleContent = (i) =>
     setExpandedItems((current) => ({ ...current, [i]: !current[i] }));
@@ -22,60 +23,59 @@ export function HomeReview() {
   const [currentPage, setCurrentPage] = useState(1);
   const [itemsPerPage, setItemsPerPage] = useState(2);
   const startIndex = (currentPage - 1) * itemsPerPage;
+  const endIndex = currentPage * itemsPerPage;
   const currentItems = combinedData.slice(
     startIndex,
     startIndex + itemsPerPage,
   );
 
-  /* ******************************
+  /* ************************************************************
   Fetch reviews data and convert ids to names in initial render
-  ****************************** */
-  useEffect(() => {
-    let isMounted = true;
+  ************************************************************* */
+  async function fetchReviews(offset = 0, limit = 6) {
+    setLoading(true);
+    try {
+      const reviewsResult = await reviews.listReviews(offset, limit); // default offset=0, limit=6
 
-    async function fetchReviews() {
-      setLoading(true);
+      const donors = await Promise.all(
+        reviewsResult.map((r) => getUser(r.donorId)),
+      );
+      const receivers = await Promise.all(
+        reviewsResult.map((r) => getUser(r.receiverId)),
+      );
+      const products = await Promise.all(
+        reviewsResult.map((r) => productInfo.getDocument(r.productId)),
+      );
 
-      try {
-        const reviewsResult = await reviews.listReviews();
+      const data = reviewsResult.map((r, i) => ({
+        ...r,
+        donor: donors[i],
+        receiver: receivers[i],
+        product: products[i],
+      }));
 
-        if (!isMounted) return;
+      setCombinedData((current) => [...current, ...data]);
 
-        const donors = await Promise.all(
-          reviewsResult.map((review) => getUser(review.donorId)),
-        );
-        const receivers = await Promise.all(
-          reviewsResult.map((review) => getUser(review.receiverId)),
-        );
-        const products = await Promise.all(
-          reviewsResult.map((review) =>
-            productInfo.getDocument(review.productId),
-          ),
-        );
-
-        if (isMounted) {
-          const data = reviewsResult.map((review, index) => ({
-            ...review,
-            donor: donors[index],
-            receiver: receivers[index],
-            product: products[index],
-          }));
-
-          setCombinedData(data);
-        }
-      } catch (error) {
-        console.error(error.message);
-      } finally {
-        if (isMounted) setLoading(false);
+      if (reviewsResult.length < limit) {
+        setHasMore(false); // prevent further fetching
       }
+    } catch (error) {
+      console.error(error.message);
+    } finally {
+      setLoading(false);
     }
+  }
 
-    fetchReviews();
-
-    return () => {
-      isMounted = false;
-    };
-  }, []);
+  useEffect(() => {
+    if (combinedData.length === 0) {
+      // fetch the first 6 items on initial render
+      fetchReviews();
+    } else if (endIndex > combinedData.length && !loading) {
+      // only fetch data when needed
+      const offset = combinedData.length; // fetch from the end of current data
+      fetchReviews(offset, itemsPerPage);
+    }
+  }, [currentPage]);
 
   return (
     <div className="flex flex-col justify-between h-full px-4">
@@ -83,7 +83,11 @@ export function HomeReview() {
         Words of Thanks
       </Title>
       <Spin spinning={loading}>
-        <Space size="large" direction="vertical" className="text-xs flex-grow">
+        <Space
+          size="large"
+          direction="vertical"
+          className="text-xs flex-grow w-full"
+        >
           {currentItems.map((review, i) => (
             <div key={i}>
               <div>
@@ -158,6 +162,7 @@ export function HomeReview() {
         pageSize={itemsPerPage}
         current={currentPage}
         onChange={(page) => setCurrentPage(page)}
+        disabled={!hasMore}
         align="center"
         className="mb-4"
       />

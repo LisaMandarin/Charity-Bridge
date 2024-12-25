@@ -1,7 +1,11 @@
 import { Form, Input, Button, Typography, Space } from "antd";
+import { useUser } from "../../lib/context/user";
+import { LeftArrowBar } from "../utils/ArrowBar";
+
 const { Title } = Typography;
 
-export function DashboardPassword({ user }) {
+export function DashboardPassword() {
+  const user = useUser();
   const [form] = Form.useForm();
   const onFinish = async (values) => {
     await user.updatePassword(values.newPassword, values.oldPassword);
@@ -9,7 +13,8 @@ export function DashboardPassword({ user }) {
   };
 
   return (
-    <>
+    <div className="relative flex flex-col w-full">
+      <LeftArrowBar />
       <Space direction="vertical" className="flex items-center">
         <Title className="text-center">Change Password</Title>
         <Form
@@ -91,6 +96,6 @@ export function DashboardPassword({ user }) {
           </Form.Item>
         </Form>
       </Space>
-    </>
+    </div>
   );
 }

@@ -3,7 +3,7 @@ import { Avatar, Button, Carousel, Image, message, Space } from "antd";
 import { Link, useParams } from "react-router-dom";
 import { useProductInfo } from "../../lib/context/productInfo";
 import { getUser } from "../../lib/serverAppwrite";
-
+import { LeftArrowBar } from "../utils/ArrowBar";
 import { Typography } from "antd";
 import dayjs from "dayjs";
 
@@ -69,7 +69,10 @@ export function ProductDetail() {
   return (
     <>
       {product && (
-        <div className={`${product?.closed ? "opacity-25" : ""}`}>
+        <div
+          className={`${product?.closed ? "opacity-25" : ""} relative w-full`}
+        >
+          <LeftArrowBar />
           <Title className="text-center pt-8">{product.product}</Title>
           {product?.closed && <div className="text-center mt-0">(Closed)</div>}
           <div className="flex flex-col sm:flex-row justify-center">
@@ -89,7 +92,7 @@ export function ProductDetail() {
                   />
                 ))}
             </Carousel>
-            <div className="p-8">
+            <div className="p-8 w-[400px]">
               <Space direction="vertical">
                 <p>
                   <span className="font-extrabold">Quantity: </span>

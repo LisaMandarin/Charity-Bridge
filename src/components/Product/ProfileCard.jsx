@@ -285,7 +285,7 @@ export function ProfileCard({ contributor, isOpen, receiver }) {
     profile &&
     isOpen && (
       <Card
-        style={{ width: "400px" }}
+        style={{ maxWidth: "400px" }}
         title={<div className="text-left">{profile.name}</div>}
         extra={<Link to={`/userProduct/${profile.userId}`}>more posts</Link>}
         tabList={[

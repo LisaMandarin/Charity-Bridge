@@ -35,13 +35,22 @@ export function ReviewsProvider(props) {
     }
   }
 
-  async function listReviews() {
+  /* ********************************
+  Get the documents.  
+  Default skipping(offset) is 0.  
+  Only retrieve 6 items at a time.
+  ***************************&&&&&& */
+  async function listReviews(offset = 0, limit = 6) {
     setLoading(true);
     try {
       const result = await charityDatabase.listDocuments(
         DATABASE_ID,
         COLLECTION_ID,
-        [Query.orderDesc("$createdAt")],
+        [
+          Query.orderDesc("$createdAt"),
+          Query.offset(offset),
+          Query.limit(limit),
+        ],
       );
 
       if (!result || result.documents.length === 0) {

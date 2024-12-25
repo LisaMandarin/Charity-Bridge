@@ -2,11 +2,15 @@ import { Avatar, Button, Space, Spin, Upload, message, Typography } from "antd";
 import { UserOutlined, UploadOutlined } from "@ant-design/icons";
 import { useState } from "react";
 import { useAvatarStorage } from "../../lib/context/AvatarStorage";
+import { useUser } from "../../lib/context/user";
+import { LeftArrowBar } from "../utils/ArrowBar";
+
 const { Title } = Typography;
 
-export function DashboardAvatar({ user }) {
+export function DashboardAvatar() {
   const avatarStorage = useAvatarStorage();
   const [fileList, setFileList] = useState([]);
+  const user = useUser();
 
   const customRequest = async (options) => {
     try {
@@ -56,7 +60,8 @@ export function DashboardAvatar({ user }) {
   };
 
   return (
-    <div className="flex justify-center">
+    <div className="relative flex flex-col w-full justify-center">
+      <LeftArrowBar />
       <Space direction="vertical" className="flex items-center">
         <Title>Change Avatar</Title>
         <Spin spinning={avatarStorage.loading}>

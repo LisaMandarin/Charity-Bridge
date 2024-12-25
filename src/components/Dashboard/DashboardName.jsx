@@ -1,8 +1,12 @@
 import { Form, Button, Input, Space, Typography } from "antd";
 import { useEffect } from "react";
+import { useUser } from "../../lib/context/user";
+import { LeftArrowBar } from "../utils/ArrowBar";
+
 const { Title } = Typography;
 
-export function DashboardName({ user }) {
+export function DashboardName() {
+  const user = useUser();
   const [form] = Form.useForm();
   const onFinish = async (values) => {
     await user.updateName(values.name);
@@ -17,7 +21,8 @@ export function DashboardName({ user }) {
   }, [user?.current]);
 
   return (
-    <div>
+    <div className="relative flex flex-col w-full">
+      <LeftArrowBar />
       <Space direction="vertical" className="flex items-center">
         <Title>Change Name</Title>
         <Form
