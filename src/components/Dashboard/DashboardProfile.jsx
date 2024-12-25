@@ -11,10 +11,13 @@ import {
 import dayjs from "dayjs";
 import { useUserProfile } from "../../lib/context/userProfile";
 import { useEffect } from "react";
+import { useUser } from "../../lib/context/user";
+import { LeftArrowBar } from "../utils/ArrowBar";
 
 const { Title } = Typography;
 
-export function DashboardProfile({ user, setDiv }) {
+export function DashboardProfile() {
+  const user = useUser();
   const [form] = Form.useForm();
   const userProfile = useUserProfile();
 
@@ -37,10 +40,8 @@ export function DashboardProfile({ user, setDiv }) {
         const updateResult = await user.updatePrefs({
           profileId: profileResult.$id,
         });
-        if (updateResult) {
-          setDiv(null);
-        } else {
-          throw new Error("Unable to update user preference ID");
+        if (!updateResult) {
+          console.error("Unable to update user preference ID");
         }
       }
     } catch (error) {
@@ -88,57 +89,60 @@ export function DashboardProfile({ user, setDiv }) {
   }, [user?.current?.prefs?.profileId, userProfile]);
 
   return (
-    <div className="flex flex-col items-center md:w-[600px] mx-auto">
-      <Title className="text-center">Manage Profile</Title>
-      <Form
-        name="profile-form"
-        form={form}
-        onFinish={onFinish}
-        onFinishFailed={onFinishFailed}
-        labelCol={{ span: 8 }}
-        wrapperCol={{ span: 16 }}
-        className="w-full md:w-[600px] mx-auto"
-      >
-        <Form.Item label="userId" name="userId" hidden>
-          <Input type="hidden" />
-        </Form.Item>
-        <Form.Item label="name" name="name" hidden>
-          <Input type="hidden" />
-        </Form.Item>
-        <Form.Item label="email" name="email" hidden>
-          <Input type="hidden" />
-        </Form.Item>
-        <Form.Item label="avatar" name="avatar" hidden>
-          <Input type="hidden" />
-        </Form.Item>
-        <Form.Item label="Birthday" name="birthday">
-          <DatePicker maxDate={dayjs()} />
-        </Form.Item>
-        <Form.Item label="Gender" name="gender">
-          <Radio.Group>
-            <Radio value="male">Male</Radio>
-            <Radio value="female">Female</Radio>
-            <Radio value="LGBTQ">LGBTQ</Radio>
-          </Radio.Group>
-        </Form.Item>
-        <Form.Item label="Introduction" name="introduction">
-          <Input.TextArea maxLength={1000} showCount autoSize />
-        </Form.Item>
-        <Form.Item label="phone" name="phone">
-          <Input />
-        </Form.Item>
-        <Form.Item label="address" name="address">
-          <Input />
-        </Form.Item>
-        <Form.Item wrapperCol={{ offset: 8 }}>
-          <Space>
-            <Button type="primary" htmlType="submit">
-              Go Public
-            </Button>
-            <Button onClick={onReset}>Reset</Button>
-          </Space>
-        </Form.Item>
-      </Form>
+    <div className="relative w-full flex flex-col">
+      <LeftArrowBar />
+      <div className="relative flex flex-col items-center md:w-[600px] mx-auto">
+        <Title className="text-center">Manage Profile</Title>
+        <Form
+          name="profile-form"
+          form={form}
+          onFinish={onFinish}
+          onFinishFailed={onFinishFailed}
+          labelCol={{ span: 8 }}
+          wrapperCol={{ span: 16 }}
+          className="w-full md:w-[600px] mx-auto"
+        >
+          <Form.Item label="userId" name="userId" hidden>
+            <Input type="hidden" />
+          </Form.Item>
+          <Form.Item label="name" name="name" hidden>
+            <Input type="hidden" />
+          </Form.Item>
+          <Form.Item label="email" name="email" hidden>
+            <Input type="hidden" />
+          </Form.Item>
+          <Form.Item label="avatar" name="avatar" hidden>
+            <Input type="hidden" />
+          </Form.Item>
+          <Form.Item label="Birthday" name="birthday">
+            <DatePicker maxDate={dayjs()} />
+          </Form.Item>
+          <Form.Item label="Gender" name="gender">
+            <Radio.Group>
+              <Radio value="male">Male</Radio>
+              <Radio value="female">Female</Radio>
+              <Radio value="LGBTQ">LGBTQ</Radio>
+            </Radio.Group>
+          </Form.Item>
+          <Form.Item label="Introduction" name="introduction">
+            <Input.TextArea maxLength={1000} showCount autoSize />
+          </Form.Item>
+          <Form.Item label="phone" name="phone">
+            <Input />
+          </Form.Item>
+          <Form.Item label="address" name="address">
+            <Input />
+          </Form.Item>
+          <Form.Item wrapperCol={{ offset: 8 }}>
+            <Space>
+              <Button type="primary" htmlType="submit">
+                Go Public
+              </Button>
+              <Button onClick={onReset}>Reset</Button>
+            </Space>
+          </Form.Item>
+        </Form>
+      </div>
     </div>
   );
 }

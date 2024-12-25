@@ -6,6 +6,13 @@ import { SessionFailure } from "./components/Auth/SessionFailure";
 import { OAuthFailure } from "./components/Auth/OAuthFailure";
 import { FBdelete } from "./components/Auth/FBdelete";
 import { Dashboard } from "./components/Dashboard/Dashboard";
+import { DashboardAvatar } from "./components/Dashboard/DashboardAvatar";
+import { DashboardName } from "./components/Dashboard/DashboardName";
+import { DashboardPassword } from "./components/Dashboard/DashboardPassword";
+import { DashboardProfile } from "./components/Dashboard/DashboardProfile";
+import { DashboardPost } from "./components/Dashboard/DashboardPost";
+import { DashboardReview } from "./components/Dashboard/DashboardReview";
+import { DashboardMessage } from "./components/Dashboard/DashboardMessage";
 import { ProductDetail } from "./components/Product/ProductDetail";
 import { Verification } from "./components/Auth/Verification";
 import { PasswordRecovery } from "./components/Auth/PasswordRecovery";
@@ -41,6 +48,19 @@ function App() {
             {/* Protected Routes */}
             <Route element={<ProtectedRoute />}>
               <Route path="/dashboard" element={<Dashboard />} />
+              <Route path="/dashboard-avatar" element={<DashboardAvatar />} />
+              <Route path="/dashboard-name" element={<DashboardName />} />
+              <Route
+                path="/dashboard-password"
+                element={<DashboardPassword />}
+              />
+              <Route path="/dashboard-profile" element={<DashboardProfile />} />
+              <Route path="/dashboard-posts" element={<DashboardPost />} />
+              <Route path="/dashboard-reviews" element={<DashboardReview />} />
+              <Route
+                path="/dashboard-messages"
+                element={<DashboardMessage />}
+              />
               <Route path="/verification" element={<Verification />} />
               <Route path="/oauthSuccess" element={<OauthSuccess />} />
               <Route
