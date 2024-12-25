@@ -5,7 +5,7 @@ import { useMessage } from "../../lib/context/messages";
 import { getUser } from "../../lib/serverAppwrite";
 import { formatTime } from "../utils/timeHandling";
 import { useNavigate } from "react-router-dom";
-import { ArrowLeftOutlined } from "@ant-design/icons";
+import { LeftArrowBar } from "../utils/ArrowBar";
 
 export function MessageList() {
   const user = useUser();
@@ -73,13 +73,8 @@ export function MessageList() {
   }, [ownMessages, user?.current?.$id]);
 
   return (
-    <div className="relative h-[calc(100vh-6rem-3.5rem)] overflow-auto">
-      <div className="sticky top-0 z-10 shadow-md bg-white opacity-95">
-        <ArrowLeftOutlined
-          className="text-xl p-4"
-          onClick={() => navigate(-1)}
-        />
-      </div>
+    <div className="relative h-[calc(100vh-6rem-3.5rem)] w-4/5 md:w-[600px] lg:w-[1000px] overflow-auto">
+      <LeftArrowBar />
       <Spin spinning={loading}>
         {groupedMessages.length > 0 && user?.current?.$id ? (
           groupedMessages.map((msg, i) => {
