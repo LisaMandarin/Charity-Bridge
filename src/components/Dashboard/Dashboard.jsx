@@ -7,8 +7,8 @@ import { DashboardPost } from "./DashboardPost";
 import { DashboardProfile } from "./DashboardProfile";
 import { DashboardReview } from "./DashboardReview";
 import { DashboardMessage } from "./DashboardMessage";
-import { Space, Collapse, Tabs } from "antd";
-const { TabPane } = Tabs;
+import { Space, Divider, Typography } from "antd";
+import { Link } from "react-router-dom";
 
 export function Dashboard() {
   const user = useUser();
@@ -54,24 +54,36 @@ export function Dashboard() {
   ];
 
   return (
-    <Space direction="vertical" className="w-full p-4 bg-white">
+    <Space
+      direction="vertical"
+      className="w-full p-4 flex flex-col items-center"
+    >
       <DashboardEmail user={user} />
-      <Tabs defaultActiveKey="1" className="md:w-[700px] mx-auto">
-        <TabPane tab={<span className="text-lg">Profile</span>} key="1">
-          <Collapse
-            items={profileItems}
-            accordion={true}
-            className="md:w-[700px] mx-auto"
-          />
-        </TabPane>
-        <TabPane tab={<span className="text-lg">Content</span>} key="2">
-          <Collapse
-            items={contentItems}
-            accordion={true}
-            className="md:w-[700px] mx-auto"
-          />
-        </TabPane>
-      </Tabs>
+      <Space direction="vertical" className="w-[600px]">
+        <Divider orientation="left" orientationMargin="0">
+          <Typography.Title level={3}>Profile</Typography.Title>
+        </Divider>
+        <div className="pl-8">
+          <Link to="/">Change Avatar</Link>
+          <Divider type="vertical" className=" border-gray-500" />
+          <Link to="/">Change Name</Link>
+          <Divider type="vertical" className="border-gray-500" />
+          <Link to="/">Change Password</Link>
+          <Divider type="vertical" className="border-gray-500" />
+          <Link to="/">Edit Profile</Link>
+        </div>
+
+        <Divider orientation="left" orientationMargin="0">
+          <Typography.Title level={3}>Content</Typography.Title>
+        </Divider>
+        <div className="pl-8">
+          <Link to="/">Manage Posts</Link>
+          <Divider type="vertical" className="border-gray-500" />
+          <Link to="/">Manage Reviews</Link>
+          <Divider type="vertical" className="border-gray-500" />
+          <Link to="/">Manage Messages</Link>
+        </div>
+      </Space>
     </Space>
   );
 }
