@@ -2,7 +2,6 @@ import { HeaderNavH } from "./HeaderNavH";
 import { HeaderNavV } from "./HeaderNavV";
 import { HeaderUser } from "./HeaderUser";
 import smallLogo from "../../assets/images/small-logo.webp";
-import { Col, Row, Space } from "antd";
 import { categoryItems } from "./HeaderCategory";
 import { Link } from "react-router-dom";
 
@@ -21,10 +20,10 @@ export function Header() {
 
   return (
     <div className="flex justify-around">
-      {headerLogo}
       <div className="block md:hidden">
         <HeaderNavV items={categoryItems} />
       </div>
+      {headerLogo}
       <div className="hidden md:flex items-center">
         <HeaderNavH items={categoryItems} />
       </div>
