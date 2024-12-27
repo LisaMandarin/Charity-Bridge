@@ -1,5 +1,7 @@
 # Charity Bridge
 
+![Site Preview](public/site-preview.png)
+
 **Deployed Site**: [Charity Bridge](https://main--charitybridge.netlify.app/)
 
 **Backend Platform**: Appwrite
