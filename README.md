@@ -12,7 +12,7 @@
 
 ## Project Overview
 
-**Charity Bridge** is a platform that enables users to post donation items, browse others' contributions, and communicate with one another via an internal messaging system. The platform emphasizees seamless user experience, responsive design, and efficient data management.
+**Charity Bridge** is a platform that enables users to post donation items, browse others' contributions, and communicate with one another via an internal messaging system. The platform emphasizes seamless user experience, responsive design, and efficient data management.
 
 ## Project Goals
 
