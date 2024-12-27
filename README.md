@@ -1,6 +1,6 @@
 # Charity Bridge
 
-**Deployed Site**: [Charity Bridge](https://main--charitybridge.netlify.app/)
+**Deployed Site**: [Charity Bridge](https://main--charitybridge.netlify.app/
 **Backend Platform**: Appwrite
 **Frontend Framework**: React.js
 **UI Libraries**: Tailwind CSS, Ant Design
