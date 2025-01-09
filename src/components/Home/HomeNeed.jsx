@@ -1,5 +1,4 @@
-import { Avatar, Carousel, Modal, Space, Spin, Typography } from "antd";
-import { UserOutlined } from "@ant-design/icons";
+import { Avatar, Carousel, Modal, Spin, Typography } from "antd";
 import { Icon } from "@iconify/react/dist/iconify.js";
 import { useEffect, useState } from "react";
 import { useNeeds } from "../../lib/context/needs";
