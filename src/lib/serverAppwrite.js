@@ -1,24 +1,23 @@
-import { Client, Users } from "node-appwrite";
+import axios from "axios";
 
-const endpoint = import.meta.env.VITE_APPWRITE_ENDPOINT;
-const projectId = import.meta.env.VITE_APPWRITE_PROJECT;
-const apiKey = import.meta.env.VITE_APPWRITE_API_KEY;
-
-const client = new Client()
-  .setEndpoint(endpoint)
-  .setProject(projectId)
-  .setKey(apiKey);
-
-const users = new Users(client);
+const baseURL =
+  window.location.hostname === "localhost"
+    ? "http://localhost:3000"
+    : "https://cb-server-9jxe.onrender.com";
 
 export async function getUser(userId) {
   try {
-    const result = await users.get(userId);
+    if (!userId) {
+      throw new Error("Invalid userId");
+    }
+
+    const result = await axios.get(`${baseURL}/users/${userId}`);
+    console.log("result", result);
 
     if (!result) {
       throw new Error("No result found during getUser");
     }
-    return result;
+    return result.data.message;
   } catch (error) {
     console.error("Failed to get user: ", error.message);
     return null;
