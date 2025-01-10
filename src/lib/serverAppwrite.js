@@ -12,7 +12,6 @@ export async function getUser(userId) {
     }
 
     const result = await axios.get(`${baseURL}/users/${userId}`);
-    console.log("result", result);
 
     if (!result) {
       throw new Error("No result found during getUser");

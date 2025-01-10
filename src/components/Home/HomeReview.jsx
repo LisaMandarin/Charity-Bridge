@@ -77,6 +77,8 @@ export function HomeReview() {
     }
   }, [currentPage]);
 
+  useEffect(() => console.log("hasMore: ", hasMore), [hasMore]);
+
   return (
     <div className="flex flex-col justify-between h-full px-4">
       <Title level={2} className="text-center pt-4">
@@ -158,11 +160,12 @@ export function HomeReview() {
       <Pagination
         simple={{ readOnly: true }}
         defaultCurrent={1}
-        total={combinedData.length}
+        total={
+          hasMore ? combinedData.length + itemsPerPage : combinedData.length
+        }
         pageSize={itemsPerPage}
         current={currentPage}
         onChange={(page) => setCurrentPage(page)}
-        disabled={!hasMore}
         align="center"
         className="mb-4"
       />
