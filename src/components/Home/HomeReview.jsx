@@ -32,10 +32,10 @@ export function HomeReview() {
   /* ************************************************************
   Fetch reviews data and convert ids to names in initial render
   ************************************************************* */
-  async function fetchReviews(offset = 0, limit = 6) {
+  async function fetchReviews(offset = 0, limit = 2) {
     setLoading(true);
     try {
-      const reviewsResult = await reviews.listReviews(offset, limit); // default offset=0, limit=6
+      const reviewsResult = await reviews.listReviews(offset, limit);
 
       const donors = await Promise.all(
         reviewsResult.map((r) => getUser(r.donorId)),
@@ -68,7 +68,6 @@ export function HomeReview() {
 
   useEffect(() => {
     if (combinedData.length === 0) {
-      // fetch the first 6 items on initial render
       fetchReviews();
     } else if (endIndex > combinedData.length && !loading) {
       // only fetch data when needed
@@ -76,8 +75,6 @@ export function HomeReview() {
       fetchReviews(offset, itemsPerPage);
     }
   }, [currentPage]);
-
-  useEffect(() => console.log("hasMore: ", hasMore), [hasMore]);
 
   return (
     <div className="flex flex-col justify-between h-full px-4">
