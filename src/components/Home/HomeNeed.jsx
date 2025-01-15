@@ -2,12 +2,11 @@ import { Avatar, Carousel, Modal, Spin, Typography } from "antd";
 import { Icon } from "@iconify/react/dist/iconify.js";
 import { useEffect, useState } from "react";
 import { useNeeds } from "../../lib/context/needs";
-import { getUser } from "../../lib/serverAppwrite";
 import { useUser } from "../../lib/context/user";
 import { useNavigate } from "react-router-dom";
 
 const { Title } = Typography;
-export function HomeNeed() {
+export function HomeNeed({ allUsers }) {
   const needs = useNeeds();
   const user = useUser();
   const [combinedData, setCombinedData] = useState([]); // needs collection + helpSeeker info
@@ -43,17 +42,30 @@ export function HomeNeed() {
 
     async function fetchNeeds() {
       try {
+        if (!allUsers || allUsers.length === 0) return; // Wait for allUser to load
+
         const result = await needs.listNeeds();
 
         if (!result) return;
 
-        const helpSeekers = await Promise.all(
-          result.map((r) => getUser(r.requestBy)),
-        );
-        if (helpSeekers.length > 0) {
-          const data = result.map((r, index) => ({
+        /* ****************************************************************** 
+        To list the information of help seekers, get the non-repeated user list first.
+        Then get all the users from the collection and filter the necessary users.
+        ****************************************************************** */
+        const userList = new Set();
+        result.map((r) => userList.add(r.requestBy));
+
+        // const allUsers = await getAllUsers()
+
+        const filteredUsers = allUsers.filter((user) => userList.has(user.$id));
+
+        const userMap = new Map();
+        filteredUsers.map((user) => userMap.set(user.$id, user)); // convert to user object
+
+        if (result.length > 0) {
+          const data = result.map((r) => ({
             ...r,
-            helpSeeker: helpSeekers[index],
+            helpSeeker: userMap.get(r.requestBy),
           }));
 
           setCombinedData(data);
@@ -65,7 +77,7 @@ export function HomeNeed() {
       }
     }
     fetchNeeds();
-  }, []);
+  }, [allUsers]);
 
   useEffect(() => {
     if (user?.current) {

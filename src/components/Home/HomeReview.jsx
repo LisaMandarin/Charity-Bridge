@@ -6,7 +6,7 @@ import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 const { Title } = Typography;
 
-export function HomeReview() {
+export function HomeReview({ allUsers }) {
   const reviews = useReviews();
   const productInfo = useProductInfo();
   const [combinedData, setCombinedData] = useState([]);
@@ -29,44 +29,48 @@ export function HomeReview() {
     startIndex + itemsPerPage,
   );
 
-  /* ************************************************************
+  useEffect(() => {
+    if (!allUsers || allUsers.length === 0) return; // wait for allUser to load
+
+    /* ************************************************************
   Fetch reviews data and convert ids to names in initial render
   ************************************************************* */
-  async function fetchReviews(offset = 0, limit = 2) {
-    setLoading(true);
-    try {
-      const reviewsResult = await reviews.listReviews(offset, limit);
+    async function fetchReviews(offset = 0, limit = 2) {
+      setLoading(true);
+      try {
+        const reviewsResult = await reviews.listReviews(offset, limit);
 
-      const donors = await Promise.all(
-        reviewsResult.map((r) => getUser(r.donorId)),
-      );
-      const receivers = await Promise.all(
-        reviewsResult.map((r) => getUser(r.receiverId)),
-      );
-      const products = await Promise.all(
-        reviewsResult.map((r) => productInfo.getDocument(r.productId)),
-      );
+        const userList = new Set();
+        reviewsResult.map((r) => userList.add(r.donorId));
+        reviewsResult.map((r) => userList.add(r.receiverId));
+        const filteredUsers = allUsers.filter((user) => userList.has(user.$id));
 
-      const data = reviewsResult.map((r, i) => ({
-        ...r,
-        donor: donors[i],
-        receiver: receivers[i],
-        product: products[i],
-      }));
+        const userMap = new Map();
+        filteredUsers.map((user) => userMap.set(user.$id, user)); // convert to user object
 
-      setCombinedData((current) => [...current, ...data]);
+        const products = await Promise.all(
+          reviewsResult.map((r) => productInfo.getDocument(r.productId)),
+        );
 
-      if (reviewsResult.length < limit) {
-        setHasMore(false); // prevent further fetching
+        const data = reviewsResult.map((r, i) => ({
+          ...r,
+          donor: userMap.get(r.donorID),
+          receiver: userMap.get(r.receiverId),
+          product: products[i],
+        }));
+
+        setCombinedData((current) => [...current, ...data]);
+
+        if (reviewsResult.length < limit) {
+          setHasMore(false); // prevent further fetching
+        }
+      } catch (error) {
+        console.error(error.message);
+      } finally {
+        setLoading(false);
       }
-    } catch (error) {
-      console.error(error.message);
-    } finally {
-      setLoading(false);
     }
-  }
 
-  useEffect(() => {
     if (combinedData.length === 0) {
       fetchReviews();
     } else if (endIndex > combinedData.length && !loading) {
@@ -74,7 +78,7 @@ export function HomeReview() {
       const offset = combinedData.length; // fetch from the end of current data
       fetchReviews(offset, itemsPerPage);
     }
-  }, [currentPage]);
+  }, [currentPage, allUsers]);
 
   return (
     <div className="flex flex-col justify-between h-full px-4">
