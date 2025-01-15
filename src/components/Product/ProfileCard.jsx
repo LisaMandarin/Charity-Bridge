@@ -38,10 +38,14 @@ export function ProfileCard({ contributor, isOpen, receiver }) {
   };
 
   useEffect(() => {
+    let isMounted = true;
+
     async function fetchProfile() {
       try {
         if (contributor?.profileId) {
           const result = await userProfile.getProfile(contributor.profileId);
+          if (!isMounted) return;
+
           setProfile(result);
         }
       } catch (error) {
@@ -49,14 +53,6 @@ export function ProfileCard({ contributor, isOpen, receiver }) {
         message.error("Failed to fetch the user's profile: ");
       }
     }
-    fetchProfile();
-  }, [contributor?.profileId]);
-
-  /* ****************************
-  Handle Reviews in profile card
-  **************************** */
-  useEffect(() => {
-    let isMounted = true;
 
     async function fetchReviews() {
       if (!contributor?.id) {
@@ -75,13 +71,12 @@ export function ProfileCard({ contributor, isOpen, receiver }) {
           const receivers = await Promise.all(
             reviewResult.map((review) => getUser(review.receiverId)),
           );
-          console.log("receivers: ", receivers);
+
           const products = await Promise.all(
             reviewResult.map((review) =>
               productInfo.getDocument(review.productId),
             ),
           );
-          console.log("products: ", products);
 
           if (isMounted && receivers.length > 0 && products.length > 0) {
             const data = reviewResult.map((review, index) => ({
@@ -101,12 +96,14 @@ export function ProfileCard({ contributor, isOpen, receiver }) {
       }
     }
 
+    fetchProfile();
+
     fetchReviews();
 
     return () => {
       isMounted = false;
     };
-  }, [contributor?.id]);
+  }, [contributor?.id, contributor?.profileId]);
 
   useEffect(() => {
     if (user?.current) {

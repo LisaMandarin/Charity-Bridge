@@ -82,7 +82,7 @@ export function ReviewsProvider(props) {
       );
 
       if (!result || result.documents.length === 0) {
-        throw new Error("Reviews by query not found");
+        return null;
       }
 
       return result.documents;
