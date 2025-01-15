@@ -2,8 +2,6 @@ import { Flex, Button, Avatar, Tooltip, Badge } from "antd";
 import { useUser } from "../../lib/context/user";
 import { UserOutlined, WarningFilled } from "@ant-design/icons";
 import { Link } from "react-router-dom";
-import Icon from "@ant-design/icons";
-// import { Icon } from "@iconify/react/dist/iconify.js";
 import { useEffect, useState } from "react";
 
 export function HeaderUser() {

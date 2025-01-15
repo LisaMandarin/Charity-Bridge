@@ -1,5 +1,4 @@
 import { useReviews } from "../../lib/context/reviews";
-import { getUser } from "../../lib/serverAppwrite";
 import { useProductInfo } from "../../lib/context/productInfo";
 import { Avatar, Pagination, Rate, Space, Spin, Typography } from "antd";
 import { useEffect, useState } from "react";
@@ -21,7 +20,7 @@ export function HomeReview({ allUsers }) {
      Handle items per page
   ************************ */
   const [currentPage, setCurrentPage] = useState(1);
-  const [itemsPerPage, setItemsPerPage] = useState(2);
+  const itemsPerPage = 2;
   const startIndex = (currentPage - 1) * itemsPerPage;
   const endIndex = currentPage * itemsPerPage;
   const currentItems = combinedData.slice(

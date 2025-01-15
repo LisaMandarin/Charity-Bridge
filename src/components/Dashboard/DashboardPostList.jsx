@@ -5,7 +5,6 @@ import { DashboardPostEdit } from "./DashboardPostEdit";
 import { Query } from "appwrite";
 import dayjs from "dayjs";
 import { Button, message, Modal, Space, Spin, Table, Typography } from "antd";
-import { Link } from "react-router-dom";
 import { useForm } from "antd/es/form/Form";
 const { Title } = Typography;
 

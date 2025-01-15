@@ -1,5 +1,5 @@
 import "animate.css";
-import { Drawer, Space, Typography } from "antd";
+import { Space, Typography } from "antd";
 const { Title } = Typography;
 import { UpOutlined } from "@ant-design/icons";
 import { useEffect, useState } from "react";
@@ -24,7 +24,7 @@ export function HomeHero() {
     <div
       className={`absolute top-0 left-0 z-50 w-full bg-pink-200 flex flex-col justify-center text-center font-sans shadow-lg transition-all ${isShown ? "h-[350px]" : "h-0 overflow-hidden"}`}
     >
-      <Space direction="vertical" flex-grow>
+      <Space direction="vertical" className="flex-grow">
         <Title
           className="animate__animated animate__rubberBand"
           style={{ fontFamily: "Merriweather", fontWeight: "1000" }}

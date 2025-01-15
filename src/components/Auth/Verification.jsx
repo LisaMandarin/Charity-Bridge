@@ -26,7 +26,7 @@ export function Verification() {
     }
     const verifyEmail = async () => {
       try {
-        const result = await account.updateVerification(userId, secret);
+        await account.updateVerification(userId, secret);
         setSuccess("Email verification done");
       } catch (err) {
         console.error("Failed to verify email: ", err.message);

@@ -1,4 +1,4 @@
-import { Avatar, Spin } from "antd";
+import { Spin } from "antd";
 import { useEffect, useState } from "react";
 import { useMessage } from "../../lib/context/messages";
 import { getUser } from "../../lib/serverAppwrite";

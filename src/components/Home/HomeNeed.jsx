@@ -55,8 +55,6 @@ export function HomeNeed({ allUsers }) {
         const userList = new Set();
         result.map((r) => userList.add(r.requestBy));
 
-        // const allUsers = await getAllUsers()
-
         const filteredUsers = allUsers.filter((user) => userList.has(user.$id));
 
         const userMap = new Map();
