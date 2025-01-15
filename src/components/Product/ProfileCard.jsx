@@ -17,8 +17,7 @@ export function ProfileCard({ contributor, isOpen, receiver }) {
   const user = useUser();
   const reviews = useReviews();
   const [profile, setProfile] = useState();
-  const [combinedData, setCombinedData] = useState([]); // combine review collection with donor name, receiver name, and product name
-  const [contentList, setContentList] = useState({}); // profile card content
+  const [combinedData, setCombinedData] = useState([]); // combine review collection with receiver name, and product name
   const [activeTabKey, setActiveTabKey] = useState("contact"); // profile card tabs
   const [sender, setSender] = useState(); // person who sends the message
   const [reviewLoading, setReviewLoading] = useState(true);
@@ -73,27 +72,20 @@ export function ProfileCard({ contributor, isOpen, receiver }) {
         if (!isMounted) return;
 
         if (reviewResult) {
-          const donors = await Promise.all(
-            reviewResult.map((review) => getUser(review.donorId)),
-          );
           const receivers = await Promise.all(
             reviewResult.map((review) => getUser(review.receiverId)),
           );
+          console.log("receivers: ", receivers);
           const products = await Promise.all(
             reviewResult.map((review) =>
               productInfo.getDocument(review.productId),
             ),
           );
+          console.log("products: ", products);
 
-          if (
-            isMounted &&
-            donors.length > 0 &&
-            receivers.length > 0 &&
-            products.length > 0
-          ) {
+          if (isMounted && receivers.length > 0 && products.length > 0) {
             const data = reviewResult.map((review, index) => ({
               ...review,
-              donor: donors[index],
               receiver: receivers[index],
               product: products[index],
             }));
@@ -122,13 +114,28 @@ export function ProfileCard({ contributor, isOpen, receiver }) {
     }
   }, [user?.current]);
 
-  /* *************************
-  Handle profile card content
-  **************************** */
-  useEffect(() => {
-    if (profile) {
-      setContentList({
-        contact: (
+  return (
+    profile &&
+    isOpen && (
+      <Card
+        style={{ maxWidth: "400px" }}
+        title={<div className="text-left">{profile.name}</div>}
+        extra={
+          location.pathname.startsWith(
+            `/userProduct/${profile.userId}`,
+          ) ? null : (
+            <Link to={`/userProduct/${profile.userId}`}>more posts</Link>
+          )
+        }
+        tabList={[
+          { key: "contact", tab: "Contact" },
+          { key: "about", tab: `About ${profile.name}` },
+          { key: "reviews", tab: "Reviews" },
+        ]}
+        activeTabKey={activeTabKey}
+        onTabChange={onTabChange}
+      >
+        {profile && activeTabKey === "contact" && (
           <ul className="max-w-[360px] max-h-[250px] leading-8 flex flex-col items-start">
             <li>
               <Icon
@@ -169,8 +176,8 @@ export function ProfileCard({ contributor, isOpen, receiver }) {
               )}
             </li>
           </ul>
-        ),
-        about: (
+        )}
+        {profile && activeTabKey === "about" && (
           <div
             className={`max-w-[360px] ${areExpandedTabs.about ? "max-h-full" : "max-h-[250px]"}  leading-8 flex flex-col items-start`}
           >
@@ -224,8 +231,8 @@ export function ProfileCard({ contributor, isOpen, receiver }) {
               {areExpandedTabs.about ? "Less" : "More"}
             </button>
           </div>
-        ),
-        reviews: (
+        )}
+        {profile && activeTabKey === "reviews" && (
           <div>
             <div
               className={`max-w-[360px] ${areExpandedTabs.reviews ? "max-h-full" : "max-h-[200px]"} overflow-hidden`}
@@ -276,33 +283,7 @@ export function ProfileCard({ contributor, isOpen, receiver }) {
               {areExpandedTabs.reviews ? "Less" : "More"}
             </button>
           </div>
-        ),
-      });
-    }
-  }, [profile, combinedData, receiver, sender, reviewLoading, areExpandedTabs]);
-
-  return (
-    profile &&
-    isOpen && (
-      <Card
-        style={{ maxWidth: "400px" }}
-        title={<div className="text-left">{profile.name}</div>}
-        extra={
-          location.pathname.startsWith(
-            `/userProduct/${profile.userId}`,
-          ) ? null : (
-            <Link to={`/userProduct/${profile.userId}`}>more posts</Link>
-          )
-        }
-        tabList={[
-          { key: "contact", tab: "Contact" },
-          { key: "about", tab: `About ${profile.name}` },
-          { key: "reviews", tab: "Reviews" },
-        ]}
-        activeTabKey={activeTabKey}
-        onTabChange={onTabChange}
-      >
-        {contentList[activeTabKey]}
+        )}
       </Card>
     )
   );
