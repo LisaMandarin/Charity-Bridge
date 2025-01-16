@@ -42,25 +42,29 @@ export function DashboardReviewList() {
       title: "Action",
       dataIndex: "action",
       key: "action",
-      render: (_, { record }) => {
+      render: (_, record) => {
         const items = [
           {
             key: "1",
-            label: <a href="/">Add</a>,
+            label: <a href="/dashboard-reviews-add">Add</a>,
+            disabled: record.productReview !== null,
           },
           {
             key: "2",
-            label: <a href="/">Edit</a>,
+            label: <a href="">Edit</a>,
+            disabled: record.productReview === null,
           },
           {
             key: "3",
-            label: <a href="/">Delete</a>,
+            label: <a href="">Delete</a>,
           },
           {
             key: "4",
-            label: <a href="/">View</a>,
+            label: <a href="">View</a>,
           },
         ];
+
+        console.log("items: ", items);
         return (
           <Dropdown menu={{ items }}>
             <Button>

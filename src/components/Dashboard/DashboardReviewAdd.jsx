@@ -2,7 +2,7 @@ import { Form, Input } from "antd";
 import { useForm } from "antd/es/form/Form";
 import { LeftArrowBar } from "../utils/ArrowBar";
 
-export function DashboardReview() {
+export function DashboardReviewAdd() {
   const [form] = useForm();
   const onFinish = (values) => {
     console.log("onFinish: ", values);

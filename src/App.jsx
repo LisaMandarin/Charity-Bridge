@@ -12,6 +12,7 @@ import { DashboardPassword } from "./components/Dashboard/DashboardPassword";
 import { DashboardProfile } from "./components/Dashboard/DashboardProfile";
 import { DashboardPost } from "./components/Dashboard/DashboardPost";
 import { DashboardReview } from "./components/Dashboard/DashboardReview";
+import { DashboardReviewAdd } from "./components/Dashboard/DashboardReviewAdd";
 import { DashboardMessage } from "./components/Dashboard/DashboardMessage";
 import { ProductDetail } from "./components/Product/ProductDetail";
 import { Verification } from "./components/Auth/Verification";
@@ -57,6 +58,10 @@ function App() {
               <Route path="/dashboard-profile" element={<DashboardProfile />} />
               <Route path="/dashboard-posts" element={<DashboardPost />} />
               <Route path="/dashboard-reviews" element={<DashboardReview />} />
+              <Route
+                path="/dashboard-reviews-add"
+                element={<DashboardReviewAdd />}
+              />
               <Route
                 path="/dashboard-messages"
                 element={<DashboardMessage />}
