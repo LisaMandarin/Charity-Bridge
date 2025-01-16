@@ -57,7 +57,12 @@ export function AvatarStorageProvider(props) {
 
   async function getPreviewURL(id) {
     try {
-      const response = avatarStorage.getFilePreview(BUCKET_AVATAR_ID, id);
+      const response = avatarStorage.getFilePreview(
+        BUCKET_AVATAR_ID,
+        id,
+        60,
+        60,
+      );
       return response.href;
     } catch (err) {
       console.error("Failed to getPreview: ", err.message);

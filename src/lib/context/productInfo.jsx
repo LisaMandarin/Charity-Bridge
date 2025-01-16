@@ -132,7 +132,7 @@ export function ProductInfoProvider(props) {
         "Failed to list product information by query: ",
         err.message,
       );
-      // message.error("Failed to list product information by query");
+
       return null;
     } finally {
       setLoading(false);
