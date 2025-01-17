@@ -101,13 +101,20 @@ export function DashboardReviewList() {
 
   const saveReview = async (key, value) => {
     try {
+      const donation = donations.find((item) => (item.$id = key));
       const target = dataSource.find((item) => item.key === key);
 
       if (!target) {
         throw new Error("target not found for provided key");
       }
-      if (!target.reviewId) {
-        await review.createReview(value);
+      if (!target.reviewId && donation?.$id && user?.current?.$id) {
+        await review.createReview({
+          donorId: donation?.$id,
+          receiverId: user?.current?.$id,
+          productId: key,
+          stars: "",
+          reviewContent: value,
+        });
       } else {
         await review.updateReview(target.reviewId, { reviewContent: value });
 
