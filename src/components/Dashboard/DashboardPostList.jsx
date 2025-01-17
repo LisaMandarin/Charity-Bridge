@@ -4,8 +4,18 @@ import { useProductStorage } from "../../lib/context/productStorage";
 import { DashboardPostEdit } from "./DashboardPostEdit";
 import { Query } from "appwrite";
 import dayjs from "dayjs";
-import { Button, message, Modal, Space, Spin, Table, Typography } from "antd";
+import {
+  Button,
+  Dropdown,
+  message,
+  Modal,
+  Space,
+  Spin,
+  Table,
+  Typography,
+} from "antd";
 import { useForm } from "antd/es/form/Form";
+import { DownOutlined } from "@ant-design/icons";
 const { Title } = Typography;
 
 export function DashboardPostList({ user }) {
@@ -26,23 +36,55 @@ export function DashboardPostList({ user }) {
       title: "Product",
       dataIndex: "product",
       key: "product",
-    },
-    {
-      title: "Time",
-      dataIndex: "time",
-      key: "time",
+      render: (_, record) => (
+        <div className="flex flex-row">
+          <div>
+            <img
+              src={record.photoURL[0]}
+              alt={record.product}
+              className="w-12 h-auto"
+            />
+          </div>
+          <div className="flex flex-col justify-center ml-2">
+            <div>{record.product}</div>
+            <div className="text-gray-400 text-xs">{record.time}</div>
+          </div>
+        </div>
+      ),
     },
     {
       title: "Action",
       dataIndex: "action",
       key: "action",
-      render: (_, record) => (
-        <Space direction="horizontal" size="middle">
-          <Button onClick={() => editPost(record)}>Edit</Button>
-          <Button onClick={() => deletePost(record)}>Delete</Button>
-          <Button onClick={() => viewPost(record)}>View</Button>
-        </Space>
-      ),
+      render: (_, record) => {
+        const items = [
+          {
+            key: "1",
+            label: "Edit",
+            onClick: () => editPost(record),
+          },
+          {
+            key: "2",
+            label: "Delete",
+            onClick: () => deletePost(record),
+          },
+          {
+            key: "3",
+            label: "View",
+            onClick: () => viewPost(record),
+          },
+        ];
+        return (
+          <Dropdown menu={{ items }}>
+            <Button>
+              <Space>
+                Manage post
+                <DownOutlined />
+              </Space>
+            </Button>
+          </Dropdown>
+        );
+      },
     },
   ];
 
@@ -173,7 +215,6 @@ export function DashboardPostList({ user }) {
       setDataSource(data);
     }
   }, [posts]);
-  /* *********** end of Modal *********** */
 
   return (
     <>

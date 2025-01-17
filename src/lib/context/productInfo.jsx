@@ -49,7 +49,7 @@ export function ProductInfoProvider(props) {
       return result.documents;
     } catch (err) {
       console.error("Failed to list product information: ", err.message);
-      // message.error("Failed to list product information");
+
       return null;
     } finally {
       setLoading(false);
@@ -152,7 +152,6 @@ export function ProductInfoProvider(props) {
       if (!result) {
         throw new Error("No documents updated");
       }
-      message.success("Product information updated successfully");
       return result;
     } catch (error) {
       console.error("Failed to update product information", error.message);

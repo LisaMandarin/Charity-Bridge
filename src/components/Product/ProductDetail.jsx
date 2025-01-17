@@ -8,18 +8,58 @@ import { Typography } from "antd";
 import dayjs from "dayjs";
 
 import { ProfileCard } from "./ProfileCard";
+import { useUser } from "../../lib/context/user";
 const { Title } = Typography;
 
 export function ProductDetail() {
   const { productId } = useParams();
   const productInfo = useProductInfo();
+  const user = useUser();
   const [product, setProduct] = useState(null);
   const [contributor, setContributor] = useState(); // person who donates the product; contributor.id === receiver
   const [receiver, setReceiver] = useState(); // person who receives the message; receiver === contributor.id
   const [isOpen, setIsOpen] = useState(false); // toggle profile card
+  const [applyLoading, setApplyLoading] = useState(false);
 
   const toggleProfileCard = () => {
     setIsOpen((current) => !current);
+  };
+
+  const handleClick = async () => {
+    setApplyLoading(true);
+    try {
+      if (user?.current?.$id === product.userId) {
+        message.error("You can not apply for your own donation.");
+        return;
+      }
+      if (!product?.$id) {
+        throw new Error("Product ID is invalid or missing");
+      }
+
+      if (product?.applicants.includes(user.current.$id)) {
+        message.warning("You have already applied for this donation");
+        return;
+      }
+
+      if (product?.$id && user?.current?.$id) {
+        const updatedApplicants = Array.isArray(product?.applicants)
+          ? [...product.applicants, user.current.$id]
+          : [user.current.$id];
+        const result = await productInfo.updateDocument(product?.$id, {
+          applicants: updatedApplicants,
+        });
+
+        if (result) {
+          message.success(
+            "You have sent the application for the donation.  Please wait patiently for the donor's reply.",
+          );
+        }
+      }
+    } catch (error) {
+      console.error("Failed to apply for donation: ", error.message);
+    } finally {
+      setApplyLoading(false);
+    }
   };
 
   useEffect(() => {
@@ -144,6 +184,17 @@ export function ProductDetail() {
                 receiver={receiver}
               />
             </div>
+          </div>
+          <div className="flex flex-col items-center p-4">
+            <Button
+              type="primary"
+              size="large"
+              onClick={handleClick}
+              loading={applyLoading}
+              disabled={product?.closed}
+            >
+              Apply for Donation
+            </Button>
           </div>
         </div>
       )}

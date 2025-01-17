@@ -60,11 +60,11 @@ export function DashboardPostAdd({ user }) {
       }
 
       if (profileResult?.$id) {
-        message.success(
-          user?.current?.prefs?.profileId
-            ? "Your profile is updated"
-            : "Your profile is created",
-        );
+        // message.success(
+        //   user?.current?.prefs?.profileId
+        //     ? "Your profile is updated"
+        //     : "Your profile is created",
+        // );
         const updateResult = await user.updatePrefs({
           profileId: profileResult.$id,
         });
