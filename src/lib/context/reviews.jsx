@@ -82,12 +82,51 @@ export function ReviewsProvider(props) {
       );
 
       if (!result || result.documents.length === 0) {
-        return null;
+        return [];
       }
 
       return result.documents;
     } catch (error) {
       console.error("Failed to list reviews by query: ", error.message);
+    } finally {
+      setLoading(false);
+    }
+  }
+
+  async function updateReview(id, data) {
+    try {
+      setLoading(true);
+
+      if (!id) {
+        throw new Error("Review document ID not found");
+      }
+
+      const result = await charityDatabase.updateDocument(
+        DATABASE_ID,
+        COLLECTION_ID,
+        id,
+        data,
+      );
+
+      return result;
+    } catch (error) {
+      console.error("Failed to updateReview: ", error.message);
+    } finally {
+      setLoading(false);
+    }
+  }
+
+  async function deleteReview(id) {
+    try {
+      setLoading(true);
+
+      if (!id) {
+        throw new Error("Invalid review document ID");
+      }
+
+      await charityDatabase.deleteDocument(DATABASE_ID, COLLECTION_ID, id);
+    } catch (error) {
+      console.error("Failed to delete review: ", error.message);
     } finally {
       setLoading(false);
     }
@@ -99,6 +138,8 @@ export function ReviewsProvider(props) {
         createReview,
         listReviews,
         listReviewsByQuery,
+        updateReview,
+        deleteReview,
       }}
     >
       {props.children}

@@ -2,11 +2,10 @@ import { useEffect, useState } from "react";
 import { useProductInfo } from "../../lib/context/productInfo";
 import { useUser } from "../../lib/context/user";
 import { Query } from "appwrite";
-import { Button, Dropdown, Spin } from "antd";
+import { Spin } from "antd";
 import { Typography, Table } from "antd";
 import { useReviews } from "../../lib/context/reviews";
-import { DownOutlined } from "@ant-design/icons";
-const { Title } = Typography;
+const { Title, Text } = Typography;
 
 export function DashboardReviewList() {
   const user = useUser();
@@ -36,61 +35,31 @@ export function DashboardReviewList() {
       title: "Review",
       dataIndex: "productReview",
       key: "productReview",
-      responsive: ["md"],
-    },
-    {
-      title: "Action",
-      dataIndex: "action",
-      key: "action",
-      render: (_, record) => {
-        const items = [
-          {
-            key: "1",
-            label: <a href="/dashboard-reviews-add">Add</a>,
-            disabled: record.productReview !== null,
-          },
-          {
-            key: "2",
-            label: <a href="">Edit</a>,
-            disabled: record.productReview === null,
-          },
-          {
-            key: "3",
-            label: <a href="">Delete</a>,
-          },
-          {
-            key: "4",
-            label: <a href="">View</a>,
-          },
-        ];
-
-        console.log("items: ", items);
-        return (
-          <Dropdown menu={{ items }}>
-            <Button>
-              Actions
-              <DownOutlined />
-            </Button>
-          </Dropdown>
-        );
-      },
+      responsive: ["xs", "sm", "md", "lg", "xl"],
+      render: (text, record) => (
+        <Text editable={{ onChange: (value) => saveReview(record.key, value) }}>
+          {text}
+        </Text>
+      ),
     },
   ];
 
   useEffect(() => {
     if (donations.length > 0) {
       const data = donations.map((d) => {
-        const reviewData = reviews.filter((r) => r.productId === d.$id);
+        const reviewData = reviews.find((r) => r.productId === d.$id);
+
         return {
           key: d.$id,
           productName: d.product,
           productDescription: d.description,
-          productReview: reviewData[0].reviewContent,
+          productReview: reviewData?.reviewContent || null,
+          reviewId: reviewData?.$id || null,
         };
       });
       setDataSource(data);
     }
-  }, [donations, reviews]);
+  }, [donations, reviews, setDataSource]);
   /* *************** end of handing table *************** */
 
   useEffect(() => {
@@ -129,6 +98,29 @@ export function DashboardReviewList() {
       isMounted = false;
     };
   }, [user?.current?.$id]);
+
+  const saveReview = async (key, value) => {
+    try {
+      const target = dataSource.find((item) => item.key === key);
+
+      if (!target) {
+        throw new Error("target not found for provided key");
+      }
+      if (!target.reviewId) {
+        await review.createReview(value);
+      } else {
+        await review.updateReview(target.reviewId, { reviewContent: value });
+
+        setDataSource((current) => {
+          return current.map((item) =>
+            item.key === key ? { ...item, productReview: value } : item,
+          );
+        });
+      }
+    } catch (error) {
+      console.error("Failed to update review: ", error.message);
+    }
+  };
   return (
     <div className="w-full md:w-5/6 xl:w-[800px] m-auto">
       <Spin spinning={loading}>
