@@ -4,11 +4,17 @@ import { useEffect, useState } from "react";
 import { useNeeds } from "../../lib/context/needs";
 import { useUser } from "../../lib/context/user";
 import { useNavigate } from "react-router-dom";
+import useUserMap from "../utils/useUserMap";
 
 const { Title } = Typography;
-export function HomeNeed({ allUsers }) {
+export function HomeNeed() {
   const needs = useNeeds();
   const user = useUser();
+  const [targetedDocuments, setTargetedDocuments] = useState([]);
+  const userMap = useUserMap({
+    targetedDocuments: targetedDocuments,
+    attribute: "requestBy",
+  });
   const [combinedData, setCombinedData] = useState([]); // needs collection + helpSeeker info
   const [sender, setSender] = useState(); // person who send the message
   const [loading, setLoading] = useState(true); // loading status for carousel
@@ -38,50 +44,38 @@ export function HomeNeed({ allUsers }) {
   };
 
   useEffect(() => {
-    setLoading(true);
-
     async function fetchNeeds() {
       try {
-        if (!allUsers || allUsers.length === 0) return; // Wait for allUser to load
-
         const result = await needs.listNeeds();
-
-        if (!result) return;
-
-        /* ****************************************************************** 
-        To list the information of help seekers, get the non-repeated user list first.
-        Then get all the users from the collection and filter the necessary users.
-        ****************************************************************** */
-        const userList = new Set();
-        result.map((r) => userList.add(r.requestBy));
-
-        const filteredUsers = allUsers.filter((user) => userList.has(user.$id));
-
-        const userMap = new Map();
-        filteredUsers.map((user) => userMap.set(user.$id, user)); // convert to user object
-
         if (result.length > 0) {
-          const data = result.map((r) => ({
-            ...r,
-            helpSeeker: userMap.get(r.requestBy),
-          }));
-
-          setCombinedData(data);
+          setTargetedDocuments(result);
         }
       } catch (error) {
-        console.error(error.message);
-      } finally {
-        setLoading(false);
+        console.error("Failed to fetch needs documents: ", error.message);
       }
     }
     fetchNeeds();
-  }, [allUsers]);
+  }, []);
 
   useEffect(() => {
     if (user?.current) {
       setSender(user.current?.$id);
     }
   }, [user?.current?.email]);
+
+  useEffect(() => {
+    if (targetedDocuments.length > 0) {
+      const data = targetedDocuments.map((doc) => {
+        return {
+          ...doc,
+          helpSeeker: userMap.get(doc.requestBy),
+        };
+      });
+
+      setCombinedData(data);
+      setLoading(false);
+    }
+  }, [userMap]);
 
   return (
     <div className="flex flex-col justify-start px-4 shadow-md rounded-lg mt-4">

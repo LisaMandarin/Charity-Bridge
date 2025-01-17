@@ -2,11 +2,12 @@ import { Flex, Button, Avatar, Tooltip, Badge } from "antd";
 import { useUser } from "../../lib/context/user";
 import { UserOutlined, WarningFilled } from "@ant-design/icons";
 import { Link } from "react-router-dom";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 
 export function HeaderUser() {
   const user = useUser();
   const [profileId, setProfileId] = useState(null);
+  const warningRef = useRef();
 
   useEffect(() => {
     if (user?.current?.prefs?.profileId) {
@@ -23,14 +24,23 @@ export function HeaderUser() {
           <Link to="/dashboard">
             <Badge
               count={
-                profileId === null ? (
-                  <div>
-                    <Tooltip title="You haven't created a profile">
-                      <WarningFilled style={{ fontSize: "1.5rem" }} />
-                    </Tooltip>
-                  </div>
-                ) : null
+                <div>
+                  <Tooltip
+                    title={
+                      profileId === null ? "You haven't created a profile" : ""
+                    }
+                    className={profileId === null ? "visible" : "hidden"}
+                  >
+                    <WarningFilled style={{ fontSize: "1.5rem" }} />
+                  </Tooltip>
+                </div>
               }
+              // {/* <Badge count={
+              //   <div>
+              //     <Tooltip title="You haven't created a profile"><WarningFilled style={{ fontSize: "1.5rem" }}/></Tooltip>
+              //   </div>
+              // } */}
+
               offset={[0, 10]}
               className="flex items-end h-fit"
             >

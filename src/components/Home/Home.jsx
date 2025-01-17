@@ -26,7 +26,7 @@ export function Home() {
       <HomeHero />
       <div className="grid grid-cols-1 lg:grid-cols-4 md:mx-4 lg:mx-8 relative z-0 flex-grow">
         <div className="flex flex-col order-2 lg:order-1 lg:col-span-1">
-          <HomeNeed allUsers={allUsers} />
+          <HomeNeed />
           <HomeReview allUsers={allUsers} />
         </div>
         <div className="order-1 lg:order-2 lg:col-span-3">

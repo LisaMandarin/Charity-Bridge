@@ -86,6 +86,12 @@ export function DashboardPostList({ user }) {
         );
       },
     },
+    {
+      title: "Applicants",
+      dataIndex: "applicants",
+      key: "applicants",
+      render: (_, record) => {},
+    },
   ];
 
   const editPost = (record) => {
@@ -211,6 +217,7 @@ export function DashboardPostList({ user }) {
         photos: post.photos,
         quantity: post.quantity,
         userId: post.userId,
+        applicants: post.applicants,
       }));
       setDataSource(data);
     }
