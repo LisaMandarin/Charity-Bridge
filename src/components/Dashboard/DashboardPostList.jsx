@@ -9,22 +9,24 @@ import {
   Dropdown,
   message,
   Modal,
+  Select,
   Space,
   Spin,
   Table,
   Typography,
 } from "antd";
 import { useForm } from "antd/es/form/Form";
-import { DownOutlined } from "@ant-design/icons";
+import { DownOutlined, ExclamationCircleFilled } from "@ant-design/icons";
 import { Link } from "react-router-dom";
 const { Title } = Typography;
+const { confirm } = Modal;
 
 export function DashboardPostList({ user }) {
   const productInfo = useProductInfo();
   const productStorage = useProductStorage();
-  const [userId, setUserId] = useState();
-  const [posts, setPosts] = useState([]);
-  const [dataSource, setDataSource] = useState([]);
+  const [posts, setPosts] = useState([]); // fetch posts belonging to this user ID
+  const [dataSourceOpen, setDataSourceOpen] = useState([]); // collect necessary information to render in open table
+  const [dataSourceClosed, setDatasourceClosed] = useState([]); // collect necessary information to render in closed table
   const [form] = useForm(); // used in Modal
 
   /* *********** beginning of Modal *********** */
@@ -32,13 +34,40 @@ export function DashboardPostList({ user }) {
   const [editedPost, setEditedPost] = useState(null); // used in Modal
   /* *********** end of Modal *********** */
 
+  const handleStatus = async (value, record) => {
+    try {
+      const result = await productInfo.updateDocument(record.$id, {
+        closed: value,
+      });
+      if (!result) {
+        throw new Error("Unable to change the status of the product");
+      }
+    } catch (error) {
+      console.error(error.message);
+    }
+  };
+
+  const showDeleteConfirm = (record) => {
+    confirm({
+      title: "Are you sure you want to delete the post?",
+      icon: <ExclamationCircleFilled />,
+      content:
+        "You are not going to undo this action.  Click 'Yes' to archive or 'No' to keep the post.",
+      okText: "Yes",
+      okType: "danger",
+      cancelText: "No",
+      onOk: () => handleStatus(true, record),
+      onCancel: () => console.log("Delete action canceled"),
+    });
+  };
+
   const columns = [
     {
       title: "Product",
       dataIndex: "product",
       key: "product",
       render: (_, record) => (
-        <div className="flex flex-row">
+        <div className="flex flex-row w-[100px]">
           <Link to={`/product/${record.key}`}>
             <div>
               <img
@@ -47,11 +76,36 @@ export function DashboardPostList({ user }) {
                 className="w-12 h-auto"
               />
             </div>
-            <div className="flex flex-col justify-center ml-2">
+            <div className="flex flex-col items-start">
               <div>{record.product}</div>
               <div className="text-gray-400 text-xs">{record.time}</div>
             </div>
           </Link>
+        </div>
+      ),
+    },
+    {
+      title: "Status",
+      dataIndex: "closed",
+      key: "closed",
+      render: (_, record) => (
+        <div>
+          <Select
+            className="w-20"
+            defaultValue={record.closed}
+            onChange={(e) => {
+              if (e === true) {
+                // Show warning modal when closing the post.
+                showDeleteConfirm(record);
+              } else {
+                handleStatus(e, record);
+              }
+            }}
+            options={[
+              { value: true, label: "closed" },
+              { value: false, label: "open" },
+            ]}
+          />
         </div>
       ),
     },
@@ -187,42 +241,34 @@ export function DashboardPostList({ user }) {
   /* *********** end of Modal *********** */
 
   useEffect(() => {
-    if (user?.current?.$id) {
-      setUserId(user.current.$id);
-    }
-  }, [user?.current?.$id]);
-
-  useEffect(() => {
     async function fetchPosts() {
       // fetch posts belonging to this user ID
-      const query = Query.equal("userId", [userId]);
+      const query = Query.equal("userId", [user?.current?.$id]);
       const result = await productInfo.listDocumentsByQuery(query);
       if (!result) return;
       setPosts(result);
     }
-    if (userId) {
+    if (user?.current?.$id) {
       fetchPosts();
     }
-  }, [userId]);
+  }, [user?.current?.$id]);
 
   useEffect(() => {
     if (posts) {
-      const data = posts.map((post) => ({
+      const openPosts = posts.filter((post) => post.closed === false);
+      const closedPosts = posts.filter((post) => post.closed === true);
+      const openData = openPosts.map((post) => ({
+        ...post,
         key: post.$id,
-        product: post.product,
         time: dayjs(post.time).format("MM/DD/YYYY"),
-        id: post.$id,
-        category: post.category,
-        condition: post.condition,
-        description: post.description,
-        location: post.location,
-        photoURL: post.photoURL,
-        photos: post.photos,
-        quantity: post.quantity,
-        userId: post.userId,
-        applicants: post.applicants,
       }));
-      setDataSource(data);
+      setDataSourceOpen(openData);
+      const closedData = closedPosts.map((post) => ({
+        ...post,
+        key: post.$id,
+        time: dayjs(post.time).format("MM/DD/YYYY"),
+      }));
+      setDatasourceClosed(closedData);
     }
   }, [posts]);
 
@@ -232,7 +278,7 @@ export function DashboardPostList({ user }) {
         <Title className="text-center">
           {user?.current?.name ? `${user.current.name}'s` : "My"} Posts
         </Title>
-        <Table dataSource={dataSource} columns={columns} />
+        <Table dataSource={dataSourceOpen} columns={columns} />
       </Spin>
       {editedPost && (
         /* *********** beginning of Modal *********** */
