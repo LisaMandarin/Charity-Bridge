@@ -16,6 +16,7 @@ import {
 } from "antd";
 import { useForm } from "antd/es/form/Form";
 import { DownOutlined } from "@ant-design/icons";
+import { Link } from "react-router-dom";
 const { Title } = Typography;
 
 export function DashboardPostList({ user }) {
@@ -38,17 +39,19 @@ export function DashboardPostList({ user }) {
       key: "product",
       render: (_, record) => (
         <div className="flex flex-row">
-          <div>
-            <img
-              src={record.photoURL[0]}
-              alt={record.product}
-              className="w-12 h-auto"
-            />
-          </div>
-          <div className="flex flex-col justify-center ml-2">
-            <div>{record.product}</div>
-            <div className="text-gray-400 text-xs">{record.time}</div>
-          </div>
+          <Link to={`/product/${record.key}`}>
+            <div>
+              <img
+                src={record.photoURL[0]}
+                alt={record.product}
+                className="w-12 h-auto"
+              />
+            </div>
+            <div className="flex flex-col justify-center ml-2">
+              <div>{record.product}</div>
+              <div className="text-gray-400 text-xs">{record.time}</div>
+            </div>
+          </Link>
         </div>
       ),
     },
