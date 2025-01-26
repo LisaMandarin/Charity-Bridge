@@ -5,7 +5,6 @@ import { useNeeds } from "../../lib/context/needs";
 import { useUser } from "../../lib/context/user";
 import { useNavigate } from "react-router-dom";
 import useUserMap from "../utils/useUserMap";
-import { UserOutlined } from "@ant-design/icons";
 const { Title } = Typography;
 
 export function HomeNeed() {
@@ -62,7 +61,7 @@ export function HomeNeed() {
     if (user?.current) {
       setSender(user.current?.$id);
     }
-  }, [user?.current?.email]);
+  }, [user?.current?.$id]);
 
   useEffect(() => {
     if (targetedDocs.length > 0) {

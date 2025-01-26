@@ -3,15 +3,26 @@ import { useProductInfo } from "../../lib/context/productInfo";
 import { Avatar, Pagination, Rate, Space, Spin, Typography } from "antd";
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
+import useUserMap from "../utils/useUserMap";
 const { Title } = Typography;
 
-export function HomeReview({ allUsers }) {
-  const reviews = useReviews();
-  const productInfo = useProductInfo();
-  const [combinedData, setCombinedData] = useState([]);
+export function HomeReview() {
+  const { listReviews } = useReviews();
+  const { getDocument } = useProductInfo();
   const [expandedItems, setExpandedItems] = useState({}); // used to toggle review content more/less
   const [loading, setLoading] = useState(true);
   const [hasMore, setHasMore] = useState(true); // see if there are more reviews items to be fetched
+  const [targetedDocs, setTargetedDocs] = useState([]);
+  const donorMap = useUserMap({
+    targetedDocs,
+    attribute: "donorId",
+  });
+  const receiverMap = useUserMap({
+    targetedDocs,
+    attribute: "receiverId",
+  });
+  const [reviewProducts, setReviewProducts] = useState([]); // fetch the product information listed in review collection
+  const [combinedData, setCombinedData] = useState([]);
 
   const toggleContent = (i) =>
     setExpandedItems((current) => ({ ...current, [i]: !current[i] }));
@@ -28,56 +39,65 @@ export function HomeReview({ allUsers }) {
     startIndex + itemsPerPage,
   );
 
+  async function fetchReviews(offset = 0, limit = 2) {
+    try {
+      const result = await listReviews(offset, limit);
+      if (!result || result.length === 0) {
+        throw new Error("review documents not found");
+      }
+      setTargetedDocs(result);
+    } catch (error) {
+      console.error("Unable to fetch reviews: ", error.message);
+    }
+  }
+
+  // fetch reviews to store in targetedDocs
   useEffect(() => {
-    if (!allUsers || allUsers.length === 0) return; // wait for allUser to load
+    fetchReviews();
+  }, []);
 
-    /* ************************************************************
-  Fetch reviews data and convert ids to names in initial render
-  ************************************************************* */
-    async function fetchReviews(offset = 0, limit = 2) {
-      setLoading(true);
+  // fetch product information to store in reviewProducts
+  useEffect(() => {
+    async function fetchReviewProducts() {
       try {
-        const reviewsResult = await reviews.listReviews(offset, limit);
-
-        const userList = new Set();
-        reviewsResult.map((r) => userList.add(r.donorId));
-        reviewsResult.map((r) => userList.add(r.receiverId));
-        const filteredUsers = allUsers.filter((user) => userList.has(user.$id));
-
-        const userMap = new Map();
-        filteredUsers.map((user) => userMap.set(user.$id, user)); // convert to user object
-
-        const products = await Promise.all(
-          reviewsResult.map((r) => productInfo.getDocument(r.productId)),
+        const data = await Promise.all(
+          targetedDocs.map((doc) => getDocument(doc.productId)),
         );
-
-        const data = reviewsResult.map((r, i) => ({
-          ...r,
-          donor: userMap.get(r.donorID),
-          receiver: userMap.get(r.receiverId),
-          product: products[i],
-        }));
-
-        setCombinedData((current) => [...current, ...data]);
-
-        if (reviewsResult.length < limit) {
-          setHasMore(false); // prevent further fetching
-        }
+        setReviewProducts(data);
       } catch (error) {
-        console.error(error.message);
-      } finally {
-        setLoading(false);
+        console.error("Unable to fetch review products: ", error.message);
       }
     }
+    fetchReviewProducts();
+  }, [targetedDocs]);
 
-    if (combinedData.length === 0) {
-      fetchReviews();
-    } else if (endIndex > combinedData.length && !loading) {
-      // only fetch data when needed
+  // fetch data with the information of donors, receivers and products and store it in combinedData
+  useEffect(() => {
+    setLoading(true);
+    try {
+      const data = targetedDocs.map((doc, i) => {
+        return {
+          ...doc,
+          donor: donorMap.get(doc.donorId),
+          receiver: receiverMap.get(doc.receiverId),
+          product: reviewProducts[i],
+        };
+      });
+      console.log("data", data);
+      setCombinedData((current) => [...current, ...data]);
+    } catch (error) {
+      console.error(error.message);
+    } finally {
+      setLoading(false);
+    }
+  }, [donorMap, receiverMap, reviewProducts]);
+
+  useEffect(() => {
+    if (combinedData.length < endIndex && !loading) {
       const offset = combinedData.length; // fetch from the end of current data
       fetchReviews(offset, itemsPerPage);
     }
-  }, [currentPage, allUsers]);
+  }, [currentPage]);
 
   return (
     <div className="flex flex-col justify-between h-full px-4">
@@ -93,7 +113,7 @@ export function HomeReview({ allUsers }) {
           {currentItems.map((review, i) => (
             <div key={i}>
               <div>
-                <Avatar src={review.receiver?.prefs?.avatarUrl} alt="avatar">
+                <Avatar src={review.receiver?.avatar || null} alt="avatar">
                   {review.receiver?.name[0] || "U"}
                 </Avatar>
                 <span>
