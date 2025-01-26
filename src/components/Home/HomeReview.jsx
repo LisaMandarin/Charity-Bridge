@@ -39,9 +39,9 @@ export function HomeReview() {
     startIndex + itemsPerPage,
   );
 
-  async function fetchReviews(offset = 0, limit = 2) {
+  async function fetchReviews() {
     try {
-      const result = await listReviews(offset, limit);
+      const result = await listReviews();
       if (!result || result.length === 0) {
         throw new Error("review documents not found");
       }
@@ -51,8 +51,8 @@ export function HomeReview() {
     }
   }
 
-  async function fetchUniqueReviews(combinedData) {
-    const string = combinedData.map((data) => JSON.stringify(data));
+  function fetchUniqueReviews(reviewArray) {
+    const string = reviewArray.map((data) => JSON.stringify(data));
     const set = new Set(string);
     const array = Array.from(set);
     const parsedArray = array.map((item) => JSON.parse(item));
@@ -68,10 +68,15 @@ export function HomeReview() {
   useEffect(() => {
     async function fetchReviewProducts() {
       try {
-        const data = await Promise.all(
-          targetedDocs.map((doc) => getDocument(doc.productId)),
-        );
-        setReviewProducts(data);
+        if (targetedDocs.length) {
+          console.log("targetedDocs: ", targetedDocs);
+          const identicalDocs = fetchUniqueReviews(targetedDocs);
+          const data = await Promise.all(
+            identicalDocs.map((doc) => getDocument(doc.productId)),
+          );
+          console.log("data before set review products: ", data);
+          setReviewProducts(data);
+        }
       } catch (error) {
         console.error("Unable to fetch review products: ", error.message);
       }
@@ -81,35 +86,34 @@ export function HomeReview() {
 
   // fetch data with the information of donors, receivers and products and store it in combinedData
   useEffect(() => {
-    setLoading(true);
-    try {
-      const data = targetedDocs.map((doc, i) => {
-        return {
-          ...doc,
-          donor: donorMap.get(doc.donorId),
-          receiver: receiverMap.get(doc.receiverId),
-          product: reviewProducts[i],
-        };
-      });
-      console.log("data", data);
-      setCombinedData((current) => [...current, ...data]);
-    } catch (error) {
-      console.error(error.message);
-    } finally {
-      setLoading(false);
+    if (donorMap?.size && receiverMap?.size && reviewProducts.length) {
+      setLoading(true);
+      try {
+        const data = targetedDocs.map((doc, i) => {
+          return {
+            ...doc,
+            donor: donorMap.get(doc.donorId),
+            receiver: receiverMap.get(doc.receiverId),
+            product: reviewProducts[i],
+          };
+        });
+        console.log("data before set combined data", data);
+        setCombinedData((current) => [...current, ...data]);
+      } catch (error) {
+        console.error(error.message);
+      } finally {
+        setLoading(false);
+      }
     }
   }, [donorMap, receiverMap, reviewProducts]);
 
   useEffect(() => {
-    if (combinedData.length < endIndex && !loading) {
-      const offset = combinedData.length; // fetch from the end of current data
-      fetchReviews(offset, itemsPerPage);
-    }
-  }, [currentPage]);
+    console.log("combinedData: ", combinedData);
+  }, [combinedData]);
 
   useEffect(() => {
-    if (combinedData.length > 0) fetchUniqueReviews(combinedData);
-  }, [combinedData]);
+    console.log("loading: ", loading);
+  });
 
   return (
     <div className="flex flex-col justify-between h-full px-4">
@@ -133,7 +137,7 @@ export function HomeReview() {
                     to={`/userProduct/${review.receiverId}`}
                     className="text-blue-500"
                   >
-                    {review.receiver?.name}
+                    {review.receiver?.name || "Unknown"}
                   </Link>{" "}
                   said
                 </span>
@@ -145,7 +149,7 @@ export function HomeReview() {
                   to={`/userProduct/${review.donorId}`}
                   className="text-blue-500"
                 >
-                  {review.donor?.name}
+                  {review.donor?.name || "Unknown"}
                 </Link>
                 ,
               </div>
@@ -162,7 +166,7 @@ export function HomeReview() {
                   to={`/product/${review.productId}`}
                   className="text-blue-500"
                 >
-                  {review.product?.product.toLocaleLowerCase()}
+                  {review?.product?.product.toLocaleLowerCase() || "some item"}
                 </Link>
                 .
               </div>
