@@ -24,12 +24,14 @@ export function NeedsProvider(props) {
       );
 
       if (!result || result.documents.length === 0) {
-        throw new Error("No needs found");
+        console.error("No needs found");
+        return [];
       }
 
       return result.documents;
-    } catch {
-      console.error("Failed to list needs documents");
+    } catch (error) {
+      console.error("Failed to list needs documents: ", error.message);
+      return [];
     } finally {
       setLoading(false);
     }

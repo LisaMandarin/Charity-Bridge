@@ -5,14 +5,15 @@ import { useNeeds } from "../../lib/context/needs";
 import { useUser } from "../../lib/context/user";
 import { useNavigate } from "react-router-dom";
 import useUserMap from "../utils/useUserMap";
-
+import { UserOutlined } from "@ant-design/icons";
 const { Title } = Typography;
+
 export function HomeNeed() {
-  const needs = useNeeds();
+  const { listNeeds } = useNeeds();
   const user = useUser();
-  const [targetedDocuments, setTargetedDocuments] = useState([]);
+  const [targetedDocs, setTargetedDocs] = useState([]);
   const userMap = useUserMap({
-    targetedDocuments: targetedDocuments,
+    targetedDocs,
     attribute: "requestBy",
   });
   const [combinedData, setCombinedData] = useState([]); // needs collection + helpSeeker info
@@ -46,9 +47,9 @@ export function HomeNeed() {
   useEffect(() => {
     async function fetchNeeds() {
       try {
-        const result = await needs.listNeeds();
+        const result = await listNeeds();
         if (result.length > 0) {
-          setTargetedDocuments(result);
+          setTargetedDocs(result);
         }
       } catch (error) {
         console.error("Failed to fetch needs documents: ", error.message);
@@ -64,16 +65,18 @@ export function HomeNeed() {
   }, [user?.current?.email]);
 
   useEffect(() => {
-    if (targetedDocuments.length > 0) {
-      const data = targetedDocuments.map((doc) => {
+    if (targetedDocs.length > 0) {
+      const data = targetedDocs.map((doc) => {
         return {
           ...doc,
           helpSeeker: userMap.get(doc.requestBy),
         };
       });
 
-      setCombinedData(data);
-      setLoading(false);
+      if (data) {
+        setCombinedData(data);
+        setLoading(false);
+      }
     }
   }, [userMap]);
 
@@ -100,12 +103,12 @@ export function HomeNeed() {
                 <ul>
                   <li className="text-xs">
                     <Avatar
-                      src={`${need.helpSeeker.prefs.avatarUrl}`}
+                      src={`${need?.helpSeeker?.avatar}` || null}
                       size={14}
                     >
-                      {need.helpSeeker.name[0]}
+                      {need?.helpSeeker?.name[0] || "U"}
                     </Avatar>
-                    {need.helpSeeker.name}
+                    {need?.helpSeeker?.name || "Unknown"}
                   </li>
                   <li className="text-xs">
                     <Icon
@@ -127,18 +130,18 @@ export function HomeNeed() {
         combinedData.map((need, i) => (
           <Modal
             key={i}
-            title={`${need.helpSeeker.name} needs help`}
+            title={`${need?.helpSeeker?.name || "Unknown"} needs help`}
             open={isOpenModals[i]}
             onOk={() => handleOk(i)}
             onCancel={() => handleCandle(i)}
-            okText={`Message ${need.helpSeeker.name}`}
+            okText={`Message ${need?.helpSeeker?.name || "Unknown"}`}
           >
             <ul>
               <li className="text-sm">
-                <Avatar src={`${need.helpSeeker.prefs.avatarUrl}`} size={20}>
-                  {need.helpSeeker.name[0]}
+                <Avatar src={`${need?.helpSeeker?.avatar || null}`} size={20}>
+                  {need?.helpSeeker?.name[0] || "U"}
                 </Avatar>
-                {need.helpSeeker.name}
+                {need?.helpSeeker?.name || "Unknown"}
               </li>
               <li className="text-sm">
                 <Icon

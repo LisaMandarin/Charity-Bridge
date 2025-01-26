@@ -64,9 +64,21 @@ export function UserProfileProvider(props) {
     }
   }
 
+  async function getProfiles() {
+    try {
+      const result = await charityDatabase.listDocuments(
+        DATABASE_ID,
+        COLLECTION_ID,
+      );
+      return result.documents;
+    } catch (error) {
+      console.error("Failed to get all the user profiles: ", error.message);
+    }
+  }
+
   return (
     <UserProfileContext.Provider
-      value={{ createProfile, updateProfile, getProfile }}
+      value={{ createProfile, updateProfile, getProfile, getProfiles }}
     >
       {props.children}
     </UserProfileContext.Provider>

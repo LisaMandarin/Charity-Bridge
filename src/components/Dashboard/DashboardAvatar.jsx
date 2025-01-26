@@ -4,38 +4,48 @@ import { useState } from "react";
 import { useAvatarStorage } from "../../lib/context/AvatarStorage";
 import { useUser } from "../../lib/context/user";
 import { LeftArrowBar } from "../utils/ArrowBar";
+import { useUserProfile } from "../../lib/context/userProfile";
 
 const { Title } = Typography;
 
 export function DashboardAvatar() {
-  const avatarStorage = useAvatarStorage();
+  const { createAvatar, deleteAvatar, getPreviewURL, loading } =
+    useAvatarStorage();
   const [fileList, setFileList] = useState([]);
   const user = useUser();
+  const { updateProfile } = useUserProfile();
 
   const customRequest = async (options) => {
     try {
       const avatarId = user?.current?.prefs?.avatarId;
       if (avatarId) {
-        const deleteResult = await avatarStorage.deleteAvatar(avatarId);
+        const deleteResult = await deleteAvatar(avatarId);
         if (!deleteResult) {
           console.error("Failed to delete current avatar");
         }
       }
 
-      const result = await avatarStorage.createAvatar(options.file);
+      const result = await createAvatar(options.file);
       if (!result) {
         throw new Error("Failed to create avatar");
       }
 
-      const avatarUrl = await avatarStorage.getPreviewURL(result.$id);
+      const avatarUrl = await getPreviewURL(result.$id);
 
-      const updatePrefsResult = await user.updatePrefs({
-        avatarId: result.$id,
-        avatarUrl: avatarUrl,
-      });
+      const [updatePrefsResult, updateProfileResult] = await Promise.all([
+        user.updatePrefs({
+          avatarId: result.$id,
+          avatarUrl: avatarUrl,
+        }),
+        updateProfile(user?.current?.prefs?.profileId, { avatar: avatarUrl }),
+      ]);
 
-      if (!updatePrefsResult) {
-        throw new Error("Failed to update preferences in user");
+      if (updatePrefsResult === null || updatePrefsResult === undefined) {
+        throw new Error("Failed to update user preference");
+      }
+
+      if (updateProfileResult === null || updateProfileResult === undefined) {
+        throw new Error("Failed to update user profile");
       }
 
       setFileList([
@@ -64,7 +74,7 @@ export function DashboardAvatar() {
       <LeftArrowBar />
       <Space direction="vertical" className="flex items-center">
         <Title>Change Avatar</Title>
-        <Spin spinning={avatarStorage.loading}>
+        <Spin spinning={loading}>
           <Space direction="vertical" className="text-center">
             <Avatar
               size={64}

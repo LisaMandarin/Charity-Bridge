@@ -1,53 +1,45 @@
 import { useEffect, useState } from "react";
-import { getAllUsers } from "../../lib/serverAppwrite";
+import { useUserProfile } from "../../lib/context/userProfile";
 
-export default function useUserMap({ targetedDocuments, attribute }) {
-  const [allUsers, setAllUsers] = useState([]);
+export default function useUserMap({ targetedDocs, attribute }) {
+  const { getProfiles } = useUserProfile();
+  const [allProfiles, setAllProfiles] = useState([]);
   const [userMap, setUserMap] = useState();
 
   useEffect(() => {
-    const fetchUsers = async () => {
+    async function fetchAllProfiles() {
       try {
-        const result = await getAllUsers();
-        if (!result || result.length === 0) {
-          console.warn("No result returned from getAllUsers");
+        const profileResult = await getProfiles();
+
+        if (!profileResult || profileResult.length === 0) {
+          console.error("Unable to fetch profiles");
         }
-
-        setAllUsers(result);
+        setAllProfiles(profileResult);
       } catch (error) {
-        console.error("Failed to fetch users: ", error.message);
-      }
-    };
-
-    fetchUsers();
-  }, []);
-
-  useEffect(() => {
-    async function fetchTargetedUserInfos() {
-      try {
-        if (!allUsers || allUsers.length === 0) {
-          console.warn("No allUsers data");
-          return;
-        }
-
-        const userList = new Set(
-          targetedDocuments.map((doc) => doc[attribute]),
-        );
-        const filteredUserInfos = allUsers.filter((info) =>
-          userList.has(info.$id),
-        );
-        const map = new Map(filteredUserInfos.map((user) => [user.$id, user]));
-        setUserMap(map);
-      } catch (error) {
-        console.error(
-          "Failed to fetch targeted user information: ",
-          error.message,
-        );
+        console.error("Failed to fetch profiles: ", error.message);
       }
     }
 
-    fetchTargetedUserInfos();
-  }, [allUsers, targetedDocuments, attribute]);
+    fetchAllProfiles();
+  }, []);
+
+  useEffect(() => {
+    function fetchTargetedProfiles() {
+      const needUserIDs = new Set(targetedDocs.map((doc) => doc[attribute]));
+
+      const needProfiles = allProfiles.filter((profile) =>
+        needUserIDs.has(profile.userId),
+      );
+
+      let map = new Map();
+      if (needProfiles) {
+        needProfiles.map((profile) => map.set(profile.userId, profile));
+      }
+      setUserMap(map);
+    }
+
+    fetchTargetedProfiles();
+  }, [allProfiles, targetedDocs, attribute]);
 
   return userMap;
 }
