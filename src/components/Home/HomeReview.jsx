@@ -51,9 +51,17 @@ export function HomeReview() {
     }
   }
 
+  async function fetchUniqueReviews(combinedData) {
+    const string = combinedData.map((data) => JSON.stringify(data));
+    const set = new Set(string);
+    const array = Array.from(set);
+    const parsedArray = array.map((item) => JSON.parse(item));
+    return parsedArray;
+  }
+
   // fetch reviews to store in targetedDocs
   useEffect(() => {
-    fetchReviews();
+    if (combinedData.length === 0) fetchReviews();
   }, []);
 
   // fetch product information to store in reviewProducts
@@ -98,6 +106,10 @@ export function HomeReview() {
       fetchReviews(offset, itemsPerPage);
     }
   }, [currentPage]);
+
+  useEffect(() => {
+    if (combinedData.length > 0) fetchUniqueReviews(combinedData);
+  }, [combinedData]);
 
   return (
     <div className="flex flex-col justify-between h-full px-4">
