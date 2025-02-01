@@ -8,7 +8,7 @@ export function MessageBubbleOther({ userOther, message }) {
   return (
     <div className="p-2 flex flex-col">
       <div className="inline-flex gap-2">
-        <Avatar src={userOther?.prefs?.avatarUrl} className="self-end">
+        <Avatar src={userOther?.avatar} className="self-end">
           {userOther?.name[0]}
         </Avatar>
         <div className="min-w-[60px] max-w-[700px] px-3 py-4 mx-1 my-2 border border-1 border-solid bg-pink-900 text-white rounded-chat-bubble-other whitespace-pre-wrap">

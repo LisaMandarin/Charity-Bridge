@@ -8,12 +8,7 @@ import { LeftArrowBar } from "../utils/ArrowBar";
 import useUserMap from "../utils/useUserMap";
 
 export function MessageList() {
-  const user = useUser();
-  const messageContext = useMessage();
-  const [groupedMessages, setGroupedMessages] = useState([]);
-  const [loading, setLoading] = useState(true);
   const navigate = useNavigate();
-
   const handleNavigate = (senderId, receiverId) => {
     navigate(`/messageboard/${senderId}/${receiverId}`);
   };
@@ -22,6 +17,8 @@ export function MessageList() {
   Fetch messages that involve the current user.
   Get the names of others who have conversations with the current user.
   ********************************************************************* */
+  const user = useUser();
+  const { listOwnMessages } = useMessage();
   const [targetedDocs, setTargetedDocs] = useState([]);
   const ownerMap = useUserMap({ targetedDocs, attribute: "ownId" });
   const otherMap = useUserMap({ targetedDocs, attribute: "otherId" });
@@ -31,7 +28,7 @@ export function MessageList() {
     async function fetchOwnMessages() {
       try {
         const userId = user?.current?.$id;
-        const result = await messageContext.listOwnMessages(userId);
+        const result = await listOwnMessages(userId);
         setTargetedDocs(result);
       } catch (error) {
         console.error(error);
@@ -63,6 +60,9 @@ export function MessageList() {
   /* *************************************
   Group messages and keep the latest ones
   *************************************** */
+  const [groupedMessages, setGroupedMessages] = useState([]);
+  const [loading, setLoading] = useState(true);
+
   useEffect(() => {
     const grouped = Object.values(
       combinedData.reduce((acc, msg) => {
