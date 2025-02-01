@@ -1,12 +1,13 @@
 import { Button, Form, Input } from "antd";
 import { Icon } from "@iconify/react/dist/iconify.js";
 import { useMessage } from "../../lib/context/messages";
+import { useUserProfile } from "../../lib/context/userProfile";
 import { useEffect, useState } from "react";
-import { getUser } from "../../lib/serverAppwrite";
 
 export function MessageForm({ sender, receiver }) {
   const [form] = Form.useForm();
-  const message = useMessage();
+  const { createMessage } = useMessage();
+  const { getProfiles } = useUserProfile();
   const [receiverName, setReceiverName] = useState();
 
   const onFinish = (values) => {
@@ -15,7 +16,7 @@ export function MessageForm({ sender, receiver }) {
   };
   const sendMsg = async (values) => {
     try {
-      await message.createMessage(values);
+      await createMessage(values);
     } catch (error) {
       console.error(error.message);
     }
@@ -23,7 +24,8 @@ export function MessageForm({ sender, receiver }) {
 
   useEffect(() => {
     async function fetchName() {
-      const name = await getUser(receiver);
+      const result = await getProfiles();
+      const name = result.find((profile) => (profile.userId = receiver));
       setReceiverName(name);
     }
 
