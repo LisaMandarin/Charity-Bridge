@@ -1,17 +1,18 @@
 import { Query } from "appwrite";
 import { useEffect, useState } from "react";
 import { useProductInfo } from "../../lib/context/productInfo";
-import { getUser } from "../../lib/serverAppwrite";
 import { ProfileCard } from "./ProfileCard";
 import { Card, Typography } from "antd";
 import { Link, useParams } from "react-router-dom";
 import { LeftArrowBar } from "../utils/ArrowBar";
+import useGetUser from "../utils/useGetUser";
 const { Title } = Typography;
 const { Meta } = Card;
 
 export function ProductByUser() {
   const { userId } = useParams();
   const productInfo = useProductInfo();
+  const userData = useGetUser(userId);
   const [documents, setDocuments] = useState([]);
   const [userName, setUserName] = useState();
   const [contributor, setContributor] = useState();
@@ -30,21 +31,19 @@ export function ProductByUser() {
     async function fetchUser() {
       if (userId) {
         setReceiver(userId);
-        const result = await getUser(userId);
-        if (result.name) {
-          setUserName(result.name);
+        if (userData.name) {
+          setUserName(userData.name);
           setContributor({
-            name: result.name,
-            avatarId: result.prefs?.avatarId || null,
-            avatarUrl: result.prefs?.avatarUrl || null,
-            profileId: result.prefs?.profileId || null,
-            id: result.$id,
+            name: userData?.name,
+            avatarUrl: userData?.avatar || null,
+            profileId: userData.prefs?.profileId || null,
+            id: userData.userId,
           });
         }
       }
     }
     fetchUser();
-  }, [userId]);
+  }, [userId, userData]);
 
   useEffect(() => {
     async function fetchProducts() {

@@ -1,10 +1,9 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useMemo } from "react";
 import { useUserProfile } from "../../lib/context/userProfile";
 
 export default function useUserMap({ targetedDocs, attribute }) {
   const { getProfiles } = useUserProfile();
   const [allProfiles, setAllProfiles] = useState([]);
-  const [userMap, setUserMap] = useState();
 
   useEffect(() => {
     async function fetchAllProfiles() {
@@ -23,22 +22,22 @@ export default function useUserMap({ targetedDocs, attribute }) {
     fetchAllProfiles();
   }, []);
 
-  useEffect(() => {
-    function fetchTargetedProfiles() {
-      const needUserIDs = new Set(targetedDocs.map((doc) => doc[attribute]));
+  const userMap = useMemo(() => {
+    if (!attribute || !allProfiles.length || !targetedDocs.length)
+      return new Map();
 
-      const needProfiles = allProfiles.filter((profile) =>
-        needUserIDs.has(profile.userId),
-      );
+    const needUserIDs = new Set(targetedDocs.map((doc) => doc[attribute]));
 
-      let map = new Map();
-      if (needProfiles) {
-        needProfiles.map((profile) => map.set(profile.userId, profile));
-      }
-      setUserMap(map);
+    const needProfiles = allProfiles.filter((profile) =>
+      needUserIDs.has(profile.userId),
+    );
+
+    let map = new Map();
+    if (needProfiles) {
+      needProfiles.forEach((profile) => map.set(profile.userId, profile));
     }
 
-    fetchTargetedProfiles();
+    return map;
   }, [allProfiles, targetedDocs, attribute]);
 
   return userMap;

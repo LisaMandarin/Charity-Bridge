@@ -1,8 +1,8 @@
 import { useEffect, useState } from "react";
 import { useUserProfile } from "../../lib/context/userProfile";
 import { useUser } from "../../lib/context/user";
-import { getUser } from "../../lib/serverAppwrite";
 import { useProductInfo } from "../../lib/context/productInfo";
+import useUserMap from "../utils/useUserMap";
 import { message, Card, Avatar, Rate, Spin } from "antd";
 import { Icon } from "@iconify/react/dist/iconify.js";
 import { Link, useLocation } from "react-router-dom";
@@ -17,6 +17,11 @@ export function ProfileCard({ contributor, isOpen, receiver }) {
   const user = useUser();
   const reviews = useReviews();
   const [profile, setProfile] = useState();
+  const [allReviews, setAllReviews] = useState([]);
+  const receiverMap = useUserMap({
+    targetedDocs: allReviews,
+    attribute: "receiverId",
+  });
   const [combinedData, setCombinedData] = useState([]); // combine review collection with receiver name, and product name
   const [activeTabKey, setActiveTabKey] = useState("contact"); // profile card tabs
   const [sender, setSender] = useState(); // person who sends the message
@@ -38,13 +43,10 @@ export function ProfileCard({ contributor, isOpen, receiver }) {
   };
 
   useEffect(() => {
-    let isMounted = true;
-
     async function fetchProfile() {
       try {
         if (contributor?.profileId) {
           const result = await userProfile.getProfile(contributor.profileId);
-          if (!isMounted) return;
 
           setProfile(result);
         }
@@ -59,51 +61,44 @@ export function ProfileCard({ contributor, isOpen, receiver }) {
         return;
       }
 
-      setReviewLoading(true);
-
       try {
         const query = Query.equal("donorId", [contributor?.id]);
-        const reviewResult = await reviews.listReviewsByQuery(query);
+        const result = await reviews.listReviewsByQuery(query);
 
-        if (!isMounted) return;
-
-        if (reviewResult) {
-          const receivers = await Promise.all(
-            reviewResult.map((review) => getUser(review.receiverId)),
-          );
-
-          const products = await Promise.all(
-            reviewResult.map((review) =>
-              productInfo.getDocument(review.productId),
-            ),
-          );
-
-          if (isMounted && receivers.length > 0 && products.length > 0) {
-            const data = reviewResult.map((review, index) => ({
-              ...review,
-              receiver: receivers[index],
-              product: products[index],
-            }));
-            setCombinedData(data);
-          }
+        if (result) {
+          setAllReviews(result);
         }
       } catch (error) {
         console.error(error.message);
-      } finally {
-        if (isMounted) {
-          setReviewLoading(false);
-        }
       }
     }
 
     fetchProfile();
-
     fetchReviews();
+  }, [contributor?.profileId, contributor?.id]);
 
-    return () => {
-      isMounted = false;
-    };
-  }, [contributor?.id, contributor?.profileId]);
+  useEffect(() => {
+    if (!allReviews.length || receiverMap.size === 0) return;
+
+    async function combineData() {
+      try {
+        const products = await Promise.all(
+          allReviews.map((review) => productInfo.getDocument(review.productId)),
+        );
+        const data = allReviews.map((review, i) => ({
+          ...review,
+          receiver: receiverMap.get(review.receiverId) || {},
+          product: products[i],
+        }));
+        setCombinedData(data);
+      } catch (error) {
+        console.error("Unable to combine data: ", error.message);
+      } finally {
+        setReviewLoading(false);
+      }
+    }
+    combineData();
+  }, [allReviews]);
 
   useEffect(() => {
     if (user?.current) {
@@ -240,10 +235,7 @@ export function ProfileCard({ contributor, isOpen, receiver }) {
                     <div key={index} className="flex flex-col gap-4 py-2">
                       <div className="flex flex-row gap-2">
                         <div className="flex items-center">
-                          <Avatar
-                            src={review.receiver?.prefs?.avatarUrl}
-                            alt="avatar"
-                          >
+                          <Avatar src={review?.receiver?.avatar} alt="avatar">
                             {review.receiver?.name[0] || "U"}
                           </Avatar>
                         </div>
