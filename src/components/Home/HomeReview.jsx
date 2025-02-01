@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { useReviews } from "../../lib/context/reviews";
 import { useProductInfo } from "../../lib/context/productInfo";
-import { Avatar, Pagination, Rate, Space, Spin } from "antd";
+import { Avatar, Pagination, Rate, Spin } from "antd";
 import useUserMap from "../utils/useUserMap";
 import { Typography } from "antd";
 import { Link } from "react-router-dom";
@@ -109,9 +109,6 @@ export function HomeReview() {
     }));
   };
 
-  useEffect(() => {
-    console.log("more:", more);
-  }, [more]);
   /* *************************
  handle more text (end)
 **************************  */

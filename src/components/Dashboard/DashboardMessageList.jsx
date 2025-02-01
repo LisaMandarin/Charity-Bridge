@@ -2,15 +2,14 @@ import { Avatar, Spin } from "antd";
 import { useEffect, useState } from "react";
 import { useUser } from "../../lib/context/user";
 import { useMessage } from "../../lib/context/messages";
-import { getUser } from "../../lib/serverAppwrite";
 import { formatTime } from "../utils/timeHandling";
 import { useNavigate } from "react-router-dom";
 import { LeftArrowBar } from "../utils/ArrowBar";
+import useUserMap from "../utils/useUserMap";
 
 export function MessageList() {
   const user = useUser();
   const messageContext = useMessage();
-  const [ownMessages, setOwnMessages] = useState([]);
   const [groupedMessages, setGroupedMessages] = useState([]);
   const [loading, setLoading] = useState(true);
   const navigate = useNavigate();
@@ -23,39 +22,50 @@ export function MessageList() {
   Fetch messages that involve the current user.
   Get the names of others who have conversations with the current user.
   ********************************************************************* */
+  const [targetedDocs, setTargetedDocs] = useState([]);
+  const ownerMap = useUserMap({ targetedDocs, attribute: "ownId" });
+  const otherMap = useUserMap({ targetedDocs, attribute: "otherId" });
+  const [combinedData, setCombinedData] = useState([]); // message data + owner data + other data
+
   useEffect(() => {
-    const userId = user?.current?.$id;
-
     async function fetchOwnMessages() {
-      setLoading(true);
       try {
+        const userId = user?.current?.$id;
         const result = await messageContext.listOwnMessages(userId);
-
-        const owns = await Promise.all(result.map((r) => getUser(r.ownId)));
-
-        const others = await Promise.all(result.map((r) => getUser(r.otherId)));
-
-        const data = result.map((r, i) => ({
-          ...r,
-          own: owns[i],
-          other: others[i],
-        }));
-        setOwnMessages(data);
+        setTargetedDocs(result);
       } catch (error) {
         console.error(error);
-      } finally {
-        setLoading(false);
       }
     }
     fetchOwnMessages();
   }, [user?.current]);
+
+  useEffect(() => {
+    try {
+      const combined = targetedDocs.map((doc) => {
+        const ownId = doc.ownId;
+        const otherId = doc.otherId;
+        const messageContent = doc.messageContent;
+        const $createdAt = doc.$createdAt;
+        const own = ownerMap.get(ownId);
+        const other = otherMap.get(otherId);
+        return { ownId, otherId, messageContent, $createdAt, own, other };
+      });
+      setCombinedData(combined);
+    } catch (error) {
+      console.error(
+        "Unable to combine message data with user data: ",
+        error.message,
+      );
+    }
+  }, [ownerMap, otherMap]);
 
   /* *************************************
   Group messages and keep the latest ones
   *************************************** */
   useEffect(() => {
     const grouped = Object.values(
-      ownMessages.reduce((acc, msg) => {
+      combinedData.reduce((acc, msg) => {
         const isSentByYou = msg.ownId === user?.current?.$id;
         const otherPersonId = isSentByYou ? msg.otherId : msg.ownId;
 
@@ -70,7 +80,8 @@ export function MessageList() {
     );
 
     setGroupedMessages(grouped);
-  }, [ownMessages, user?.current?.$id]);
+    setLoading(false);
+  }, [combinedData]);
 
   return (
     <div className="relative h-[calc(100vh-6rem-3.5rem)] w-4/5 md:w-[600px] lg:w-[1000px] overflow-auto">
@@ -88,7 +99,7 @@ export function MessageList() {
                 onClick={() => handleNavigate(msg.ownId, msg.otherId)}
               >
                 <div className="self-center">
-                  <Avatar src={otherPerson?.prefs?.avatarUrl}>U</Avatar>
+                  <Avatar src={otherPerson?.avatar}>U</Avatar>
                 </div>
                 <div className="flex flex-col flex-grow">
                   <div>{otherPerson?.name}</div>
