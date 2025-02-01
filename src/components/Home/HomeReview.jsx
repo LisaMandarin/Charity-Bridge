@@ -1,133 +1,133 @@
+import { useEffect, useState } from "react";
 import { useReviews } from "../../lib/context/reviews";
 import { useProductInfo } from "../../lib/context/productInfo";
-import { Avatar, Pagination, Rate, Space, Spin, Typography } from "antd";
-import { useEffect, useState } from "react";
-import { Link } from "react-router-dom";
+import { Avatar, Pagination, Rate, Space, Spin } from "antd";
 import useUserMap from "../utils/useUserMap";
+import { Typography } from "antd";
+import { Link } from "react-router-dom";
 const { Title } = Typography;
 
 export function HomeReview() {
+  /* *************************
+ combine data (begin)
+**************************  */
   const { listReviews } = useReviews();
   const { getDocument } = useProductInfo();
-  const [expandedItems, setExpandedItems] = useState({}); // used to toggle review content more/less
-  const [loading, setLoading] = useState(true);
-  const [hasMore, setHasMore] = useState(true); // see if there are more reviews items to be fetched
   const [targetedDocs, setTargetedDocs] = useState([]);
-  const donorMap = useUserMap({
-    targetedDocs,
-    attribute: "donorId",
-  });
-  const receiverMap = useUserMap({
-    targetedDocs,
-    attribute: "receiverId",
-  });
-  const [reviewProducts, setReviewProducts] = useState([]); // fetch the product information listed in review collection
-  const [combinedData, setCombinedData] = useState([]);
+  const donorMap = useUserMap({ targetedDocs, attribute: "donorId" });
+  const receiverMap = useUserMap({ targetedDocs, attribute: "receiverId" });
+  const [productInfos, setProductInfos] = useState([]);
+  const [combinedData, setCombinedData] = useState([]); // review data + donor/receiver data + product data
+  const [loading, setLoading] = useState(true);
 
-  const toggleContent = (i) =>
-    setExpandedItems((current) => ({ ...current, [i]: !current[i] }));
-
-  /* ***********************
-     Handle items per page
-  ************************ */
-  const [currentPage, setCurrentPage] = useState(1);
-  const itemsPerPage = 2;
-  const startIndex = (currentPage - 1) * itemsPerPage;
-  const endIndex = currentPage * itemsPerPage;
-  const currentItems = combinedData.slice(
-    startIndex,
-    startIndex + itemsPerPage,
-  );
-
-  async function fetchReviews() {
-    try {
-      const result = await listReviews();
-      if (!result || result.length === 0) {
-        throw new Error("review documents not found");
-      }
-      setTargetedDocs(result);
-    } catch (error) {
-      console.error("Unable to fetch reviews: ", error.message);
-    }
-  }
-
-  function fetchUniqueReviews(reviewArray) {
-    const string = reviewArray.map((data) => JSON.stringify(data));
-    const set = new Set(string);
-    const array = Array.from(set);
-    const parsedArray = array.map((item) => JSON.parse(item));
-    return parsedArray;
-  }
-
-  // fetch reviews to store in targetedDocs
   useEffect(() => {
-    if (combinedData.length === 0) fetchReviews();
+    async function fetchReviews() {
+      try {
+        const result = await listReviews();
+        if (!result || result.length === 0) {
+          throw new Error("Review documents not found");
+        }
+
+        setTargetedDocs(result);
+      } catch (error) {
+        console.error("Unable to fetch reviews: ", error.message);
+      }
+    }
+    fetchReviews();
   }, []);
 
-  // fetch product information to store in reviewProducts
   useEffect(() => {
-    async function fetchReviewProducts() {
+    async function fetchProducts() {
       try {
-        if (targetedDocs.length) {
-          console.log("targetedDocs: ", targetedDocs);
-          const identicalDocs = fetchUniqueReviews(targetedDocs);
-          const data = await Promise.all(
-            identicalDocs.map((doc) => getDocument(doc.productId)),
-          );
-          console.log("data before set review products: ", data);
-          setReviewProducts(data);
-        }
+        const result = await Promise.all(
+          targetedDocs.map((doc) => getDocument(doc.productId)),
+        );
+        setProductInfos(result);
       } catch (error) {
-        console.error("Unable to fetch review products: ", error.message);
+        console.error("Unable to fetch products: ", error.message);
       }
     }
-    fetchReviewProducts();
+    fetchProducts();
   }, [targetedDocs]);
 
-  // fetch data with the information of donors, receivers and products and store it in combinedData
   useEffect(() => {
-    if (donorMap?.size && receiverMap?.size && reviewProducts.length) {
-      setLoading(true);
+    function combineInfos() {
       try {
-        const data = targetedDocs.map((doc, i) => {
+        const data = targetedDocs.map((doc) => {
+          const donor = donorMap.get(doc.donorId);
+          const receiver = receiverMap.get(doc.receiverId);
+          const product = productInfos.find(
+            (product) => product.$id === doc.productId,
+          );
           return {
             ...doc,
-            donor: donorMap.get(doc.donorId),
-            receiver: receiverMap.get(doc.receiverId),
-            product: reviewProducts[i],
+            donor,
+            receiver,
+            product,
           };
         });
-        console.log("data before set combined data", data);
-        setCombinedData((current) => [...current, ...data]);
+        setCombinedData(data);
       } catch (error) {
-        console.error(error.message);
+        console.error("Unable to combine data: ", error.message);
       } finally {
         setLoading(false);
       }
     }
-  }, [donorMap, receiverMap, reviewProducts]);
+    combineInfos();
+  }, [donorMap, receiverMap, productInfos]);
+
+  /* *************************
+ combine data (end)
+**************************  */
+
+  /* *************************
+ handle page change (begin)
+**************************  */
+  const [currentPage, setCurrentPage] = useState(1);
+  const defaultPageSize = 2;
+  const currentItems = combinedData.slice(
+    (currentPage - 1) * defaultPageSize,
+    currentPage * defaultPageSize,
+  );
+
+  const onPageChange = (page) => {
+    setCurrentPage(page);
+  };
+  /* *************************
+ handle page change (end)
+**************************  */
+
+  /* *************************
+ handle more text (begin)
+**************************  */
+  const [more, setMore] = useState({});
+
+  const toggleMore = (index) => {
+    setMore((current) => ({
+      ...current,
+      [index]: !current[index],
+    }));
+  };
 
   useEffect(() => {
-    console.log("combinedData: ", combinedData);
-  }, [combinedData]);
-
-  useEffect(() => {
-    console.log("loading: ", loading);
-  });
+    console.log("more:", more);
+  }, [more]);
+  /* *************************
+ handle more text (end)
+**************************  */
 
   return (
-    <div className="flex flex-col justify-between h-full px-4">
+    <div className="flex flex-col justify-start h-full px-4">
       <Title level={2} className="text-center pt-4">
         Words of Thanks
       </Title>
       <Spin spinning={loading}>
-        <Space
-          size="large"
-          direction="vertical"
-          className="text-xs flex-grow w-full"
-        >
+        <div className="text-xs flex flex-col flex-grow w-full gap-4">
           {currentItems.map((review, i) => (
-            <div key={i}>
+            <div
+              key={i}
+              className={`${more[i] ? "" : `h-[100px] overflow-hidden`} relative`}
+            >
               <div>
                 <Avatar src={review.receiver?.avatar || null} alt="avatar">
                   {review.receiver?.name[0] || "U"}
@@ -166,45 +166,31 @@ export function HomeReview() {
                   to={`/product/${review.productId}`}
                   className="text-blue-500"
                 >
-                  {review?.product?.product.toLocaleLowerCase() || "some item"}
+                  {review?.product?.product.toLocaleLowerCase() ||
+                    "unknown item"}
                 </Link>
                 .
               </div>
-              <div className={`${!expandedItems[i] ? "truncate" : ""}`}>
+              <div className={`${more[i] ? "mb-5" : ""}`}>
                 {review.reviewContent}
               </div>
-              {!expandedItems[i] && (
-                <span
-                  className="text-blue-500 cursor-pointer"
-                  onClick={() => toggleContent(i)}
-                >
-                  ...more
-                </span>
-              )}
-              {expandedItems[i] && (
-                <span
-                  className="text-blue-500 cursor-pointer"
-                  onClick={() => toggleContent(i)}
-                >
-                  Show less
-                </span>
-              )}
+              <div className="absolute bottom-0 left-0 bg-white pt-1 opacity-80 w-full text-right">
+                <button onClick={() => toggleMore(i)}>
+                  {more[i] ? "More" : "Less"}
+                </button>
+              </div>
             </div>
           ))}
-        </Space>
+        </div>
+        <Pagination
+          align="center"
+          defaultCurrent={currentPage}
+          total={targetedDocs.length}
+          defaultPageSize={defaultPageSize}
+          onChange={onPageChange}
+          className="py-4"
+        />
       </Spin>
-      <Pagination
-        simple={{ readOnly: true }}
-        defaultCurrent={1}
-        total={
-          hasMore ? combinedData.length + itemsPerPage : combinedData.length
-        }
-        pageSize={itemsPerPage}
-        current={currentPage}
-        onChange={(page) => setCurrentPage(page)}
-        align="center"
-        className="mb-4"
-      />
     </div>
   );
 }
