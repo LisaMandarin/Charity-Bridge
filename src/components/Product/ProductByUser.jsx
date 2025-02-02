@@ -36,8 +36,8 @@ export function ProductByUser() {
           setContributor({
             name: userData?.name,
             avatarUrl: userData?.avatar || null,
-            profileId: userData.prefs?.profileId || null,
-            id: userData.userId,
+            id: userData?.userId,
+            profileId: userData?.$id,
           });
         }
       }

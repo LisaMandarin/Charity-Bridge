@@ -110,7 +110,7 @@ export function ProfileCard({ contributor, isOpen, receiver }) {
     profile &&
     isOpen && (
       <Card
-        style={{ maxWidth: "400px" }}
+        className="w-full md:w-[400px]"
         title={<div className="text-left">{profile.name}</div>}
         extra={
           location.pathname.startsWith(
