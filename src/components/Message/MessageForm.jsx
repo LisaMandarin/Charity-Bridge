@@ -25,7 +25,8 @@ export function MessageForm({ sender, receiver }) {
   useEffect(() => {
     async function fetchName() {
       const result = await getProfiles();
-      const name = result.find((profile) => (profile.userId = receiver));
+      const name = result.find((profile) => profile.userId === receiver);
+      console.log("name: ", name);
       setReceiverName(name);
     }
 

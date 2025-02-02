@@ -76,9 +76,34 @@ export function UserProfileProvider(props) {
     }
   }
 
+  async function getProfileByQuery(query) {
+    try {
+      if (!query) {
+        console.error("Invalid query");
+        return null;
+      }
+
+      const result = await charityDatabase.listDocuments(
+        DATABASE_ID,
+        COLLECTION_ID,
+        [query],
+      );
+      return result;
+    } catch (error) {
+      console.error("Failed to get profile by query: ", error.message);
+      return null;
+    }
+  }
+
   return (
     <UserProfileContext.Provider
-      value={{ createProfile, updateProfile, getProfile, getProfiles }}
+      value={{
+        createProfile,
+        updateProfile,
+        getProfile,
+        getProfiles,
+        getProfileByQuery,
+      }}
     >
       {props.children}
     </UserProfileContext.Provider>

@@ -8,18 +8,13 @@ import { LeftArrowBar } from "../utils/ArrowBar";
 import useUserMap from "../utils/useUserMap";
 
 export function MessageList() {
-  const navigate = useNavigate();
-  const handleNavigate = (senderId, receiverId) => {
-    navigate(`/messageboard/${senderId}/${receiverId}`);
-  };
-
   /* *******************************************************************
   Fetch messages that involve the current user.
   Get the names of others who have conversations with the current user.
   ********************************************************************* */
   const user = useUser();
   const { listOwnMessages } = useMessage();
-  const [targetedDocs, setTargetedDocs] = useState([]);
+  const [targetedDocs, setTargetedDocs] = useState([]); // collect messages that send from or  are sent to the user
   const ownerMap = useUserMap({ targetedDocs, attribute: "ownId" });
   const otherMap = useUserMap({ targetedDocs, attribute: "otherId" });
   const [combinedData, setCombinedData] = useState([]); // message data + owner data + other data
@@ -40,10 +35,7 @@ export function MessageList() {
   useEffect(() => {
     try {
       const combined = targetedDocs.map((doc) => {
-        const ownId = doc.ownId;
-        const otherId = doc.otherId;
-        const messageContent = doc.messageContent;
-        const $createdAt = doc.$createdAt;
+        const { ownId, otherId, messageContent, $createdAt } = doc;
         const own = ownerMap.get(ownId);
         const other = otherMap.get(otherId);
         return { ownId, otherId, messageContent, $createdAt, own, other };
@@ -83,20 +75,27 @@ export function MessageList() {
     setLoading(false);
   }, [combinedData]);
 
+  const navigate = useNavigate();
+  const handleNavigate = (msg) => {
+    const isSendByYou = msg.ownId === user?.current?.$id;
+    const senderId = isSendByYou ? msg.ownId : msg.otherId;
+    const receiverId = isSendByYou ? msg.otherId : msg.ownId;
+    navigate(`/messageboard/${senderId}/${receiverId}`);
+  };
   return (
     <div className="relative h-[calc(100vh-6rem-3.5rem)] w-4/5 md:w-[600px] lg:w-[1000px] overflow-auto">
       <LeftArrowBar />
       <Spin spinning={loading}>
         {groupedMessages.length > 0 && user?.current?.$id ? (
           groupedMessages.map((msg, i) => {
-            const isSentByYou = msg.ownId === user.current.$id;
+            const isSentByYou = msg.ownId === user?.current?.$id;
             const otherPerson = isSentByYou ? msg.other : msg.own;
 
             return (
               <div
                 key={i}
                 className="flex flex-row gap-2 p-4 border-b-2 cursor-pointer"
-                onClick={() => handleNavigate(msg.ownId, msg.otherId)}
+                onClick={() => handleNavigate(msg)}
               >
                 <div className="self-center">
                   <Avatar src={otherPerson?.avatar}>U</Avatar>
