@@ -1,6 +1,18 @@
 import { DownOutlined, ExclamationCircleFilled } from "@ant-design/icons";
-import { Button, Dropdown, message, Select, Space, Table, Modal } from "antd";
+import {
+  Button,
+  Dropdown,
+  message,
+  Select,
+  Space,
+  Table,
+  Modal,
+  Avatar,
+} from "antd";
 import { Link } from "react-router-dom";
+import useGetUser from "../utils/useGetUser";
+import { Query } from "appwrite";
+import { useEffect } from "react";
 const { confirm } = Modal;
 
 export function DashboardPostListOpen({
@@ -177,8 +189,23 @@ export function DashboardPostListOpen({
       title: "Applicants",
       dataIndex: "applicants",
       key: "applicants",
+      render: (_, record) => (
+        <div className="flex flex-row flex-wrap gap-2">
+          {record.applicantsProfiles.map((profile) => (
+            <div key={profile.$id}>
+              <Link to={`/profile/${profile.userId}`}>
+                <Avatar src={profile.avatar || ""} alt="avatar">
+                  {profile.name[0]}
+                </Avatar>
+                {profile.name}
+              </Link>
+            </div>
+          ))}
+        </div>
+      ),
     },
   ];
+
   return (
     <>
       <Table dataSource={dataSourceOpen} columns={columns} />

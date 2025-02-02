@@ -88,7 +88,7 @@ export function UserProfileProvider(props) {
         COLLECTION_ID,
         [query],
       );
-      return result;
+      return result.documents;
     } catch (error) {
       console.error("Failed to get profile by query: ", error.message);
       return null;

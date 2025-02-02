@@ -26,6 +26,7 @@ import { ProductByUser } from "./components/Product/ProductByUser";
 import { MessageBoard } from "./components/Message/MessageBoard";
 import { MessageList } from "./components/Dashboard/DashboardMessageList";
 import { MessageNew } from "./components/Dashboard/DashboardMessageNew";
+import { ProfilePage } from "./components/ProfilePage";
 
 function App() {
   return (
@@ -74,6 +75,7 @@ function App() {
               />
               <Route path="/messagelist" element={<MessageList />} />
               <Route path="/messageNew" element={<MessageNew />} />
+              <Route path="/profile/:userId" element={<ProfilePage />} />
             </Route>
             {/* protected components */}
           </Route>
