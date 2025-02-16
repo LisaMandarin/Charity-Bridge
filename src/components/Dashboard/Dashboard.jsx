@@ -12,7 +12,7 @@ export function Dashboard() {
       className="w-full p-4 flex flex-col items-center"
     >
       <DashboardEmail user={user} />
-      <Space direction="vertical" className="w-[600px]">
+      <Space direction="vertical" className="w-full md:w-[600px]">
         <Divider orientation="left" orientationMargin="0">
           <Typography.Title level={3}>Profile</Typography.Title>
         </Divider>
