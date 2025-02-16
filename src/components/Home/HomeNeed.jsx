@@ -29,7 +29,9 @@ export function HomeNeed() {
   };
 
   const handleOk = (index) => {
-    navigate(`/messageboard/${sender}/${combinedData[index].helpSeeker.$id}`);
+    navigate(
+      `/messageboard/${sender}/${combinedData[index].helpSeeker.userId}`,
+    );
     setIsOpenModals((current) => ({
       ...current,
       [index]: false,
