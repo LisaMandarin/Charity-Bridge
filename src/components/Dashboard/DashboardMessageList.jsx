@@ -84,7 +84,6 @@ export function MessageList() {
   };
   return (
     <div className="relative h-[calc(100vh-6rem-3.5rem)] w-4/5 md:w-[600px] lg:w-[1000px] overflow-auto">
-      <LeftArrowBar />
       <Spin spinning={loading}>
         {groupedMessages.length > 0 && user?.current?.$id ? (
           groupedMessages.map((msg, i) => {
